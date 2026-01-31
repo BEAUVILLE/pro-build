@@ -2,38 +2,542 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>DIGIY PRO — Cockpit</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>DIGIY BUILD PRO — Cockpit</title>
+
   <script src="./guard.js"></script>
 
   <style>
+    :root{
+      --bg:#061b14; --bg2:#0a2b1f; --line:rgba(255,255,255,.14);
+      --text:#eafff1; --muted:rgba(234,255,241,.72);
+      --gold:#facc15; --ok:#22c55e; --bad:#fb7185;
+      --shadow:0 18px 55px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:system-ui;
-      background:#061b14;
-      color:#eafff1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      text-align:center;
+      margin:0; color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:
+        radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      padding:16px;
     }
+    .wrap{max-width:1140px;margin:0 auto}
+    .top{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
+      border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .ico{
+      width:48px;height:48px;border-radius:50%;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 0,var(--gold),transparent 60%);
+      color:#062015;font-weight:1000;border:1px solid rgba(250,204,21,.35);
+    }
+    h1{margin:0;font-size:16px;letter-spacing:.10em}
+    .sub{margin-top:5px;font-size:12px;color:var(--muted);line-height:1.4}
+    .pill{
+      border:1px solid var(--line); background:rgba(250,204,21,.10);
+      padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;
+    }
+
+    .grid{display:grid;gap:12px;margin-top:12px}
+    @media(min-width:980px){ .grid{grid-template-columns:1.2fr .8fr} }
+
     .card{
-      padding:30px;
-      border:1px solid rgba(255,255,255,.15);
-      border-radius:18px;
-      background:rgba(255,255,255,.04);
-      max-width:520px;
+      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+      border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+      padding:14px;
     }
-    h1{margin:0;font-size:22px}
-    p{opacity:.8;margin-top:10px}
+    .title{font-weight:1000;letter-spacing:.08em;font-size:12px;color:rgba(234,255,241,.85)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      flex:1; min-width:210px;
+      padding:12px 14px;border-radius:14px;border:1px solid var(--line);
+      background:rgba(0,0,0,.18); color:var(--text);
+      font-weight:1000; cursor:pointer;
+    }
+    .btn:hover{border-color:rgba(250,204,21,.55)}
+    .btn.primary{
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;border:none;
+    }
+    .btn.danger{
+      border-color:rgba(251,113,133,.35);
+      background:rgba(251,113,133,.10);
+    }
+
+    .kpis{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:520px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+    .kpi{
+      padding:12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+    }
+    .kpi .k{font-size:12px;color:var(--muted)}
+    .kpi .v{font-size:20px;font-weight:1000;margin-top:6px}
+    .kpi .s{font-size:12px;color:rgba(234,255,241,.78);margin-top:4px}
+
+    .split{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    select, input, textarea{
+      border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18); color:var(--text);
+      padding:10px 12px; outline:none; font-weight:900;
+      width:100%;
+    }
+    textarea{min-height:82px;resize:vertical;font-weight:700}
+
+    .list{margin-top:10px;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden}
+    .item{
+      padding:12px;border-top:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.14);
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    }
+    .item:first-child{border-top:none}
+    .a{font-weight:1000}
+    .b{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .badge{
+      font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.10);
+      white-space:nowrap;
+    }
+    .badge.ok{background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35)}
+    .badge.bad{background:rgba(251,113,133,.12); border-color:rgba(251,113,133,.35)}
+    .badge.neutral{background:rgba(148,163,184,.10); border-color:rgba(148,163,184,.28)}
+
+    .tinybtn{
+      padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .tinybtn:hover{border-color:rgba(250,204,21,.55)}
+
+    .modal{
+      position:fixed; inset:0; display:none;
+      background:rgba(0,0,0,.55);
+      align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal .box{
+      width:min(820px,94vw);
+      background:linear-gradient(145deg,rgba(11,42,31,.98),rgba(6,35,25,.98));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 24px 60px rgba(0,0,0,.65);
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin:6px 0}
+    .fgrid{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:820px){ .fgrid{grid-template-columns:1fr 1fr} }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .actions button{
+      flex:1; min-width:190px;
+      padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.12);
+      color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .actions .primary{
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;border:none;
+    }
+    .close{
+      margin-top:10px;width:100%;
+      padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+    .tiny{font-size:11px;color:rgba(234,255,241,.66)}
   </style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>🦅 Cockpit DIGIY PRO</h1>
-    <p>Ton module est actif. Ici tu construis ton tableau de bord métier.</p>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <div class="ico">🦅</div>
+      <div>
+        <h1>🏗️ BUILD PRO — Cockpit</h1>
+        <div class="sub">
+          SLUG: <b id="slug">—</b> • OWNER: <b id="owner">—</b><br>
+          Statut: <b class="muted" id="stat">session OK</b>
+        </div>
+      </div>
+    </div>
+    <div class="pill">build_pro</div>
   </div>
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div class="card">
+      <div class="title">⚡ ACTIONS RAPIDES</div>
+      <div class="row">
+        <button class="btn primary" id="btnNew">➕ Nouveau devis</button>
+        <button class="btn" id="btnJobs">📌 Chantiers</button>
+        <button class="btn" id="btnPulse">🔔 Inbox</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="title">🌡️ TEMPÉRATURE BUILD</div>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">Devis à faire</div>
+          <div class="v" id="kDraft">—</div>
+          <div class="s">à envoyer</div>
+        </div>
+        <div class="kpi">
+          <div class="k">En attente</div>
+          <div class="v" id="kSent">—</div>
+          <div class="s">réponse client</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Acceptés</div>
+          <div class="v" id="kOk">—</div>
+          <div class="s">à démarrer</div>
+        </div>
+        <div class="kpi">
+          <div class="k">En cours</div>
+          <div class="v" id="kRun">—</div>
+          <div class="s">chantiers</div>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="split">
+        <div class="title" style="flex:1">📋 DEVIS & CHANTIERS</div>
+        <select id="filter" style="max-width:260px">
+          <option value="all">Tous</option>
+          <option value="draft">Brouillons</option>
+          <option value="sent">Envoyés</option>
+          <option value="accepted">Acceptés</option>
+          <option value="running">En cours</option>
+          <option value="done">Terminés</option>
+          <option value="cancelled">Annulés</option>
+        </select>
+        <input id="q" placeholder="Recherche: client / tel / ville / note…" style="max-width:260px">
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="hint">
+        <b>V1 Terrain :</b> devis stockés localement par slug (ça tourne direct).<br>
+        <span class="tiny">V2 : Supabase + photos chantier + signature devis + factures.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card">
+      <div class="title">🛟 SUPPORT</div>
+      <div class="row">
+        <button class="btn" id="btnHelp">💬 WhatsApp Support</button>
+        <button class="btn" id="btnLogout">🚪 Déconnexion</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">🧩 OUTILS</div>
+      <div class="row">
+        <button class="btn" id="btnExport">⬇️ Export JSON</button>
+        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">⚙️ Raccourcis</div>
+      <div class="row">
+        <button class="btn" id="btnTemplate">📄 Modèle devis</button>
+        <button class="btn" id="btnPrint">🖨️ Imprimer</button>
+      </div>
+
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">🔔 Inbox</div>
+            <div class="b">V2 : demandes entrantes + notifications chantier.</div>
+          </div>
+          <div class="badge neutral">V2</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL NEW QUOTE -->
+<div class="modal" id="modalNew">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">➕ Nouveau devis</div>
+      <div class="badge neutral" id="mSlug">—</div>
+    </div>
+
+    <div class="fgrid">
+      <div>
+        <label>Client</label>
+        <input id="client" placeholder="Ex: Mamadou">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="phone" placeholder="+221…">
+      </div>
+      <div>
+        <label>Ville / Quartier</label>
+        <input id="city" placeholder="Ex: Saly / Keur Massar / Rufisque">
+      </div>
+      <div>
+        <label>Type de travaux</label>
+        <select id="type">
+          <option value="plomberie">Plomberie</option>
+          <option value="electricite">Électricité</option>
+          <option value="maconnerie">Maçonnerie</option>
+          <option value="peinture">Peinture</option>
+          <option value="menuiserie">Menuiserie</option>
+          <option value="clim">Climatisation</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div>
+        <label>Montant estimé (FCFA)</label>
+        <input id="amount" inputmode="numeric" placeholder="Ex: 120000">
+      </div>
+      <div>
+        <label>Date souhaitée</label>
+        <input id="date" type="date">
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <label>Description / Note</label>
+      <textarea id="note" placeholder="Ex: refaire salle de bain, changer robinet, main d’œuvre + matériel…"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="save">✅ Enregistrer</button>
+      <button id="cancel">Annuler</button>
+    </div>
+
+    <button class="close" id="close">Fermer</button>
+  </div>
+</div>
+
+<script>
+  const s = window.DIGIY_ACCESS || {};
+  const slug = (s.slug || "").toLowerCase();
+  document.getElementById("slug").textContent = s.slug || "—";
+  document.getElementById("owner").textContent = s.owner_id || "—";
+
+  const KEY = "DIGIY_BUILD_QUOTES::" + (slug || "noslug");
+
+  function uid(){
+    return (crypto?.randomUUID ? crypto.randomUUID() : ("id_"+Math.random().toString(16).slice(2)+Date.now()));
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }catch(_){ return []; }
+  }
+  function save(rows){ localStorage.setItem(KEY, JSON.stringify(rows)); }
+
+  function money(v){
+    const n = Number(String(v||"").replace(/[^\d]/g,"")) || 0;
+    return n ? (n.toLocaleString("fr-FR") + " FCFA") : "—";
+  }
+  function badge(st){
+    if(st==="draft") return `<span class="badge neutral">BROUILLON</span>`;
+    if(st==="sent") return `<span class="badge neutral">ENVOYÉ</span>`;
+    if(st==="accepted") return `<span class="badge ok">ACCEPTÉ</span>`;
+    if(st==="running") return `<span class="badge ok">EN COURS</span>`;
+    if(st==="done") return `<span class="badge ok">TERMINÉ</span>`;
+    if(st==="cancelled") return `<span class="badge bad">ANNULÉ</span>`;
+    return `<span class="badge neutral">${String(st||"—").toUpperCase()}</span>`;
+  }
+
+  function matches(r, q){
+    q = (q||"").trim().toLowerCase();
+    if(!q) return true;
+    const hay = [
+      r.client, r.phone, r.city, r.type, r.note,
+      r.status, r.date
+    ].filter(Boolean).join(" ").toLowerCase();
+    return hay.includes(q);
+  }
+
+  function render(){
+    const rows = load().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+    const filter = document.getElementById("filter").value;
+    const q = document.getElementById("q").value;
+
+    const draft = rows.filter(r=>r.status==="draft");
+    const sent = rows.filter(r=>r.status==="sent");
+    const ok = rows.filter(r=>r.status==="accepted");
+    const run = rows.filter(r=>r.status==="running");
+
+    document.getElementById("kDraft").textContent = String(draft.length);
+    document.getElementById("kSent").textContent = String(sent.length);
+    document.getElementById("kOk").textContent = String(ok.length);
+    document.getElementById("kRun").textContent = String(run.length);
+
+    let view = rows.filter(r=>matches(r,q));
+    if(filter !== "all") view = view.filter(r=>r.status===filter);
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    if(view.length===0){
+      list.innerHTML = `
+        <div class="item">
+          <div>
+            <div class="a">Aucun devis</div>
+            <div class="b">Clique “Nouveau devis” pour commencer.</div>
+          </div>
+          <div class="badge neutral">VIDE</div>
+        </div>`;
+      return;
+    }
+
+    for(const r of view){
+      const title = `${r.client || "—"} • ${r.type || "—"} • ${r.city || "—"}`;
+      const sub = [
+        `Tel: ${r.phone || "—"} • Montant: ${money(r.amount)}`,
+        r.date ? `Date: ${r.date}` : null,
+        r.note ? `Note: ${r.note}` : null,
+        `Créé: ${new Date(r.created_at).toLocaleString("fr-FR")}`
+      ].filter(Boolean).join("<br>");
+
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <div style="flex:1">
+          <div class="a">${title}</div>
+          <div class="b">${sub}</div>
+          <div class="row" style="margin-top:10px">
+            <button class="tinybtn" data-act="sent" data-id="${r.id}">📤 Envoyer</button>
+            <button class="tinybtn" data-act="accept" data-id="${r.id}">✅ Accepté</button>
+            <button class="tinybtn" data-act="run" data-id="${r.id}">🏗️ En cours</button>
+            <button class="tinybtn" data-act="done" data-id="${r.id}">🏁 Terminer</button>
+            <button class="tinybtn" data-act="cancel" data-id="${r.id}">🧨 Annuler</button>
+            <button class="tinybtn" data-act="del" data-id="${r.id}">🗑️ Supprimer</button>
+          </div>
+        </div>
+        <div>${badge(r.status)}</div>
+      `;
+      list.appendChild(item);
+    }
+  }
+
+  function update(id, patch){
+    const rows = load();
+    const i = rows.findIndex(x=>x.id===id);
+    if(i<0) return;
+    rows[i] = { ...rows[i], ...patch, updated_at: nowISO() };
+    save(rows);
+    render();
+  }
+  function remove(id){
+    save(load().filter(x=>x.id!==id));
+    render();
+  }
+
+  // modal
+  const modal = document.getElementById("modalNew");
+  const openModal = ()=>{
+    document.getElementById("mSlug").textContent = slug || "—";
+    modal.style.display = "flex";
+    setTimeout(()=>document.getElementById("client").focus(), 150);
+  };
+  const closeModal = ()=>{ modal.style.display = "none"; };
+
+  document.getElementById("btnNew").onclick = openModal;
+  document.getElementById("cancel").onclick = closeModal;
+  document.getElementById("close").onclick = closeModal;
+  modal.addEventListener("click",(e)=>{ if(e.target===modal) closeModal(); });
+
+  document.getElementById("save").onclick = ()=>{
+    const r = {
+      id: uid(),
+      slug, owner_id: s.owner_id || null,
+      status: "draft",
+      client: document.getElementById("client").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      city: document.getElementById("city").value.trim(),
+      type: document.getElementById("type").value,
+      amount: document.getElementById("amount").value.trim(),
+      date: document.getElementById("date").value,
+      note: document.getElementById("note").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = load();
+    rows.unshift(r);
+    save(rows);
+
+    ["client","phone","city","amount","date","note"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("type").value = "plomberie";
+
+    closeModal();
+    render();
+  };
+
+  // actions list
+  document.addEventListener("click",(e)=>{
+    const b = e.target.closest("[data-act]");
+    if(!b) return;
+    const id = b.getAttribute("data-id");
+    const act = b.getAttribute("data-act");
+    if(act==="sent") return update(id,{ status:"sent" });
+    if(act==="accept") return update(id,{ status:"accepted" });
+    if(act==="run") return update(id,{ status:"running" });
+    if(act==="done") return update(id,{ status:"done" });
+    if(act==="cancel") return update(id,{ status:"cancelled" });
+    if(act==="del") return remove(id);
+  });
+
+  // quicks
+  document.getElementById("btnJobs").onclick = ()=>{
+    document.getElementById("filter").value = "running";
+    render();
+    alert("📌 Vue chantiers : filtre ‘En cours’ activé.");
+  };
+  document.getElementById("btnPulse").onclick = ()=>alert("🔔 Inbox: V2 demandes entrantes + notif chantier.");
+  document.getElementById("q").oninput = render;
+  document.getElementById("filter").onchange = render;
+
+  // support
+  document.getElementById("btnHelp").onclick = ()=>{
+    const num = "+221771342889";
+    const txt = encodeURIComponent("DIGIY Support — BUILD PRO. Slug: " + (slug||"") + " • Besoin d’aide.");
+    location.href = "https://wa.me/" + num.replace("+","") + "?text=" + txt;
+  };
+
+  // logout
+  document.getElementById("btnLogout").onclick = ()=>{
+    localStorage.removeItem("DIGIY_ACCESS");
+    location.href = "./pin.html" + (slug ? ("?slug="+encodeURIComponent(slug)) : "");
+  };
+
+  // tools
+  document.getElementById("btnExport").onclick = ()=>{
+    const rows = load();
+    const blob = new Blob([JSON.stringify(rows,null,2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "build-" + (slug||"pro") + ".json";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
+  };
+  document.getElementById("btnReset").onclick = ()=>{
+    if(confirm("Reset démo pour ce slug ?")){
+      localStorage.removeItem(KEY);
+      render();
+    }
+  };
+  document.getElementById("btnTemplate").onclick = ()=>alert("📄 V2: génération devis PDF + signature.");
+  document.getElementById("btnPrint").onclick = ()=>window.print();
+
+  // init
+  render();
+</script>
 </body>
 </html>
