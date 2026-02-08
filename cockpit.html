@@ -70,6 +70,12 @@
       border-color:rgba(251,113,133,.35);
       background:rgba(251,113,133,.10);
     }
+    /* ✅ NOUVEAU : style bouton fiche */
+    .btn.profile{
+      border:none;
+      background:linear-gradient(90deg, rgba(56,189,248,.92), rgba(34,197,94,.86));
+      color:#062015;
+    }
 
     .kpis{display:grid;gap:10px;margin-top:10px}
     @media(min-width:520px){ .kpis{grid-template-columns:repeat(2,1fr)} }
@@ -178,6 +184,9 @@
     <div class="card">
       <div class="title">⚡ ACTIONS RAPIDES</div>
       <div class="row">
+        <!-- ✅ NOUVEAU : FICHE PRO -->
+        <button class="btn profile" id="btnProfile">⚡ Générer / Modifier ma fiche</button>
+
         <button class="btn primary" id="btnNew">➕ Nouveau devis</button>
         <button class="btn" id="btnJobs">📌 Chantiers</button>
         <button class="btn" id="btnPulse">🔔 Inbox</button>
@@ -503,6 +512,12 @@
   document.getElementById("btnPulse").onclick = ()=>alert("🔔 Inbox: V2 demandes entrantes + notif chantier.");
   document.getElementById("q").oninput = render;
   document.getElementById("filter").onchange = render;
+
+  // ✅ NEW: bouton fiche -> ouvre le générateur PRO
+  document.getElementById("btnProfile").onclick = ()=>{
+    // profile.html est dans /build-pro/ (même dossier que ce cockpit)
+    location.href = "./profile.html";
+  };
 
   // support
   document.getElementById("btnHelp").onclick = ()=>{
