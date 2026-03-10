@@ -1,136 +1,225 @@
 (() => {
   "use strict";
 
-  const MODULE = "build";
-  const PAY_URL = "https://beauville.github.io/commencer-a-payer/?module=BUILD&offre=BUILD";
+  const SUPABASE_URL =
+    window.DIGIY_SUPABASE_URL ||
+    "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    window.DIGIY_SUPABASE_ANON ||
+    window.DIGIY_SUPABASE_ANON_KEY ||
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+
+  const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
+  const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
 
   const gs = document.getElementById("guard_status");
   const msg = document.getElementById("msg");
   const $ = (id) => document.getElementById(id);
 
-  let CURRENT_SESSION = null;
+  let sb = null;
+  let ACCESS = {
+    slug: "",
+    phone: ""
+  };
   let EXISTING_ROW = null;
 
-  function setMsg(t, ok=true){
-    if(!msg) return;
-    msg.innerHTML = `Statut : <span class="${ok ? 'ok':'bad'}">${t}</span>`;
+  function setGuard(t) {
+    if (!gs) return;
+    gs.textContent = t;
   }
 
-  function slugify(str){
-    return String(str||"")
+  function setMsg(t, ok = true) {
+    if (!msg) return;
+    msg.innerHTML = `Statut : <span class="${ok ? "ok" : "bad"}">${t}</span>`;
+  }
+
+  function normSlug(str) {
+    return String(str || "")
       .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-      .replace(/[^a-z0-9]+/g,"-")
-      .replace(/(^-|-$)/g,"")
-      .trim() || ("pro-" + Math.random().toString(16).slice(2,8));
+      .trim()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "";
   }
 
-  function parseTags(raw){
-    const s = String(raw||"").trim();
-    if(!s) return null;
-    if(s.startsWith("[") && s.endsWith("]")){
-      try{
+  function slugify(str) {
+    return normSlug(str) || ("pro-" + Math.random().toString(16).slice(2, 8));
+  }
+
+  function digits(v) {
+    return String(v || "").replace(/[^\d]/g, "");
+  }
+
+  function parseTags(raw) {
+    const s = String(raw || "").trim();
+    if (!s) return null;
+
+    if (s.startsWith("[") && s.endsWith("]")) {
+      try {
         const a = JSON.parse(s);
-        return Array.isArray(a) ? a.map(x=>String(x).trim()).filter(Boolean) : null;
-      }catch(_){}
+        return Array.isArray(a) ? a.map(x => String(x).trim()).filter(Boolean) : null;
+      } catch (_) {}
     }
-    return s.split(",").map(x=>x.trim()).filter(Boolean);
+
+    return s.split(",").map(x => x.trim()).filter(Boolean);
   }
 
-  function getSb(){
-    return window.DIGIY_GUARD?.getSb?.() || null;
+  function rememberProfileSlug(slug) {
+    const s = normSlug(slug);
+    if (!s) return;
+    try {
+      sessionStorage.setItem(PROFILE_SLUG_KEY, s);
+      localStorage.setItem(PROFILE_SLUG_KEY, s);
+    } catch (_) {}
   }
 
-  function computePublicLink(row){
-    // Si ton profil_url existe -> c’est le lien à partager
-    const profileUrl = (row?.profile_url || "").trim();
-    if(profileUrl) return profileUrl;
-
-    // Sinon, fallback "slug" (à adapter si tu as une route)
-    // Exemple: /build/p/<slug>
-    const slug = (row?.slug || "").trim();
-    if(slug) return `./p/${encodeURIComponent(slug)}`;
-
-    return "";
+  function getRememberedProfileSlug() {
+    try {
+      return normSlug(
+        sessionStorage.getItem(PROFILE_SLUG_KEY) ||
+        localStorage.getItem(PROFILE_SLUG_KEY) ||
+        ""
+      );
+    } catch (_) {
+      return "";
+    }
   }
 
-  async function loadExisting(owner_id){
-    const sb = getSb();
-    if(!sb) return;
+  function computePublicLink(row) {
+    const profileUrl = String(row?.profile_url || "").trim();
+    if (profileUrl) return profileUrl;
+
+    const q = row?.slug || row?.display_name || row?.trade || "";
+    if (!q) return PUBLIC_LISTING_URL;
+
+    return PUBLIC_LISTING_URL + "?q=" + encodeURIComponent(q);
+  }
+
+  function hydrateForm(row) {
+    $("display_name").value = row.display_name || "";
+    $("city").value = row.city || "";
+    $("trade").value = row.trade || "";
+    $("region").value = row.region || "petite-cote";
+    $("sector").value = row.sector || "multi";
+    $("whatsapp").value = row.whatsapp || "";
+    $("phone").value = row.phone || "";
+    $("bio").value = row.bio || "";
+    $("photo_url").value = row.photo_url || "";
+    $("profile_url").value = row.profile_url || "";
+    $("badge").value = row.badge || "";
+    $("hub_badge").value = row.hub_badge || "";
+    $("price_label").value = row.price_label || "";
+    $("priority").value = Number(row.priority ?? 1);
+    $("is_published").value = String(!!row.is_published);
+    $("slug").value = row.slug || "";
+
+    try {
+      $("tags").value = Array.isArray(row.tags) ? JSON.stringify(row.tags) : "";
+    } catch (_) {
+      $("tags").value = "";
+    }
+  }
+
+  async function fetchByProfileSlug(profileSlug) {
+    if (!profileSlug) return null;
 
     const { data, error } = await sb
       .from("digiy_build_public_profiles")
       .select("*")
-      .eq("owner_id", owner_id)
+      .eq("slug", profileSlug)
+      .limit(1)
       .maybeSingle();
 
-    if(error){
-      console.warn("loadExisting err:", error);
-      setMsg("Impossible de charger la fiche (voir console).", false);
-      return;
-    }
-
-    EXISTING_ROW = data || null;
-    if(!data){
-      setMsg("Aucune fiche existante — tu peux en créer une ✅", true);
-      // slug auto proposé
-      $("slug").value = slugify($("display_name").value || "");
-      return;
-    }
-
-    // hydrate form
-    $("display_name").value = data.display_name || "";
-    $("city").value = data.city || "";
-    $("trade").value = data.trade || "";
-    $("region").value = data.region || "petite-cote";
-    $("sector").value = data.sector || "multi";
-    $("whatsapp").value = data.whatsapp || "";
-    $("phone").value = data.phone || "";
-    $("bio").value = data.bio || "";
-    $("photo_url").value = data.photo_url || "";
-    $("profile_url").value = data.profile_url || "";
-    $("badge").value = data.badge || "";
-    $("hub_badge").value = data.hub_badge || "";
-    $("price_label").value = data.price_label || "";
-    $("priority").value = Number(data.priority ?? 1);
-    $("is_published").value = String(!!data.is_published);
-    $("slug").value = data.slug || slugify(data.display_name || "");
-
-    try{
-      $("tags").value = Array.isArray(data.tags) ? JSON.stringify(data.tags) : "";
-    }catch(_){}
-
-    setMsg("Fiche existante chargée ✅ (tu peux modifier et enregistrer)", true);
+    if (error) throw error;
+    return data || null;
   }
 
-  function buildPayload(session){
+  async function fetchByContactPhone(phone) {
+    const p = digits(phone);
+    if (!p) return null;
+
+    const { data, error } = await sb
+      .from("digiy_build_public_profiles")
+      .select("*")
+      .or(`whatsapp.eq.${p},phone.eq.${p}`)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data || null;
+  }
+
+  async function loadExisting() {
+    if (!sb) return;
+
+    try {
+      let row = null;
+
+      const remembered = getRememberedProfileSlug();
+      if (remembered) {
+        row = await fetchByProfileSlug(remembered);
+      }
+
+      if (!row && ACCESS.phone) {
+        row = await fetchByContactPhone(ACCESS.phone);
+      }
+
+      if (!row && $("slug").value.trim()) {
+        row = await fetchByProfileSlug(normSlug($("slug").value));
+      }
+
+      EXISTING_ROW = row || null;
+
+      if (!row) {
+        $("slug").value = slugify($("display_name").value || "");
+        if (!$("whatsapp").value && ACCESS.phone) {
+          $("whatsapp").value = ACCESS.phone;
+        }
+        if (!$("phone").value && ACCESS.phone) {
+          $("phone").value = ACCESS.phone;
+        }
+        setMsg("Aucune fiche existante — tu peux en créer une ✅", true);
+        return;
+      }
+
+      hydrateForm(row);
+      rememberProfileSlug(row.slug || "");
+      setMsg("Fiche existante chargée ✅ (tu peux modifier et enregistrer)", true);
+    } catch (e) {
+      console.warn("loadExisting err:", e);
+      setMsg("Impossible de charger la fiche (voir console).", false);
+    }
+  }
+
+  function buildPayload() {
     const display_name = $("display_name").value.trim();
     const city = $("city").value.trim();
     const trade = $("trade").value.trim();
     const region = $("region").value.trim();
     const sector = $("sector").value.trim();
-    const whatsapp = $("whatsapp").value.trim().replace(/\s+/g,"");
-    const phone = $("phone").value.trim();
+    const whatsapp = digits($("whatsapp").value);
+    const phone = digits($("phone").value);
     const bio = $("bio").value.trim();
     const photo_url = $("photo_url").value.trim();
     const profile_url = $("profile_url").value.trim();
     const badge = $("badge").value.trim();
     const hub_badge = $("hub_badge").value.trim();
     const price_label = $("price_label").value.trim();
-    const priority = Math.max(0, Math.min(100, parseInt($("priority").value,10) || 1));
-    const is_published = ($("is_published").value === "true");
+    const priority = Math.max(0, Math.min(100, parseInt($("priority").value, 10) || 1));
+    const is_published = $("is_published").value === "true";
     const tags = parseTags($("tags").value);
 
-    if(!display_name) throw new Error("Nom affiché requis");
-    if(!whatsapp) throw new Error("WhatsApp requis (ex: 22177...)");
+    if (!display_name) throw new Error("Nom affiché requis");
+    if (!whatsapp) throw new Error("WhatsApp requis (ex: 22177...)");
 
-    // ✅ slug stable : si fiche existe et a un slug => on le garde
-    let slug = $("slug").value.trim();
-    if(EXISTING_ROW?.slug) slug = EXISTING_ROW.slug;
-    if(!slug) slug = slugify(display_name);
+    let slug = normSlug($("slug").value);
+    if (!slug) {
+      slug = slugify(display_name);
+      $("slug").value = slug;
+    }
 
     return {
-      owner_id: session.owner_id,
       slug,
       display_name,
       trade: trade || null,
@@ -139,7 +228,7 @@
       city: city || null,
       address: null,
       whatsapp,
-      phone: phone || null,
+      phone: phone || ACCESS.phone || null,
       photo_url: photo_url || null,
       bio: bio || null,
       tags: tags || null,
@@ -154,26 +243,30 @@
     };
   }
 
-  async function saveProfile(){
-    const sb = getSb();
-    if(!sb) return setMsg("Supabase non dispo (guard)", false);
-    if(!CURRENT_SESSION?.owner_id) return setMsg("Session invalide", false);
+  async function saveProfile() {
+    if (!sb) return setMsg("Supabase non dispo.", false);
 
-    try{
-      const payload = buildPayload(CURRENT_SESSION);
-
+    try {
+      const payload = buildPayload();
       setMsg("Enregistrement…", true);
 
-      let res = await sb
-        .from("digiy_build_public_profiles")
-        .upsert(payload, { onConflict: "owner_id" })
-        .select("*")
-        .maybeSingle();
+      let res;
 
-      // fallback slug
-      if(res?.error){
-        const err = String(res.error.message || "").toLowerCase();
-        if(err.includes("onconflict") || err.includes("constraint") || err.includes("duplicate")){
+      if (EXISTING_ROW?.id) {
+        res = await sb
+          .from("digiy_build_public_profiles")
+          .update(payload)
+          .eq("id", EXISTING_ROW.id)
+          .select("*")
+          .maybeSingle();
+      } else {
+        res = await sb
+          .from("digiy_build_public_profiles")
+          .insert(payload)
+          .select("*")
+          .maybeSingle();
+
+        if (res?.error) {
           res = await sb
             .from("digiy_build_public_profiles")
             .upsert(payload, { onConflict: "slug" })
@@ -182,97 +275,124 @@
         }
       }
 
-      if(res?.error){
+      if (res?.error) {
         console.error(res.error);
         return setMsg("Erreur: " + (res.error.message || res.error), false);
       }
 
       EXISTING_ROW = res.data || payload;
+      rememberProfileSlug(EXISTING_ROW.slug || payload.slug);
 
       const link = computePublicLink(EXISTING_ROW);
-      setMsg(`OK ✅ fiche enregistrée • publié=${payload.is_published ? "oui" : "non"}${link ? " • lien prêt" : ""}`, true);
-
-    }catch(e){
+      setMsg(
+        `OK ✅ fiche enregistrée • publié=${payload.is_published ? "oui" : "non"}${link ? " • lien prêt" : ""}`,
+        true
+      );
+    } catch (e) {
+      console.error(e);
       setMsg(e?.message || "Erreur", false);
     }
   }
 
-  function reSlug(){
+  function reSlug() {
     const dn = $("display_name").value.trim();
     const newSlug = slugify(dn || "partenaire-build");
     $("slug").value = newSlug;
-    // on force le remplacement (si tu cliques “régénérer”, on accepte de changer)
-    if(EXISTING_ROW) EXISTING_ROW.slug = newSlug;
     setMsg("Slug régénéré ✅ (pense à Enregistrer)", true);
   }
 
-  async function copyLink(){
-    const link = computePublicLink(EXISTING_ROW) || "";
-    if(!link) return setMsg("Pas de lien pour l’instant (enregistre d’abord).", false);
-    try{
+  async function copyLink() {
+    const link = computePublicLink(EXISTING_ROW || buildPayload());
+    if (!link) return setMsg("Pas de lien pour l’instant.", false);
+
+    try {
       await navigator.clipboard.writeText(link);
       setMsg("Lien copié ✅", true);
-    }catch(_){
-      setMsg("Copie impossible (navigateur). Lien: " + link, true);
+    } catch (_) {
+      setMsg("Copie impossible. Lien: " + link, true);
     }
   }
 
-  function openLink(){
-    const link = computePublicLink(EXISTING_ROW) || "";
-    if(!link) return setMsg("Pas de lien (enregistre d’abord).", false);
+  function openLink() {
+    let link = "";
+    try {
+      link = computePublicLink(EXISTING_ROW || buildPayload());
+    } catch (_) {
+      link = computePublicLink(EXISTING_ROW);
+    }
+
+    if (!link) return setMsg("Pas de lien (enregistre d’abord).", false);
     window.open(link, "_blank", "noopener");
   }
 
-  async function init(){
-    if(!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.boot !== "function"){
-      if(gs) gs.textContent = "❌ guard.js non chargé";
+  function goBack() {
+    const u = "./cockpit.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+    location.href = u;
+  }
+
+  async function init() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      setGuard("❌ Supabase JS non chargé");
       return;
     }
 
-    const guardRes = await window.DIGIY_GUARD.boot({
-      module: MODULE,
-      dashboard: "./index.html",
-      login: "./pin.html",
-      pay: PAY_URL,
-      requireSlug: true,
-      checkSubscription: true
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
     });
 
-    if(!guardRes?.ok){
-      if(gs) gs.textContent = "❌ Accès refusé";
+    if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
+      setGuard("❌ guard.js non chargé");
       return;
     }
 
-    const session = window.DIGIY_GUARD.getSession?.() || null;
-    if(!session?.owner_id){
-      if(gs) gs.textContent = "❌ Session invalide";
-      location.replace("./pin.html");
+    await window.DIGIY_GUARD.ready;
+    const st = window.DIGIY_GUARD.state || {};
+
+    if (st.preview || !st.access_ok || !st.slug) {
+      setGuard("❌ Accès refusé");
+      const hinted = st.slug || new URLSearchParams(location.search).get("slug") || "";
+      setTimeout(() => {
+        location.replace("./pin.html" + (hinted ? ("?slug=" + encodeURIComponent(hinted)) : ""));
+      }, 500);
       return;
     }
 
-    CURRENT_SESSION = session;
+    ACCESS.slug = String(st.slug || "").toLowerCase();
+    ACCESS.phone = String(st.phone || "");
+
     document.documentElement.classList.add("access-ok");
 
-    if(gs){
+    if (gs) {
       gs.textContent = "✅ PRO OK";
-      setTimeout(() => gs.style.display = "none", 700);
+      setTimeout(() => {
+        gs.style.display = "none";
+      }, 700);
+    }
+
+    if (!$("whatsapp").value && ACCESS.phone) {
+      $("whatsapp").value = ACCESS.phone;
+    }
+    if (!$("phone").value && ACCESS.phone) {
+      $("phone").value = ACCESS.phone;
     }
 
     setMsg("Prêt ✅ (chargement de ta fiche…)", true);
-    await loadExisting(session.owner_id);
+    await loadExisting();
 
     $("btnSave").addEventListener("click", saveProfile);
     $("btnReSlug").addEventListener("click", reSlug);
     $("btnCopyLink").addEventListener("click", copyLink);
     $("btnOpenLink").addEventListener("click", openLink);
-
-    $("btnBack").addEventListener("click", () => {
-      try{
-        if(window.DIGIY_GUARD?.go) return window.DIGIY_GUARD.go("./index.html", "assign");
-      }catch(_){}
-      location.href = "./index.html";
-    });
+    $("btnBack").addEventListener("click", goBack);
   }
 
-  init();
+  init().catch((e) => {
+    console.error(e);
+    setGuard("❌ Erreur chargement profil");
+    setMsg("Erreur chargement profil.", false);
+  });
 })();
