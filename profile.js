@@ -8,10 +8,13 @@
   const SUPABASE_ANON_KEY =
     window.DIGIY_SUPABASE_ANON ||
     window.DIGIY_SUPABASE_ANON_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmVzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
   const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
   const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
+
+  const DEFAULT_HUB_BADGE = "✅ PARTENAIRE MULTI SERVICES";
+  const DEFAULT_PRICE_LABEL = "Paiement direct • Sans intermédiaire";
 
   const gs = document.getElementById("guard_status");
   const msg = document.getElementById("msg");
@@ -150,6 +153,21 @@
     return data || null;
   }
 
+  function fillDefaultsIfUseful() {
+    if (!$("whatsapp").value && ACCESS.phone) {
+      $("whatsapp").value = ACCESS.phone;
+    }
+    if (!$("phone").value && ACCESS.phone) {
+      $("phone").value = ACCESS.phone;
+    }
+    if (!$("hub_badge").value) {
+      $("hub_badge").value = DEFAULT_HUB_BADGE;
+    }
+    if (!$("price_label").value) {
+      $("price_label").value = DEFAULT_PRICE_LABEL;
+    }
+  }
+
   async function loadExisting() {
     if (!sb) return;
 
@@ -173,22 +191,18 @@
 
       if (!row) {
         $("slug").value = slugify($("display_name").value || "");
-        if (!$("whatsapp").value && ACCESS.phone) {
-          $("whatsapp").value = ACCESS.phone;
-        }
-        if (!$("phone").value && ACCESS.phone) {
-          $("phone").value = ACCESS.phone;
-        }
-        setMsg("Aucune fiche existante — tu peux en créer une ✅", true);
+        fillDefaultsIfUseful();
+        setMsg("Aucune fiche existante — tu peux créer ta présence pro ✅", true);
         return;
       }
 
       hydrateForm(row);
+      fillDefaultsIfUseful();
       rememberProfileSlug(row.slug || "");
-      setMsg("Fiche existante chargée ✅ (tu peux modifier et enregistrer)", true);
+      setMsg("Fiche existante chargée ✅ Tu peux modifier puis enregistrer.", true);
     } catch (e) {
       console.warn("loadExisting err:", e);
-      setMsg("Impossible de charger la fiche (voir console).", false);
+      setMsg("Impossible de charger la fiche.", false);
     }
   }
 
@@ -210,7 +224,7 @@
     const is_published = $("is_published").value === "true";
     const tags = parseTags($("tags").value);
 
-    if (!display_name) throw new Error("Nom affiché requis");
+    if (!display_name) throw new Error("Nom visible requis");
     if (!whatsapp) throw new Error("WhatsApp requis (ex: 22177...)");
 
     let slug = normSlug($("slug").value);
@@ -238,13 +252,13 @@
       is_verified: true,
       priority,
       badge: badge || null,
-      hub_badge: hub_badge || "✅ PARTENAIRE BUILD",
-      price_label: price_label || "0% commission"
+      hub_badge: hub_badge || DEFAULT_HUB_BADGE,
+      price_label: price_label || DEFAULT_PRICE_LABEL
     };
   }
 
   async function saveProfile() {
-    if (!sb) return setMsg("Supabase non dispo.", false);
+    if (!sb) return setMsg("Supabase non disponible.", false);
 
     try {
       const payload = buildPayload();
@@ -277,7 +291,7 @@
 
       if (res?.error) {
         console.error(res.error);
-        return setMsg("Erreur: " + (res.error.message || res.error), false);
+        return setMsg("Erreur : " + (res.error.message || res.error), false);
       }
 
       EXISTING_ROW = res.data || payload;
@@ -285,7 +299,7 @@
 
       const link = computePublicLink(EXISTING_ROW);
       setMsg(
-        `OK ✅ fiche enregistrée • publié=${payload.is_published ? "oui" : "non"}${link ? " • lien prêt" : ""}`,
+        `OK ✅ fiche enregistrée • publiée=${payload.is_published ? "oui" : "non"}${link ? " • lien prêt" : ""}`,
         true
       );
     } catch (e) {
@@ -296,20 +310,26 @@
 
   function reSlug() {
     const dn = $("display_name").value.trim();
-    const newSlug = slugify(dn || "partenaire-build");
+    const newSlug = slugify(dn || "entrepreneur-multi-services");
     $("slug").value = newSlug;
-    setMsg("Slug régénéré ✅ (pense à Enregistrer)", true);
+    setMsg("Slug régénéré ✅ Pense à enregistrer.", true);
   }
 
   async function copyLink() {
-    const link = computePublicLink(EXISTING_ROW || buildPayload());
+    let link = "";
+    try {
+      link = computePublicLink(EXISTING_ROW || buildPayload());
+    } catch (_) {
+      link = computePublicLink(EXISTING_ROW);
+    }
+
     if (!link) return setMsg("Pas de lien pour l’instant.", false);
 
     try {
       await navigator.clipboard.writeText(link);
       setMsg("Lien copié ✅", true);
     } catch (_) {
-      setMsg("Copie impossible. Lien: " + link, true);
+      setMsg("Copie impossible. Lien : " + link, true);
     }
   }
 
@@ -321,7 +341,7 @@
       link = computePublicLink(EXISTING_ROW);
     }
 
-    if (!link) return setMsg("Pas de lien (enregistre d’abord).", false);
+    if (!link) return setMsg("Pas de lien. Enregistre d’abord.", false);
     window.open(link, "_blank", "noopener");
   }
 
@@ -373,14 +393,9 @@
       }, 700);
     }
 
-    if (!$("whatsapp").value && ACCESS.phone) {
-      $("whatsapp").value = ACCESS.phone;
-    }
-    if (!$("phone").value && ACCESS.phone) {
-      $("phone").value = ACCESS.phone;
-    }
+    fillDefaultsIfUseful();
 
-    setMsg("Prêt ✅ (chargement de ta fiche…)", true);
+    setMsg("Prêt ✅ Chargement de ta fiche…", true);
     await loadExisting();
 
     $("btnSave").addEventListener("click", saveProfile);
