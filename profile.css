@@ -24,7 +24,7 @@ body{
   background:
     radial-gradient(900px 500px at 10% -10%, rgba(34,197,94,.20), transparent 60%),
     radial-gradient(900px 500px at 110% 0%, rgba(250,204,21,.14), transparent 55%),
-    var(--bg);
+    linear-gradient(180deg, #04140f 0%, var(--bg) 60%, #04140f 100%);
   color:var(--text);
   padding:18px;
 }
@@ -54,12 +54,14 @@ html.access-ok .app{display:block;}
 }
 
 .card{
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   border:1px solid var(--line);
   border-radius:var(--r);
   padding:20px;
   box-shadow:var(--shadow);
   backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
 }
 
 .head{
@@ -93,6 +95,7 @@ h1{
   line-height:1.55;
   font-size:15px;
   font-weight:850;
+  max-width:760px;
 }
 
 .row{
@@ -113,6 +116,7 @@ label{
   font-weight:950;
   color:rgba(234,255,241,.85);
   margin:10px 0 6px;
+  letter-spacing:.2px;
 }
 
 input, textarea, select{
@@ -124,6 +128,7 @@ input, textarea, select{
   color:var(--text);
   outline:none;
   font:inherit;
+  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
 input, select{
@@ -131,9 +136,10 @@ input, select{
 }
 
 textarea{
-  min-height:90px;
+  min-height:96px;
   resize:vertical;
   font-weight:850;
+  line-height:1.5;
 }
 
 input::placeholder,
@@ -146,6 +152,7 @@ textarea:focus,
 select:focus{
   border-color:rgba(250,204,21,.40);
   box-shadow:0 0 0 3px rgba(250,204,21,.10);
+  background:rgba(0,0,0,.24);
 }
 
 .hr{
@@ -252,6 +259,10 @@ select:focus{
     right:12px;
     left:12px;
     text-align:center;
+  }
+
+  .wrap{
+    padding-top:58px;
   }
 
   .card{
