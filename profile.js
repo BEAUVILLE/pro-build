@@ -13,8 +13,8 @@
   const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
   const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
 
-  const DEFAULT_HUB_BADGE = "✅ PARTENAIRE MULTI SERVICES";
-  const DEFAULT_PRICE_LABEL = "Paiement direct • Sans intermédiaire";
+  const DEFAULT_HUB_BADGE = "";
+  const DEFAULT_PRICE_LABEL = "";
 
   const gs = document.getElementById("guard_status");
   const msg = document.getElementById("msg");
@@ -160,12 +160,6 @@
     if (!$("phone").value && ACCESS.phone) {
       $("phone").value = ACCESS.phone;
     }
-    if (!$("hub_badge").value) {
-      $("hub_badge").value = DEFAULT_HUB_BADGE;
-    }
-    if (!$("price_label").value) {
-      $("price_label").value = DEFAULT_PRICE_LABEL;
-    }
   }
 
   async function loadExisting() {
@@ -192,14 +186,14 @@
       if (!row) {
         $("slug").value = slugify($("display_name").value || "");
         fillDefaultsIfUseful();
-        setMsg("Aucune fiche existante — tu peux créer ta présence pro ✅", true);
+        setMsg("Aucune fiche existante — création possible.", true);
         return;
       }
 
       hydrateForm(row);
       fillDefaultsIfUseful();
       rememberProfileSlug(row.slug || "");
-      setMsg("Fiche existante chargée ✅ Tu peux modifier puis enregistrer.", true);
+      setMsg("Fiche existante chargée.", true);
     } catch (e) {
       console.warn("loadExisting err:", e);
       setMsg("Impossible de charger la fiche.", false);
@@ -225,7 +219,7 @@
     const tags = parseTags($("tags").value);
 
     if (!display_name) throw new Error("Nom visible requis");
-    if (!whatsapp) throw new Error("WhatsApp requis (ex: 22177...)");
+    if (!whatsapp) throw new Error("WhatsApp requis");
 
     let slug = normSlug($("slug").value);
     if (!slug) {
@@ -252,8 +246,8 @@
       is_verified: true,
       priority,
       badge: badge || null,
-      hub_badge: hub_badge || DEFAULT_HUB_BADGE,
-      price_label: price_label || DEFAULT_PRICE_LABEL
+      hub_badge: hub_badge || DEFAULT_HUB_BADGE || null,
+      price_label: price_label || DEFAULT_PRICE_LABEL || null
     };
   }
 
@@ -297,11 +291,7 @@
       EXISTING_ROW = res.data || payload;
       rememberProfileSlug(EXISTING_ROW.slug || payload.slug);
 
-      const link = computePublicLink(EXISTING_ROW);
-      setMsg(
-        `OK ✅ fiche enregistrée • publiée=${payload.is_published ? "oui" : "non"}${link ? " • lien prêt" : ""}`,
-        true
-      );
+      setMsg(`OK ✅ fiche enregistrée • publiée=${payload.is_published ? "oui" : "non"}`, true);
     } catch (e) {
       console.error(e);
       setMsg(e?.message || "Erreur", false);
@@ -310,9 +300,9 @@
 
   function reSlug() {
     const dn = $("display_name").value.trim();
-    const newSlug = slugify(dn || "entrepreneur-multi-services");
+    const newSlug = slugify(dn || "");
     $("slug").value = newSlug;
-    setMsg("Slug régénéré ✅ Pense à enregistrer.", true);
+    setMsg("Slug régénéré ✅", true);
   }
 
   async function copyLink() {
@@ -395,7 +385,7 @@
 
     fillDefaultsIfUseful();
 
-    setMsg("Prêt ✅ Chargement de ta fiche…", true);
+    setMsg("Prêt ✅ Chargement de la fiche…", true);
     await loadExisting();
 
     $("btnSave").addEventListener("click", saveProfile);
@@ -410,4 +400,4 @@
     setGuard("❌ Erreur chargement profil");
     setMsg("Erreur chargement profil.", false);
   });
-})();
+})();;
