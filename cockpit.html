@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY BUILD PRO — Cockpit</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Espace pro</title>
 
   <script src="./guard.js"></script>
 
@@ -319,6 +319,10 @@
       color:var(--text);
       font-weight:1000;
       cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
     .tinybtn:hover{
@@ -421,7 +425,7 @@
     <div class="brand">
       <div class="ico">🦅</div>
       <div>
-        <h1>🛠️ MULTI SERVICES PRO — Cockpit</h1>
+        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Espace pro</h1>
         <div class="sub">
           SLUG: <b id="slug">—</b> • PHONE: <b id="owner">—</b><br>
           Statut: <b id="stat">initialisation…</b>
@@ -434,7 +438,7 @@
   <div id="previewBar" class="previewbar">
     <div class="t">👁️ Mode aperçu actif</div>
     <div class="s" id="previewText">
-      Tu vois le cockpit pour comprendre la valeur. Entre par PIN pour passer en mode vivant.
+      Tu vois l’espace pro pour comprendre la valeur. Entre par PIN pour passer en mode vivant.
     </div>
     <div class="preview-actions">
       <a class="btn primary" id="previewPinLink" href="./pin.html">🔑 Entrer par PIN</a>
@@ -453,10 +457,10 @@
       </div>
 
       <div style="height:10px"></div>
-      <div class="title">🌡️ TEMPÉRATURE MULTI SERVICES</div>
+      <div class="title">🌡️ TEMPÉRATURE DE TON ACTIVITÉ</div>
       <div class="kpis">
         <div class="kpi">
-          <div class="k">Devis à faire</div>
+          <div class="k">Devis à préparer</div>
           <div class="v" id="kDraft">0</div>
           <div class="s">à envoyer</div>
         </div>
@@ -473,7 +477,7 @@
         <div class="kpi">
           <div class="k">En cours</div>
           <div class="v" id="kRun">0</div>
-          <div class="s">chantiers</div>
+          <div class="s">chantiers actifs</div>
         </div>
       </div>
 
@@ -489,14 +493,14 @@
           <option value="done">Terminés</option>
           <option value="cancelled">Annulés</option>
         </select>
-        <input id="q" placeholder="Recherche: client / tel / ville / note…" style="max-width:260px">
+        <input id="q" placeholder="Recherche : client / téléphone / ville / note…" style="max-width:260px">
       </div>
 
       <div class="list" id="list"></div>
 
       <div class="hint">
-        <b>V1 Terrain :</b> aperçu libre pour donner envie, puis mode vivant après PIN.<br>
-        <span class="tiny">V2 : Supabase + photos chantier + signature devis + factures.</span>
+        <b>Version terrain :</b> aperçu libre pour montrer la valeur, puis mode vivant après PIN.<br>
+        <span class="tiny">Suite possible : Supabase, photos chantier, signature devis, factures, suivi client.</span>
       </div>
     </div>
 
@@ -512,7 +516,7 @@
       <div class="title">🧩 OUTILS</div>
       <div class="row">
         <button class="btn" id="btnExport">⬇️ Export JSON</button>
-        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
+        <button class="btn danger" id="btnReset">🧹 Reset aperçu</button>
       </div>
 
       <div style="height:12px"></div>
@@ -526,7 +530,7 @@
         <div class="item">
           <div>
             <div class="a">🔔 Inbox</div>
-            <div class="b">V2 : demandes entrantes + notifications chantier.</div>
+            <div class="b">V2 : demandes entrantes, relances et notifications chantier.</div>
           </div>
           <div class="badge neutral">V2</div>
         </div>
@@ -546,7 +550,7 @@
     <div class="fgrid">
       <div>
         <label>Client</label>
-        <input id="client" placeholder="Ex: Mamadou">
+        <input id="client" placeholder="Ex : Mamadou">
       </div>
       <div>
         <label>Téléphone</label>
@@ -554,10 +558,10 @@
       </div>
       <div>
         <label>Ville / Quartier</label>
-        <input id="city" placeholder="Ex: Saly / Keur Massar / Rufisque">
+        <input id="city" placeholder="Ex : Saly / Keur Massar / Rufisque">
       </div>
       <div>
-        <label>Type de travaux</label>
+        <label>Type de travaux / service</label>
         <select id="type">
           <option value="plomberie">Plomberie</option>
           <option value="electricite">Électricité</option>
@@ -573,7 +577,7 @@
       </div>
       <div>
         <label>Montant estimé (FCFA)</label>
-        <input id="amount" inputmode="numeric" placeholder="Ex: 120000">
+        <input id="amount" inputmode="numeric" placeholder="Ex : 120000">
       </div>
       <div>
         <label>Date souhaitée</label>
@@ -583,7 +587,7 @@
 
     <div style="margin-top:6px">
       <label>Description / Note</label>
-      <textarea id="note" placeholder="Ex: refaire salle de bain, changer robinet, main d’œuvre + matériel…"></textarea>
+      <textarea id="note" placeholder="Ex : dépannage, entretien, chantier, matériel, main d’œuvre, délai…"></textarea>
     </div>
 
     <div class="actions">
@@ -753,8 +757,8 @@
       list.innerHTML = `
         <div class="item">
           <div>
-            <div class="a">${ACCESS.live ? "Aucun devis" : "Aperçu prêt"}</div>
-            <div class="b">${ACCESS.live ? "Clique “Nouveau devis” pour commencer." : "Entre par PIN pour commencer à travailler en vrai."}</div>
+            <div class="a">${ACCESS.live ? "Aucun devis pour le moment" : "Aperçu prêt"}</div>
+            <div class="b">${ACCESS.live ? "Clique sur “Nouveau devis” pour commencer." : "Entre par PIN pour passer en mode vivant et travailler en réel."}</div>
           </div>
           <div class="badge neutral">${ACCESS.live ? "VIDE" : "APERÇU"}</div>
         </div>
@@ -765,10 +769,10 @@
     for (const r of view) {
       const title = `${r.client || "—"} • ${r.type || "—"} • ${r.city || "—"}`;
       const sub = [
-        `Tel: ${r.phone || "—"} • Montant: ${money(r.amount)}`,
-        r.date ? `Date: ${r.date}` : null,
-        r.note ? `Note: ${r.note}` : null,
-        `Créé: ${new Date(r.created_at).toLocaleString("fr-FR")}`
+        `Tel : ${r.phone || "—"} • Montant : ${money(r.amount)}`,
+        r.date ? `Date : ${r.date}` : null,
+        r.note ? `Note : ${r.note}` : null,
+        `Créé : ${new Date(r.created_at).toLocaleString("fr-FR")}`
       ].filter(Boolean).join("<br>");
 
       const actionsHtml = ACCESS.live ? `
@@ -847,7 +851,7 @@
       $("stat").textContent = "aperçu libre";
       $("previewBar").classList.add("show");
       $("previewText").textContent =
-        "Le pro peut regarder le cockpit pour comprendre la valeur. Entre par PIN pour passer en mode vivant et agir pour de vrai.";
+        "Le professionnel peut regarder l’espace pour comprendre la valeur. Entre par PIN pour passer en mode vivant et agir pour de vrai.";
     }
 
     $("slug").textContent = ACCESS.slug || "preview-build";
@@ -915,7 +919,7 @@
     $("btnJobs").onclick = () => {
       $("filter").value = "running";
       render();
-      alert("📌 Vue chantiers : filtre ‘En cours’ activé.");
+      alert("📌 Vue chantiers : filtre “En cours” activé.");
     };
 
     $("btnPulse").onclick = () => {
@@ -923,7 +927,7 @@
         alert("🔔 Aperçu inbox. Entre par PIN pour utiliser le vrai rail pro.");
         return;
       }
-      alert("🔔 Inbox: V2 demandes entrantes + notif chantier.");
+      alert("🔔 Inbox : V2 demandes entrantes + notifications chantier.");
     };
 
     $("q").oninput = render;
@@ -937,8 +941,8 @@
     $("btnHelp").onclick = () => {
       const num = "221771342889";
       const txt = encodeURIComponent(
-        "DIGIY Support — BUILD PRO.\nSlug: " + (ACCESS.slug || "") +
-        "\nPhone: " + (ACCESS.phone || "") +
+        "Support ENTREPRENEUR MULTI SERVICES.\nSlug : " + (ACCESS.slug || "") +
+        "\nPhone : " + (ACCESS.phone || "") +
         "\nBesoin d’aide."
       );
       location.href = "https://wa.me/" + num + "?text=" + txt;
@@ -966,7 +970,7 @@
 
     $("btnReset").onclick = () => {
       if (ACCESS.live) {
-        if (confirm("Reset démo pour ce slug ?")) {
+        if (confirm("Réinitialiser les données locales de cet aperçu pour ce slug ?")) {
           localStorage.removeItem(storageKey());
           render();
         }
@@ -980,7 +984,7 @@
     };
 
     $("btnTemplate").onclick = () => {
-      alert("📄 V2: génération devis PDF + signature.");
+      alert("📄 V2 : génération devis PDF + signature.");
     };
 
     $("btnPrint").onclick = () => {
