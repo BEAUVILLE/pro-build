@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>DIGIY BUILD PRO — Entrée</title>
   <meta name="theme-color" content="#061b14"/>
-  <meta name="description" content="Entrée BUILD PRO : aperçu cockpit + accès PIN."/>
+  <meta name="description" content="Entrée BUILD PRO : aperçu cockpit + accès PIN + tarifs + paiement."/>
 
   <style>
     :root{
@@ -16,6 +16,7 @@
       --muted:rgba(234,255,241,.72);
       --gold:#facc15;
       --green:#22c55e;
+      --blue:#38bdf8;
       --shadow:0 18px 55px rgba(0,0,0,.45);
       --r:22px;
     }
@@ -160,6 +161,18 @@
       border:1px solid rgba(250,204,21,.22);
     }
 
+    .btn.pay{
+      background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));
+      color:#062015;
+      border:none;
+    }
+
+    .btn.tarif{
+      background:rgba(56,189,248,.12);
+      color:var(--text);
+      border:1px solid rgba(56,189,248,.24);
+    }
+
     .mini{
       margin-top:14px;
       color:var(--muted);
@@ -227,7 +240,7 @@
       <div>
         <h1>DIGIY BUILD PRO</h1>
         <div class="sub">
-          Espace pro MULTI SERVICES : aperçu cockpit, lecture terrain, puis accès sécurisé par PIN.
+          Espace pro MULTI SERVICES : aperçu cockpit, lecture terrain, accès PIN, tarifs et activation.
         </div>
       </div>
     </div>
@@ -237,14 +250,15 @@
       <p>
         Ici, le pro peut jeter un œil sur le cockpit pour comprendre la valeur :
         devis, chantiers, suivi, organisation terrain.
-        Ensuite seulement, il passe par le PIN pour travailler en vrai mode vivant.
+        Ensuite, il peut entrer par PIN ou activer son accès avec le rail DIGIY PAY.
       </p>
 
       <div class="pills">
         <span class="pill">MULTI SERVICES</span>
         <span class="pill">Aperçu cockpit</span>
         <span class="pill">Accès PIN</span>
-        <span class="pill">Rail BUILD PRO</span>
+        <span class="pill">Tarifs</span>
+        <span class="pill">Activation paiement</span>
       </div>
     </div>
 
@@ -253,43 +267,59 @@
       <a class="btn secondary" id="btnPin" href="./pin.html">🔑 Entrer par PIN</a>
     </div>
 
+    <div class="actions">
+      <a class="btn tarif" id="btnTarifs" href="https://commencer-a-payer.digiylyfe.com/">💳 Tarifs</a>
+      <a class="btn pay" id="btnPay" href="https://commencer-a-payer.digiylyfe.com/">🚀 Commencer à payer</a>
+    </div>
+
     <div class="mini">
-      Astuce : si un <b>slug</b> ou un <b>phone</b> est présent dans l’URL, on le garde sur les deux boutons.
+      Astuce : si un <b>slug</b> ou un <b>phone</b> est présent dans l’URL, on le garde sur tous les boutons utiles.
     </div>
   </div>
-
-  <!-- ✅ DIGIY KNOWLEDGE — Assistant BUILD PRO -->
-  <div data-digiy-module="BUILD"></div>
-  <script defer src="https://knowledge.digiylyfe.com/widget/digiy-widget-pro.js"></script>
 
   <script>
     (function () {
       const src = new URL(location.href);
       const cockpit = new URL("./cockpit.html", location.href);
       const pin = new URL("./pin.html", location.href);
+      const tarifs = new URL("https://commencer-a-payer.digiylyfe.com/");
+      const pay = new URL("https://commencer-a-payer.digiylyfe.com/");
 
       const slug = (src.searchParams.get("slug") || "").trim();
       const phone = (src.searchParams.get("phone") || "").trim();
 
+      cockpit.searchParams.set("module", "BUILD");
+      pin.searchParams.set("module", "BUILD");
+      tarifs.searchParams.set("module", "BUILD");
+      pay.searchParams.set("module", "BUILD");
+
       if (slug) {
         cockpit.searchParams.set("slug", slug);
         pin.searchParams.set("slug", slug);
+        tarifs.searchParams.set("slug", slug);
+        pay.searchParams.set("slug", slug);
       }
 
       if (phone) {
         cockpit.searchParams.set("phone", phone);
         pin.searchParams.set("phone", phone);
+        tarifs.searchParams.set("phone", phone);
+        pay.searchParams.set("phone", phone);
       }
 
       for (const [k, v] of src.searchParams.entries()) {
-        if (k === "slug" || k === "phone") continue;
+        if (k === "slug" || k === "phone" || k === "module") continue;
 
         if (!cockpit.searchParams.has(k)) cockpit.searchParams.set(k, v);
         if (!pin.searchParams.has(k)) pin.searchParams.set(k, v);
+        if (!tarifs.searchParams.has(k)) tarifs.searchParams.set(k, v);
+        if (!pay.searchParams.has(k)) pay.searchParams.set(k, v);
       }
 
       document.getElementById("btnCockpit").href = cockpit.toString();
       document.getElementById("btnPin").href = pin.toString();
+      document.getElementById("btnTarifs").href = tarifs.toString();
+      document.getElementById("btnPay").href = pay.toString();
     })();
   </script>
 </body>
