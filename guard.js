@@ -1,7 +1,7 @@
 /* guard.js — ENTREPRENEUR MULTI SERVICES / BUILD GUARD
-   Rail attendu par pin.html / cockpit.html / profile.html :
+   Rail attendu :
    - slug-only : ?slug=build-221...
-   - window.DIGIY_GUARD.ready
+   - window.DIGIY_GUARD.ready()
    - window.DIGIY_GUARD.state
    - window.DIGIY_GUARD.loginWithPin(slug, pin)
 */
@@ -12,17 +12,18 @@
   const SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
 
   const MODULE_CODE = "BUILD";
+  const LOGIN_URL = window.DIGIY_LOGIN_URL || "./pin.html";
   const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
-  const ALLOW_PREVIEW_WITHOUT_IDENTITY = true;
+
+  // Sécurité : pas de preview libre sur page protégée
+  const ALLOW_PREVIEW_WITHOUT_IDENTITY = false;
 
   const SESSION_KEY = "DIGIY_SESSION";
   const ACCESS_KEY = "DIGIY_ACCESS";
   const MODULE_PREFIX = "digiy_build";
 
-  const qs = new URLSearchParams(location.search);
-
   const state = {
-    preview: true,
+    preview: false,
     access_ok: false,
     reason: "booting",
     slug: "",
@@ -30,15 +31,32 @@
     module: MODULE_CODE
   };
 
+  let bootPromise = null;
+
   const api = {
     state,
-    ready: null,
+    ready,
     getSession,
     loginWithPin,
-    logout
+    logout,
+    getSlug: () => state.slug || "",
+    getPhone: () => state.phone || "",
+    getModule: () => MODULE_CODE
   };
 
   window.DIGIY_GUARD = api;
+
+  function showPage() {
+    try {
+      document.documentElement.style.visibility = "";
+    } catch (_) {}
+  }
+
+  function hidePage() {
+    try {
+      document.documentElement.style.visibility = "hidden";
+    } catch (_) {}
+  }
 
   function normPhone(v) {
     return String(v || "").replace(/[^\d]/g, "");
@@ -60,6 +78,10 @@
 
   function nowIso() {
     return new Date().toISOString();
+  }
+
+  function getQs() {
+    return new URLSearchParams(window.location.search);
   }
 
   function jsonHeaders() {
@@ -136,7 +158,22 @@
     } catch (_) {}
   }
 
+  function clearIdentity() {
+    try {
+      sessionStorage.removeItem(`${MODULE_PREFIX}_slug`);
+      sessionStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
+      sessionStorage.removeItem(`${MODULE_PREFIX}_phone`);
+      localStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
+      localStorage.removeItem(`${MODULE_PREFIX}_phone`);
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(ACCESS_KEY);
+      delete window.DIGIY_ACCESS;
+    } catch (_) {}
+  }
+
   function getSession() {
+    const qs = getQs();
+
     const fromUrlSlug = normSlug(qs.get("slug") || "");
     const fromUrlPhone = normPhone(qs.get("phone") || "");
 
@@ -173,37 +210,31 @@
     };
   }
 
-  function logout() {
-    try {
-      sessionStorage.removeItem(`${MODULE_PREFIX}_slug`);
-      sessionStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
-      sessionStorage.removeItem(`${MODULE_PREFIX}_phone`);
-      localStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
-      localStorage.removeItem(`${MODULE_PREFIX}_phone`);
-      localStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem(ACCESS_KEY);
-      delete window.DIGIY_ACCESS;
-    } catch (_) {}
-
-    setState({
-      preview: true,
-      access_ok: false,
-      reason: "logged_out",
-      slug: "",
-      phone: ""
-    });
-  }
-
   function enrichUrlIfMissingSlug(slug) {
     const s = normSlug(slug);
     if (!s) return;
 
+    const qs = getQs();
     const current = normSlug(qs.get("slug") || "");
     if (current === s) return;
 
-    const u = new URL(location.href);
+    const u = new URL(window.location.href);
     u.searchParams.set("slug", s);
     history.replaceState(null, "", u.toString());
+  }
+
+  function buildLoginUrl(slug) {
+    const u = new URL(LOGIN_URL, window.location.href);
+    const s = normSlug(slug);
+
+    if (s) u.searchParams.set("slug", s);
+    u.searchParams.set("next", window.location.pathname + window.location.search);
+
+    return u.toString();
+  }
+
+  function goLogin(slug) {
+    window.location.replace(buildLoginUrl(slug));
   }
 
   function buildPayUrl({ slug, phone }) {
@@ -214,13 +245,13 @@
     u.searchParams.set("module", MODULE_CODE);
     if (s) u.searchParams.set("slug", s);
     if (p) u.searchParams.set("phone", p);
-    u.searchParams.set("return", location.href);
+    u.searchParams.set("return", window.location.href);
 
     return u.toString();
   }
 
   function goPay({ slug, phone }) {
-    location.replace(buildPayUrl({ slug, phone }));
+    window.location.replace(buildPayUrl({ slug, phone }));
   }
 
   async function resolveSubBySlug(slug) {
@@ -363,6 +394,8 @@
       phone
     });
 
+    showPage();
+
     return {
       ok: true,
       slug: s,
@@ -370,7 +403,24 @@
     };
   }
 
+  function logout() {
+    clearIdentity();
+
+    setState({
+      preview: false,
+      access_ok: false,
+      reason: "logged_out",
+      slug: "",
+      phone: ""
+    });
+
+    showPage();
+    goLogin("");
+  }
+
   async function boot() {
+    hidePage();
+
     try {
       let { slug, phone } = getSession();
 
@@ -398,10 +448,13 @@
             slug: "",
             phone: ""
           });
-          return;
+          showPage();
+          return state;
         }
-        goPay({ slug: "", phone: "" });
-        return;
+
+        showPage();
+        goLogin("");
+        return null;
       }
 
       if (phone) {
@@ -417,7 +470,9 @@
             slug: normSlug(slug),
             phone: normPhone(phone)
           });
-          return;
+
+          showPage();
+          return state;
         }
 
         if (ALLOW_PREVIEW_WITHOUT_IDENTITY) {
@@ -428,11 +483,13 @@
             slug: normSlug(slug),
             phone: normPhone(phone)
           });
-          return;
+          showPage();
+          return state;
         }
 
-        goPay({ slug, phone });
-        return;
+        showPage();
+        goLogin(slug || "");
+        return null;
       }
 
       if (ALLOW_PREVIEW_WITHOUT_IDENTITY) {
@@ -443,22 +500,37 @@
           slug: normSlug(slug),
           phone: ""
         });
-        return;
+        showPage();
+        return state;
       }
 
+      showPage();
       goPay({ slug, phone: "" });
+      return null;
     } catch (e) {
       console.error("DIGIY_GUARD boot error:", e);
 
       setState({
-        preview: true,
+        preview: false,
         access_ok: false,
         reason: "guard_error",
         slug: "",
         phone: ""
       });
+
+      // très important : ne jamais laisser l'écran noir
+      showPage();
+      goLogin("");
+      return null;
     }
   }
 
-  api.ready = boot();
+  function ready() {
+    if (!bootPromise) {
+      bootPromise = boot();
+    }
+    return bootPromise;
+  }
+
+  ready();
 })();
