@@ -16,15 +16,12 @@
   const LOGIN_URL = window.DIGIY_LOGIN_URL || "./pin.html";
   const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
 
-  // Doctrine BUILD : pas de preview libre sur les pages protégées
   const ALLOW_PREVIEW_WITHOUT_IDENTITY = false;
 
-  // Clés module-first
   const MODULE_PREFIX = "digiy_build";
   const MODULE_SESSION_KEY = "DIGIY_BUILD_SESSION";
   const MODULE_ACCESS_KEY = "DIGIY_BUILD_ACCESS";
 
-  // Compatibilité ancienne génération
   const LEGACY_SESSION_KEY = "DIGIY_SESSION";
   const LEGACY_ACCESS_KEY = "DIGIY_ACCESS";
 
@@ -53,15 +50,11 @@
   window.DIGIY_GUARD = api;
 
   function showPage() {
-    try {
-      document.documentElement.style.visibility = "";
-    } catch (_) {}
+    try { document.documentElement.style.visibility = ""; } catch (_) {}
   }
 
   function hidePage() {
-    try {
-      document.documentElement.style.visibility = "hidden";
-    } catch (_) {}
+    try { document.documentElement.style.visibility = "hidden"; } catch (_) {}
   }
 
   function normPhone(v) {
@@ -173,11 +166,9 @@
         localStorage.setItem(`${MODULE_PREFIX}_phone`, p);
       }
 
-      // module-first
       writeJsonStorage(MODULE_SESSION_KEY, sessionObj);
       writeJsonStorage(MODULE_ACCESS_KEY, sessionObj);
 
-      // compat douce avec anciens fronts DIGIY
       writeJsonStorage(LEGACY_SESSION_KEY, sessionObj);
       writeJsonStorage(LEGACY_ACCESS_KEY, sessionObj);
 
@@ -197,7 +188,6 @@
       localStorage.removeItem(MODULE_SESSION_KEY);
       localStorage.removeItem(MODULE_ACCESS_KEY);
 
-      // on nettoie aussi les anciennes clés pour éviter les collisions
       localStorage.removeItem(LEGACY_SESSION_KEY);
       localStorage.removeItem(LEGACY_ACCESS_KEY);
 
@@ -220,7 +210,6 @@
       const phone = normPhone(item.phone);
 
       if (!slug && !phone) continue;
-
       if (!module || module === MODULE_CODE) {
         return { slug, phone, module: MODULE_CODE };
       }
@@ -279,7 +268,6 @@
 
     if (s) u.searchParams.set("slug", s);
     u.searchParams.set("next", window.location.pathname + window.location.search);
-
     return u.toString();
   }
 
@@ -398,7 +386,6 @@
     const raw = Array.isArray(data) ? data[0] : data;
     if (!raw) return null;
 
-    // Cas 1 : objet JSON explicite
     if (typeof raw === "object" && !Array.isArray(raw)) {
       if (raw.ok === true) {
         return {
@@ -409,7 +396,6 @@
         };
       }
 
-      // Cas 2 : composite PostgREST sérialisé en objet {f1:true,f2:"BUILD",f3:"221..."}
       const vals = Object.values(raw);
       if (vals.length >= 3) {
         const okLike =
@@ -429,10 +415,8 @@
       }
     }
 
-    // Cas 3 : string tuple PostgreSQL "(t,BUILD,221771342889,...)"
     if (typeof raw === "string") {
       const txt = raw.trim();
-
       if (txt.startsWith("(") && txt.endsWith(")")) {
         const tupleHead = txt.match(/^\(([^,]+),([^,]+),([^,]+),?(.*)\)$/);
         if (tupleHead) {
@@ -508,22 +492,21 @@
     if (!p) return { ok: false, error: "PIN manquant." };
 
     let sub = await resolveSubBySlug(s);
-let phone = normPhone(sub?.phone);
+    let phone = normPhone(sub?.phone);
 
-// 🔥 fallback si Supabase ne répond pas
-if (!phone) {
-  const storedPhone =
-    sessionStorage.getItem("digiy_build_phone") ||
-    localStorage.getItem("digiy_build_phone") ||
-    "";
+    if (!phone) {
+      const sessionPhone = sessionStorage.getItem(`${MODULE_PREFIX}_phone`) || "";
+      const localPhone = localStorage.getItem(`${MODULE_PREFIX}_phone`) || "";
+      const legacyPhone =
+        readStoredSession()?.phone ||
+        (window.DIGIY_ACCESS && window.DIGIY_ACCESS.phone) ||
+        "";
+      phone = normPhone(sessionPhone || localPhone || legacyPhone || "");
+    }
 
-  phone = normPhone(storedPhone);
-}
-
-// 🔥 dernier filet de sécurité
-if (!phone) {
-  return { ok: false, error: "Slug inconnu (non résolu côté front)." };
-}
+    if (!phone) {
+      return { ok: false, error: "Slug inconnu (non résolu côté front)." };
+    }
 
     let auth = await attemptPinLoginRPCs(s, p, phone);
     if (!auth) {
@@ -719,4 +702,4 @@ if (!phone) {
   }
 
   ready();
-})();
+})();;
