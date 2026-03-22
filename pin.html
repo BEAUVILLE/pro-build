@@ -1,366 +1,558 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>ENTREPRENEUR MULTI SERVICES — Accès PIN</title>
-  <meta name="theme-color" content="#061b14">
-  <meta name="description" content="Accès pro par slug et PIN pour ENTREPRENENEUR MULTI SERVICES.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>DIGIY BUILD PRO — Accès PIN</title>
+  <meta
+    name="description"
+    content="Accès sécurisé DIGIY BUILD PRO par téléphone et code PIN."
+  />
 
-  <script src="./guard.js?v=build-guard-v10"></script>
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root{
-      --bg:#061b14;
-      --card:#0b2a1f;
-      --line:rgba(255,255,255,.12);
-      --text:#eafff1;
-      --muted:rgba(234,255,241,.72);
-      --gold:#facc15;
-      --green:#22c55e;
+      --bg:#07110f;
+      --bg2:#0c1815;
+      --card:rgba(255,255,255,.05);
+      --line:rgba(255,255,255,.10);
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --gold:#d4af37;
+      --green:#16a34a;
       --red:#ef4444;
-      --shadow:0 20px 50px rgba(0,0,0,.35);
-      --radius:18px;
+      --orange:#f97316;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:24px;
+      --max:520px;
     }
 
     *{box-sizing:border-box}
-
+    html,body{margin:0;padding:0}
     body{
-      margin:0;
+      min-height:100dvh;
       background:
-        radial-gradient(900px 500px at 12% 10%, rgba(250,204,21,.14), transparent 55%),
-        radial-gradient(900px 500px at 90% 92%, rgba(34,197,94,.10), transparent 55%),
-        linear-gradient(180deg, #04140f 0%, var(--bg) 60%, #04140f 100%);
+        radial-gradient(circle at top, rgba(212,175,55,.12), transparent 28%),
+        linear-gradient(180deg, var(--bg), #030807 70%);
       color:var(--text);
-      font-family:system-ui,-apple-system,sans-serif;
-      display:grid;
-      place-items:center;
-      min-height:100vh;
-      padding:16px;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
     }
 
-    .box{
+    .wrap{
       width:100%;
-      max-width:420px;
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      max-width:var(--max);
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:26px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+      overflow:hidden;
+      backdrop-filter: blur(12px);
     }
 
-    .top{
+    .hero{
+      padding:22px 22px 8px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:
+        radial-gradient(circle at top right, rgba(212,175,55,.18), transparent 34%);
+    }
+
+    .brand{
       display:flex;
       align-items:center;
       gap:12px;
-      margin-bottom:4px;
+      margin-bottom:10px;
     }
 
     .logo{
       width:46px;
       height:46px;
       border-radius:14px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display:grid;
+      place-items:center;
       font-size:22px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(250,204,21,.22), transparent 60%),
-        linear-gradient(135deg, rgba(34,197,94,.25), rgba(245,158,11,.18));
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
+      background:linear-gradient(135deg, rgba(212,175,55,.22), rgba(22,163,74,.18));
+      border:1px solid rgba(212,175,55,.25);
     }
 
-    h1{
+    .brand h1{
       margin:0;
-      font-size:22px;
-      line-height:1.1;
+      font-size:1.05rem;
+      line-height:1.2;
+      letter-spacing:.2px;
     }
 
-    .sub{
-      margin:2px 0 0;
+    .brand p{
+      margin:3px 0 0;
       color:var(--muted);
-      font-size:13px;
-      line-height:1.45;
+      font-size:.92rem;
     }
 
-    .hintbox{
-      border:1px solid rgba(250,204,21,.22);
-      background:rgba(250,204,21,.06);
-      border-radius:14px;
-      padding:12px 14px;
-      color:#fde68a;
-      font-size:13px;
-      font-weight:800;
-      line-height:1.45;
-      margin-top:2px;
+    .body{
+      padding:20px;
+    }
+
+    .intro{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:.97rem;
+      line-height:1.5;
+    }
+
+    .field{
+      margin-bottom:14px;
     }
 
     label{
       display:block;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.3px;
-      text-transform:uppercase;
-      color:var(--muted);
-      margin:4px 0 6px;
+      margin-bottom:7px;
+      font-size:.92rem;
+      color:#e5e7eb;
+      font-weight:700;
     }
 
     input{
       width:100%;
-      padding:13px 14px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:#092117;
+      min-height:52px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
       color:var(--text);
-      font:inherit;
-      font-weight:800;
+      padding:0 15px;
+      font-size:1rem;
       outline:none;
-    }
-
-    input::placeholder{
-      color:rgba(255,255,255,.38);
+      transition:.18s ease;
     }
 
     input:focus{
-      border-color:rgba(250,204,21,.45);
-      box-shadow:0 0 0 3px rgba(250,204,21,.10);
+      border-color:rgba(212,175,55,.6);
+      box-shadow:0 0 0 4px rgba(212,175,55,.12);
+    }
+
+    .pin-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .pin-row input{
+      flex:1;
+      text-align:center;
+      letter-spacing:.28em;
+      font-size:1.15rem;
+      font-weight:800;
+    }
+
+    .mini-btn{
+      min-width:54px;
+      min-height:52px;
+      border:none;
+      border-radius:16px;
+      cursor:pointer;
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      font-size:1rem;
+      font-weight:700;
     }
 
     .actions{
-      display:flex;
+      display:grid;
       gap:10px;
-      flex-wrap:wrap;
-      margin-top:4px;
+      margin-top:18px;
     }
 
-    .btn{
-      flex:1;
-      min-width:140px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      font:inherit;
-      font-weight:900;
+    button.primary,
+    a.btn{
+      appearance:none;
+      border:none;
+      border-radius:18px;
+      min-height:54px;
+      padding:0 16px;
       cursor:pointer;
       text-decoration:none;
-      display:inline-flex;
+      display:flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
-      transition:.15s;
+      font-weight:800;
+      font-size:1rem;
+      transition:transform .08s ease, opacity .18s ease, background .18s ease;
     }
 
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:rgba(250,204,21,.35);
+    button.primary:active,
+    a.btn:active,
+    .mini-btn:active{
+      transform:scale(.99);
     }
 
-    .btn.primary{
-      background:linear-gradient(135deg,#f97316,#facc15);
-      color:#111;
-      border-color:transparent;
-      box-shadow:0 10px 24px rgba(249,115,22,.30);
+    button.primary{
+      background:linear-gradient(135deg, var(--gold), #facc15);
+      color:#111827;
     }
 
-    .btn.primary:hover{
-      box-shadow:0 14px 30px rgba(249,115,22,.45);
+    a.btn.secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
     }
 
-    .btn.whatsapp{
-      background:linear-gradient(135deg, rgba(34,197,94,.28), rgba(34,197,94,.14));
-      border-color:rgba(34,197,94,.38);
-    }
-
-    .btn:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      transform:none;
+    a.btn.pay{
+      background:linear-gradient(135deg, rgba(249,115,22,.22), rgba(249,115,22,.12));
+      color:#fff;
+      border:1px solid rgba(249,115,22,.30);
     }
 
     .status{
-      min-height:22px;
-      font-size:13px;
-      font-weight:800;
-      color:rgba(255,255,255,.76);
-      line-height:1.4;
-      margin-top:2px;
-    }
-
-    .status.err{ color:#fca5a5; }
-    .status.ok{ color:#86efac; }
-
-    .mini{
+      margin-top:16px;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:.94rem;
+      line-height:1.5;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
       color:var(--muted);
-      font-size:12.5px;
-      line-height:1.45;
-      margin-top:2px;
+      min-height:48px;
     }
+
+    .status.ok{
+      border-color:rgba(22,163,74,.35);
+      background:rgba(22,163,74,.10);
+      color:#dcfce7;
+    }
+
+    .status.err{
+      border-color:rgba(239,68,68,.35);
+      background:rgba(239,68,68,.10);
+      color:#fee2e2;
+    }
+
+    .meta{
+      display:grid;
+      gap:8px;
+      margin-top:16px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:18px;
+      background:rgba(255,255,255,.025);
+      font-size:.92rem;
+    }
+
+    .meta-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .meta-row .k{color:var(--muted)}
+    .meta-row .v{
+      color:var(--text);
+      font-weight:700;
+      text-align:right;
+      word-break:break-word;
+    }
+
+    .foot{
+      padding:0 20px 20px;
+      color:#94a3b8;
+      font-size:.84rem;
+      text-align:center;
+    }
+
+    .hidden{display:none!important}
   </style>
 </head>
-
 <body>
-  <div class="box">
-    <div class="top">
-      <div class="logo">🔐</div>
-      <div>
-        <h1>Accès ENTREPRENEUR MULTI SERVICES</h1>
-        <div class="sub">Entre ton slug pro et ton PIN pour ouvrir ton espace de gestion.</div>
+  <div class="wrap">
+    <section class="card">
+      <div class="hero">
+        <div class="brand">
+          <div class="logo">🏗️</div>
+          <div>
+            <h1>DIGIY BUILD PRO</h1>
+            <p>Accès sécurisé par PIN</p>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="hintbox">
-      Travaux, dépannage, entretien, chantier et services pratiques.
-    </div>
+      <div class="body">
+        <p class="intro">
+          Entre avec ton <strong>téléphone</strong> et ton <strong>PIN</strong>.
+          Une fois validé, la session interne suit la navigation normale du module.
+        </p>
 
-    <div>
-      <label for="slug">Slug pro</label>
-      <input id="slug" placeholder="ex: build-221771342889" autocomplete="username">
-    </div>
+        <div class="field">
+          <label for="slug">Slug</label>
+          <input id="slug" type="text" placeholder="build-221771342889" autocomplete="off" />
+        </div>
 
-    <div>
-      <label for="pin">PIN</label>
-      <input id="pin" placeholder="Entrer le PIN" type="password" autocomplete="one-time-code">
-    </div>
+        <div class="field">
+          <label for="phone">Téléphone</label>
+          <input id="phone" type="tel" inputmode="numeric" placeholder="221771342889" autocomplete="tel" />
+        </div>
 
-    <div class="actions">
-      <button class="btn primary" id="btnGo" type="button">🔑 Entrer</button>
-      <a class="btn whatsapp" id="btnSupport" href="https://wa.me/221771342889?text=Bonjour%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN." target="_blank" rel="noopener">
-        💬 Support
-      </a>
-    </div>
+        <div class="field">
+          <label for="pin">Code PIN</label>
+          <div class="pin-row">
+            <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="one-time-code" />
+            <button id="togglePin" class="mini-btn" type="button" aria-label="Afficher le PIN">👁️</button>
+          </div>
+        </div>
 
-    <div id="status" class="status">Prêt.</div>
+        <div class="actions">
+          <button id="btnOpen" class="primary" type="button">🔓 Ouvrir mon espace BUILD</button>
+          <a id="btnCockpit" class="btn secondary hidden" href="./cockpit.html">🧭 Aller au cockpit</a>
+          <a class="btn pay" href="https://commencer-a-payer.digiylyfe.com/" target="_blank" rel="noopener">💳 Gérer mon abonnement</a>
+        </div>
 
-    <div class="mini">
-      Astuce : si tu arrives depuis un lien avec <b>?slug=...</b>, le champ se remplit tout seul.
-    </div>
+        <div id="status" class="status">Prêt.</div>
+
+        <div class="meta">
+          <div class="meta-row">
+            <div class="k">Module</div>
+            <div class="v">BUILD</div>
+          </div>
+          <div class="meta-row">
+            <div class="k">Session</div>
+            <div id="sessionInfo" class="v">Aucune</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">
+        DIGIYLYFE • BUILD PRO • slug + téléphone + PIN
+      </div>
+    </section>
   </div>
 
   <script>
-    const $ = (id) => document.getElementById(id);
-    const qs = new URLSearchParams(location.search);
-    const KEY_LAST_SLUG = "digiy_build_last_slug";
+    (() => {
+      "use strict";
 
-    function normSlug(v){
-      return String(v || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-    }
+      const SUPABASE_URL = String(window.DIGIY_SUPABASE_URL || "").trim();
+      const SUPABASE_KEY = String(window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY || "").trim();
+      const MODULE = "BUILD";
+      const SESSION_KEY = `DIGIY_${MODULE}_SESSION`;
+      const SESSION_HOURS = 8;
+      const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
 
-    function normPin(v){
-      return String(v || "").trim().replace(/\s+/g, "");
-    }
+      const el = {
+        slug: document.getElementById("slug"),
+        phone: document.getElementById("phone"),
+        pin: document.getElementById("pin"),
+        togglePin: document.getElementById("togglePin"),
+        btnOpen: document.getElementById("btnOpen"),
+        btnCockpit: document.getElementById("btnCockpit"),
+        status: document.getElementById("status"),
+        sessionInfo: document.getElementById("sessionInfo")
+      };
 
-    function setStatus(msg, tone = ""){
-      const box = $("status");
-      box.className = "status" + (tone ? " " + tone : "");
-      box.textContent = msg;
-    }
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function setBusy(on){
-      $("btnGo").disabled = !!on;
-      $("slug").disabled = !!on;
-      $("pin").disabled = !!on;
-    }
-
-    function cockpitUrl(slug, phone){
-      const u = new URL("./cockpit.html", location.href);
-      u.searchParams.set("slug", slug);
-      if (phone) u.searchParams.set("phone", phone);
-      u.searchParams.set("v", "10");
-      return u.toString();
-    }
-
-    function hydrateSlug(){
-      const hinted = normSlug(qs.get("slug") || "");
-      const stored = normSlug(localStorage.getItem(KEY_LAST_SLUG) || "");
-      const chosen = hinted || stored || "";
-      if(chosen){
-        $("slug").value = chosen;
-        setStatus("Slug détecté. Entre ton PIN.", "");
-      }
-    }
-
-    async function go(){
-      const slug = normSlug($("slug").value);
-      const pin = normPin($("pin").value);
-
-      if(!slug){
-        setStatus("Slug manquant.", "err");
-        $("slug").focus();
-        return;
+      function qs(name){
+        return new URLSearchParams(window.location.search).get(name);
       }
 
-      if(!pin){
-        setStatus("PIN manquant.", "err");
-        $("pin").focus();
-        return;
+      function normPhone(v){
+        return String(v || "").replace(/\D+/g, "").trim();
       }
 
-      if(!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.loginWithPin !== "function"){
-        setStatus("guard.js ne fournit pas loginWithPin.", "err");
-        return;
+      function normSlug(v){
+        return String(v || "").trim().toLowerCase();
       }
 
-      setBusy(true);
-      setStatus("Vérification du PIN...");
+      function setStatus(message, type = ""){
+        el.status.className = `status${type ? " " + type : ""}`;
+        el.status.textContent = message;
+      }
 
-      try{
-        const r = await window.DIGIY_GUARD.loginWithPin(slug, pin);
+      function saveSession(payload){
+        localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+        localStorage.setItem("DIGIY_BUILD_SESSION", JSON.stringify(payload));
+        localStorage.setItem("DIGIY_LAST_SESSION", JSON.stringify({
+          module: MODULE,
+          slug: payload.slug || "",
+          phone: payload.phone || "",
+          validated_at: payload.validated_at || new Date().toISOString()
+        }));
+      }
 
-        if(!r || !r.ok){
-          setStatus((r && r.error) || "Accès refusé.", "err");
-          return;
+      function loadSession(){
+        const raw = localStorage.getItem(SESSION_KEY) || localStorage.getItem("DIGIY_BUILD_SESSION");
+        if (!raw) return null;
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return null;
         }
+      }
 
-        try{
-          localStorage.setItem(KEY_LAST_SLUG, r.slug || slug);
-          sessionStorage.setItem("digiy_build_slug", r.slug || slug);
-          sessionStorage.setItem("digiy_build_last_slug", r.slug || slug);
-          if (r.phone) {
-            sessionStorage.setItem("digiy_build_phone", r.phone);
-            localStorage.setItem("digiy_build_phone", r.phone);
+      function sessionStillValid(s){
+        if (!s?.validated_at) return false;
+        const ms = Date.now() - new Date(s.validated_at).getTime();
+        return ms >= 0 && ms < SESSION_HOURS * 60 * 60 * 1000;
+      }
+
+      function hydrateFromUrlOrSession(){
+        const qSlug = normSlug(qs("slug"));
+        const qPhone = normPhone(qs("phone"));
+        const s = loadSession();
+
+        if (qSlug) el.slug.value = qSlug;
+        else if (s?.slug) el.slug.value = s.slug;
+
+        if (qPhone) el.phone.value = qPhone;
+        else if (s?.phone) el.phone.value = s.phone;
+
+        if (s && sessionStillValid(s)){
+          el.sessionInfo.textContent = "Active";
+          if (s.slug) {
+            el.btnCockpit.href = `./cockpit.html?slug=${encodeURIComponent(s.slug)}`;
+            el.btnCockpit.classList.remove("hidden");
           }
-        }catch(_){}
-
-        setStatus("Accès validé. Ouverture de ton espace...", "ok");
-        window.location.replace(cockpitUrl(r.slug || slug, r.phone || ""));
-      }catch(e){
-        console.error(e);
-        setStatus("Erreur pendant la vérification.", "err");
-      }finally{
-        setBusy(false);
+          setStatus("Session déjà active. Tu peux ouvrir directement le cockpit.", "ok");
+        } else {
+          el.sessionInfo.textContent = "Aucune";
+        }
       }
-    }
 
-    $("btnGo").addEventListener("click", go);
+      async function resolvePhoneBySlug(slug){
+        const { data, error } = await supabase
+          .from("digiy_subscriptions_public")
+          .select("phone,module,slug")
+          .eq("slug", slug)
+          .limit(1)
+          .maybeSingle();
 
-    $("slug").addEventListener("keydown", (e) => {
-      if(e.key === "Enter"){
-        e.preventDefault();
-        go();
+        if (error) throw error;
+        if (!data) return null;
+        return normPhone(data.phone);
       }
-    });
 
-    $("pin").addEventListener("keydown", (e) => {
-      if(e.key === "Enter"){
-        e.preventDefault();
-        go();
+      async function verifyPin(phone, pin){
+        const { data, error } = await supabase.rpc("digiy_verify_pin", {
+          p_phone: phone,
+          p_module: MODULE,
+          p_pin: pin
+        });
+
+        if (error) throw error;
+        return data;
       }
-    });
 
-    hydrateSlug();
+      async function openWithPin(){
+        try{
+          const slug = normSlug(el.slug.value);
+          let phone = normPhone(el.phone.value);
+          const pin = String(el.pin.value || "").trim();
+
+          if (!slug && !phone){
+            setStatus("Renseigne au moins le slug ou le téléphone.", "err");
+            return;
+          }
+
+          if (!pin){
+            setStatus("Entre ton code PIN.", "err");
+            return;
+          }
+
+          el.btnOpen.disabled = true;
+          setStatus("Vérification du PIN en cours...");
+
+          if (!phone && slug){
+            const resolvedPhone = await resolvePhoneBySlug(slug);
+            if (!resolvedPhone){
+              setStatus("Slug inconnu.", "err");
+              return;
+            }
+            phone = resolvedPhone;
+            el.phone.value = phone;
+          }
+
+          const result = await verifyPin(phone, pin);
+
+          if (!result || result.ok !== true){
+            const reason = result?.reason || "pin_refuse";
+            if (reason === "subscription_inactive") {
+              setStatus("Abonnement inactif. Passe par l’activation du module.", "err");
+            } else if (reason === "pin_invalid") {
+              setStatus("PIN invalide.", "err");
+            } else {
+              setStatus(`Accès refusé : ${reason}`, "err");
+            }
+            return;
+          }
+
+          const finalSlug = normSlug(result.slug || slug);
+          const finalPhone = normPhone(result.phone || phone);
+
+          const session = {
+            module: MODULE,
+            slug: finalSlug,
+            phone: finalPhone,
+            access_ok: true,
+            reason: "pin_ok",
+            validated_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString()
+          };
+
+          saveSession(session);
+
+          el.sessionInfo.textContent = "Active";
+          el.btnCockpit.href = `./cockpit.html?slug=${encodeURIComponent(finalSlug)}`;
+          el.btnCockpit.classList.remove("hidden");
+          setStatus("PIN validé. Ouverture du cockpit BUILD...", "ok");
+
+          setTimeout(() => {
+            window.location.href = `./cockpit.html?slug=${encodeURIComponent(finalSlug)}`;
+          }, 250);
+        } catch (err){
+          console.error(err);
+          setStatus(err?.message || "Erreur de vérification PIN.", "err");
+        } finally {
+          el.btnOpen.disabled = false;
+        }
+      }
+
+      el.togglePin.addEventListener("click", () => {
+        const visible = el.pin.type === "text";
+        el.pin.type = visible ? "password" : "text";
+        el.togglePin.textContent = visible ? "👁️" : "🙈";
+      });
+
+      el.btnOpen.addEventListener("click", openWithPin);
+
+      [el.slug, el.phone, el.pin].forEach(node => {
+        node.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") openWithPin();
+        });
+      });
+
+      hydrateFromUrlOrSession();
+
+      const liveSlug = normSlug(el.slug.value);
+      if (liveSlug){
+        el.btnCockpit.href = `./cockpit.html?slug=${encodeURIComponent(liveSlug)}`;
+      }
+      el.slug.addEventListener("input", () => {
+        const s = normSlug(el.slug.value);
+        el.btnCockpit.href = s ? `./cockpit.html?slug=${encodeURIComponent(s)}` : "./cockpit.html";
+      });
+    })();
   </script>
 </body>
 </html>
