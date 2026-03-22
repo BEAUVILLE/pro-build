@@ -1,15 +1,16 @@
 (() => {
   "use strict";
 
-  const SUPABASE_URL =
-    window.DIGIY_SUPABASE_URL ||
-    "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_URL = String(
+  window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co"
+).trim();
 
-  const SUPABASE_ANON_KEY =
-    window.DIGIY_SUPABASE_ANON ||
-    window.DIGIY_SUPABASE_ANON_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmVzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
-
+const SUPABASE_ANON_KEY = String(
+  window.DIGIY_SUPABASE_ANON ||
+  window.DIGIY_SUPABASE_ANON_KEY ||
+  "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3"
+).trim();
+  
   const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
   const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
 
