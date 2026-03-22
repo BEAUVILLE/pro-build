@@ -507,12 +507,23 @@
     if (!s) return { ok: false, error: "Slug manquant." };
     if (!p) return { ok: false, error: "PIN manquant." };
 
-    const sub = await resolveSubBySlug(s);
-    const phone = normPhone(sub?.phone);
+    let sub = await resolveSubBySlug(s);
+let phone = normPhone(sub?.phone);
 
-    if (!phone) {
-      return { ok: false, error: "Slug inconnu." };
-    }
+// 🔥 fallback si Supabase ne répond pas
+if (!phone) {
+  const storedPhone =
+    sessionStorage.getItem("digiy_build_phone") ||
+    localStorage.getItem("digiy_build_phone") ||
+    "";
+
+  phone = normPhone(storedPhone);
+}
+
+// 🔥 dernier filet de sécurité
+if (!phone) {
+  return { ok: false, error: "Slug inconnu (non résolu côté front)." };
+}
 
     let auth = await attemptPinLoginRPCs(s, p, phone);
     if (!auth) {
