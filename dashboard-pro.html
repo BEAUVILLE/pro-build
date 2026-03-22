@@ -2,146 +2,385 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#071711" />
   <title>ENTREPRENEUR MULTI SERVICES — Dashboard pro</title>
+  <meta
+    name="description"
+    content="Dashboard pro ENTREPRENEUR MULTI SERVICES. Lecture simple du statut, de l’activité et des sauvegardes locales en mode slug."
+  />
 
-  <script src="./guard.js?v=build-pro-dashboard-v3"></script>
+  <script src="./guard.js?v=build-dashboard-live-v1"></script>
 
   <style>
     :root{
-      --bg:#0b1020;
-      --card:#121a33;
-      --muted:#a8b1d1;
-      --text:#eef1ff;
+      --bg:#071711;
+      --bg2:#0b241a;
+      --card:rgba(8,30,22,.90);
+      --line:rgba(255,255,255,.12);
+      --text:#ecfff5;
+      --muted:rgba(236,255,245,.72);
+      --gold:#facc15;
       --ok:#22c55e;
       --warn:#f59e0b;
-      --danger:#ef4444;
+      --bad:#fb7185;
+      --info:#38bdf8;
       --accent:#6366f1;
-      --line:rgba(255,255,255,.09);
-      --shadow:0 12px 30px rgba(0,0,0,.35);
-      --radius:18px;
-      --pad:16px;
+      --shadow:0 18px 55px rgba(0,0,0,.45);
+      --radius:22px;
     }
+
     *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+
     body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      min-height:100vh;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
-        radial-gradient(1200px 700px at 20% -20%, rgba(99,102,241,.25), transparent 70%),
-        radial-gradient(900px 600px at 100% 0%, rgba(34,197,94,.15), transparent 55%),
-        var(--bg);
-      color:var(--text);
+        radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(99,102,241,.15), transparent 35%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      padding:16px;
     }
-    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 34px}
+
+    .wrap{max-width:1100px;margin:0 auto}
+
     .topbar{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:12px;padding:10px 6px;margin-bottom:10px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:10px;
-      font-weight:800;letter-spacing:.2px
-    }
-    .brand .badge{
-      display:inline-flex;align-items:center;justify-content:center;
-      width:34px;height:34px;border-radius:11px;
-      background:rgba(99,102,241,.18);border:1px solid var(--line)
-    }
-    .right{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end
-    }
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      color:var(--muted);
-      font-weight:600;font-size:13px;
-    }
-    .pill b{color:var(--text);font-weight:800}
-    .btn{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      padding:10px 12px;border-radius:12px;
-      font-weight:800;cursor:pointer;
-    }
-    .btn.primary{
-      background:rgba(99,102,241,.22);
-      border-color:rgba(99,102,241,.35);
-    }
-    .btn:disabled{opacity:.55;cursor:not-allowed}
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       gap:12px;
-      margin-top:8px;
-    }
-    @media(min-width:920px){
-      .grid{grid-template-columns:1.05fr .95fr}
-    }
-    .card{
-      background:rgba(18,26,51,.92);
+      flex-wrap:wrap;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:var(--pad);
+      padding:16px;
     }
-    .card h3{margin:0 0 8px 0;font-size:15px;letter-spacing:.2px}
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .badge{
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(99,102,241,.18);
+      border:1px solid rgba(99,102,241,.30);
+      font-size:22px;
+      flex:0 0 auto;
+    }
+
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.06em;
+      line-height:1.25;
+    }
+
+    .sub{
+      margin-top:5px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .right{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .pill b{color:var(--text)}
+
+    .btn{
+      padding:11px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      font-weight:1000;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:transform .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(250,204,21,.45);
+    }
+
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .btn.primary{
+      border:none;
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;
+    }
+
+    .btn.dashboard{
+      border:none;
+      background:linear-gradient(90deg, rgba(99,102,241,.96), rgba(56,189,248,.92));
+      color:#eef1ff;
+    }
+
+    .btn.profile{
+      border:none;
+      background:linear-gradient(90deg, rgba(56,189,248,.92), rgba(34,197,94,.88));
+      color:#062015;
+    }
+
+    .btn.danger{
+      background:rgba(251,113,133,.10);
+      border-color:rgba(251,113,133,.30);
+    }
+
+    .lock{
+      display:none;
+      margin-top:12px;
+      padding:18px;
+      border-radius:22px;
+      border:1px solid rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+      box-shadow:var(--shadow);
+    }
+
+    .lock.show{display:block}
+
+    .lock .big{
+      font-size:16px;
+      font-weight:1000;
+      color:#fff0ad;
+      margin-bottom:6px;
+    }
+
+    .lock .small{
+      color:#fde68a;
+      line-height:1.6;
+      font-size:13px;
+    }
+
+    .lock .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    @media(min-width:960px){
+      .grid{grid-template-columns:1.02fr .98fr}
+    }
+
+    .hidden{display:none!important}
+
+    .card{
+      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:15px;
+    }
+
+    .card h3{
+      margin:0 0 8px 0;
+      font-size:14px;
+      letter-spacing:.04em;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .statusDot{
+      width:11px;
+      height:11px;
+      border-radius:999px;
+      background:var(--warn);
+      box-shadow:0 0 0 4px rgba(245,158,11,.10);
+      flex:0 0 auto;
+    }
+
+    .statusDot.ok{
+      background:var(--ok);
+      box-shadow:0 0 0 4px rgba(34,197,94,.10);
+    }
+
+    .statusDot.bad{
+      background:var(--bad);
+      box-shadow:0 0 0 4px rgba(251,113,133,.10);
+    }
+
     .muted{color:var(--muted)}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .statusDot{width:10px;height:10px;border-radius:999px;background:var(--warn)}
-    .statusDot.ok{background:var(--ok)}
-    .statusDot.bad{background:var(--danger)}
-    .bigMoney{
-      font-size:34px;font-weight:900;letter-spacing:-.8px;margin:6px 0 2px 0
-    }
+
     .mini{
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-      font-size:13px;color:var(--muted);font-weight:650
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:750;
+      line-height:1.45;
     }
-    .hr{height:1px;background:var(--line);margin:12px 0}
+
+    .hr{
+      height:1px;
+      background:rgba(255,255,255,.10);
+      margin:12px 0;
+    }
+
+    .bigMoney{
+      font-size:32px;
+      font-weight:1000;
+      letter-spacing:-.7px;
+      margin:4px 0 3px 0;
+      line-height:1.1;
+    }
+
+    .box{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+    }
+
     .boostBox{
-      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
-      padding:12px;border-radius:16px;
-      background:rgba(99,102,241,.10);
-      border:1px solid rgba(99,102,241,.25);
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px;
+      border-radius:16px;
+      background:rgba(99,102,241,.12);
+      border:1px solid rgba(99,102,241,.24);
     }
-    .boostBox b{display:block;margin-bottom:4px}
-    .notifList{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .notif{
-      padding:10px 12px;border-radius:14px;border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      display:flex;align-items:flex-start;justify-content:space-between;gap:10px
+
+    .boostActions{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:160px;
     }
-    .tag{
-      font-size:12px;font-weight:900;
-      padding:6px 9px;border-radius:999px;border:1px solid var(--line);
-      color:var(--muted)
-    }
-    .tag.warn{color:#ffe2b0;border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.10)}
-    .tag.ok{color:#c9ffd9;border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
-    .tag.info{color:#cfd6ff;border-color:rgba(99,102,241,.35);background:rgba(99,102,241,.10)}
-    .footer{
-      margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end
-    }
-    .smallLink{color:var(--muted);text-decoration:none;font-weight:750}
-    .smallLink:hover{color:var(--text)}
+
     .backupBox{
-      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
-      padding:12px;border-radius:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px;
+      border-radius:16px;
       background:rgba(34,197,94,.08);
       border:1px solid rgba(34,197,94,.20);
     }
-    .backupMeta{
-      margin-top:8px;
-      font-size:13px;
-      color:var(--muted);
-      font-weight:700;
-      line-height:1.5;
-    }
+
     .backupActions{
-      display:flex;flex-direction:column;gap:8px;min-width:190px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:190px;
     }
+
+    .notifList{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .notif{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.14);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .tag{
+      font-size:12px;
+      font-weight:1000;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .tag.ok{
+      color:#ccffd9;
+      border-color:rgba(34,197,94,.35);
+      background:rgba(34,197,94,.08);
+    }
+
+    .tag.warn{
+      color:#ffe2b0;
+      border-color:rgba(245,158,11,.35);
+      background:rgba(245,158,11,.10);
+    }
+
+    .tag.info{
+      color:#d5e6ff;
+      border-color:rgba(56,189,248,.35);
+      background:rgba(56,189,248,.10);
+    }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .smallLink{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .smallLink:hover{color:var(--text)}
   </style>
 </head>
 
@@ -152,30 +391,43 @@
       <div class="brand">
         <div class="badge">🦅</div>
         <div>
-          <div id="brandTitle">ENTREPRENEUR MULTI SERVICES</div>
-          <div class="muted" style="font-size:12px;font-weight:700;margin-top:2px" id="brandSub">
-            Dashboard pro simple et utile
+          <h1>ENTREPRENEUR MULTI SERVICES</h1>
+          <div class="sub">
+            Dashboard pro simple et utile<br>
+            SLUG : <b id="slugText">—</b> • PHONE : <b id="phoneText">—</b>
           </div>
         </div>
       </div>
 
       <div class="right">
         <div class="pill" id="pillStatus">Statut : <b>…</b></div>
-        <button class="btn primary" id="btnCockpit" type="button">🛠️ Cockpit</button>
-        <button class="btn" id="btnSettings" type="button">⚙️ Paramètres</button>
+        <button class="btn dashboard" id="btnCockpit" type="button">🛠️ Cockpit</button>
+        <button class="btn profile" id="btnSettings" type="button">⚙️ Ma fiche</button>
+        <button class="btn danger" id="btnLogout" type="button">🚪 Déconnexion</button>
       </div>
     </div>
 
-    <div class="grid">
+    <div id="lockBox" class="lock">
+      <div class="big">🔒 Page interne protégée</div>
+      <div class="small" id="lockText">
+        Le dashboard fait partie du circuit interne PRO. Ouvre ta session avec ton PIN pour accéder à ton activité, sans repasser par le PIN ensuite entre les pages internes.
+      </div>
+      <div class="row">
+        <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon PIN</a>
+        <a class="btn" id="btnManageSubLocked" href="https://commencer-a-payer.digiylyfe.com/">💳 Gérer mon abonnement</a>
+      </div>
+    </div>
 
-      <div class="card" id="cardStatus">
+    <div id="workspace" class="grid hidden">
+
+      <div class="card">
         <h3>Statut & sécurité</h3>
 
         <div class="row">
           <div class="statusDot" id="dot"></div>
           <div style="flex:1">
-            <div style="font-weight:900" id="statusLine">Chargement…</div>
-            <div class="muted" style="font-weight:700;font-size:13px;margin-top:2px" id="expiryLine">—</div>
+            <div style="font-weight:1000" id="statusLine">Chargement…</div>
+            <div class="muted" style="font-weight:750;font-size:13px;margin-top:2px" id="expiryLine">—</div>
           </div>
         </div>
 
@@ -192,7 +444,7 @@
         </div>
       </div>
 
-      <div class="card" id="cardMoney">
+      <div class="card">
         <h3>Argent</h3>
 
         <div class="bigMoney" id="moneyMonth">— FCFA</div>
@@ -206,7 +458,7 @@
 
         <div class="boostBox">
           <div>
-            <b>🚀 BOOST visibilité</b>
+            <div style="font-weight:1000;margin-bottom:4px">🚀 BOOST visibilité</div>
             <div class="muted" style="font-weight:750;font-size:13px" id="boostText">
               +50% d’apparition • 7 jours • 5 000 FCFA
             </div>
@@ -215,23 +467,23 @@
             </div>
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:8px;min-width:160px">
+          <div class="boostActions">
             <button class="btn primary" id="btnBoost" type="button">Activer</button>
             <button class="btn" id="btnBoostInfo" type="button">Détails</button>
           </div>
         </div>
       </div>
 
-      <div class="card" id="cardBackup" style="grid-column:1/-1">
+      <div class="card" style="grid-column:1/-1">
         <h3>💾 Sauvegarde pro</h3>
 
         <div class="backupBox">
           <div>
-            <b>Devis stockés sur cet appareil</b>
-            <div class="backupMeta" id="backupText">
+            <div style="font-weight:1000">Devis stockés sur cet appareil</div>
+            <div class="muted" style="font-weight:750;font-size:13px;line-height:1.55;margin-top:8px" id="backupText">
               Vérification du stockage local…
             </div>
-            <div class="backupMeta" id="backupCount">
+            <div class="muted" style="font-weight:800;font-size:13px;line-height:1.55;margin-top:8px" id="backupCount">
               —
             </div>
           </div>
@@ -243,15 +495,17 @@
         </div>
       </div>
 
-      <div class="card" id="cardAction" style="grid-column:1/-1">
+      <div class="card" style="grid-column:1/-1">
         <h3>Action principale</h3>
         <div class="muted" style="font-weight:750;margin-bottom:10px" id="actionDesc">
           Une action simple pour avancer tout de suite.
         </div>
 
         <div class="row" style="justify-content:space-between">
-          <div class="muted" style="font-weight:800" id="actionHint">—</div>
-          <button class="btn primary" id="btnPrimaryAction" type="button">…</button>
+          <div class="muted" style="font-weight:800" id="actionHint">
+            Retourne à ton cockpit pour piloter ta fiche, tes outils et ton activité.
+          </div>
+          <button class="btn primary" id="btnPrimaryAction" type="button">🛠️ Ouvrir mon cockpit</button>
         </div>
 
         <div class="hr"></div>
@@ -269,470 +523,474 @@
   </div>
 
 <script>
-/**
- * DIGIY BUILD — dashboard pro léger
- * Interne technique: BUILD
- * Façade publique: ENTREPRENEUR MULTI SERVICES
- * Rail: guard -> slug -> phone -> access -> dashboard
- */
+(() => {
+  "use strict";
 
-const MODULE_CODE = "BUILD";
-const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
-const PRIMARY_ACTION_LABEL = "🛠️ Ouvrir mon cockpit";
-const PRIMARY_ACTION_HINT  = "Retourne à ton cockpit pour piloter ta fiche, tes outils et ton activité.";
+  const MODULE_CODE = "BUILD";
+  const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
+  const SUPPORT_PHONE = "221771342889";
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const SUPABASE_ANON = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+  const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
 
-/* SUPABASE OFFICIEL DIGIY */
-const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-const SUPABASE_ANON = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+  const BOOST = {
+    module: "BOOST",
+    plan: "boost_7d",
+    price_xof: 5000,
+    label: "BOOST visibilité"
+  };
 
-const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
-const MODULE_HOME_FALLBACK = "./cockpit.html";
+  const CURRENT = {
+    slug: "",
+    phone: "",
+    live: false
+  };
 
-const BOOST = {
-  module: "BOOST",
-  plan: "boost_7d",
-  price_xof: 5000,
-  label: "BOOST visibilité",
-  duration_days: 7
-};
+  const $ = (id) => document.getElementById(id);
 
-const CURRENT = {
-  slug: "",
-  phone: "",
-  live: false
-};
-
-const $ = (id) => document.getElementById(id);
-
-function normPhone(v){
-  return String(v || "").replace(/[^\d]/g, "");
-}
-
-function normSlug(v){
-  return String(v || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function fmtDateFR(iso){
-  if(!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString("fr-FR", { year:"numeric", month:"long", day:"numeric" });
-}
-
-function getSlugFromUrl(){
-  const u = new URL(location.href);
-  return normSlug(u.searchParams.get("slug") || "");
-}
-
-function cockpitUrl(slug){
-  return `${MODULE_HOME_FALLBACK}?slug=${encodeURIComponent(slug)}`;
-}
-
-function quotesStorageKey(slug, live){
-  return "DIGIY_BUILD_QUOTES::" + (live ? (slug || "noslug") : "preview");
-}
-
-function getLocalQuotes(slug, live){
-  try{
-    return JSON.parse(localStorage.getItem(quotesStorageKey(slug, live)) || "[]");
-  }catch(_){
-    return [];
-  }
-}
-
-function exportLocalQuotes(slug, live){
-  const rows = getLocalQuotes(slug, live);
-  const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `build-backup-${slug || (live ? "pro" : "preview")}.json`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  return rows.length;
-}
-
-function refreshBackupCard(slug, live){
-  const rows = getLocalQuotes(slug, live);
-  const count = rows.length;
-
-  $("backupText").textContent =
-    "Tes devis sont gardés sur cet appareil. Pour travailler proprement comme un pro, exporte régulièrement une copie et envoie-la sur ton Drive.";
-
-  $("backupCount").textContent =
-    count > 0
-      ? `${count} devis trouvé(s) sur cet appareil pour ${slug || "ce profil"}.`
-      : `Aucun devis local trouvé pour ${slug || "ce profil"} pour le moment.`;
-}
-
-function setNotifs(items){
-  const box = $("notifList");
-  box.innerHTML = "";
-  if(!items.length){
-    box.innerHTML = `<div class="notif"><div><b>Rien à signaler</b><div class="muted" style="font-weight:750;margin-top:2px">Tout roule.</div></div><div class="tag ok">OK</div></div>`;
-    return;
-  }
-  for(const it of items){
-    const tagClass = it.level === "warn" ? "warn" : it.level === "ok" ? "ok" : "info";
-    const div = document.createElement("div");
-    div.className = "notif";
-    div.innerHTML = `
-      <div>
-        <b>${it.title}</b>
-        <div class="muted" style="font-weight:750;margin-top:2px">${it.text}</div>
-      </div>
-      <div class="tag ${tagClass}">${it.tag}</div>
-    `;
-    box.appendChild(div);
-  }
-}
-
-function daysBetween(aIso, bIso){
-  const a = new Date(aIso).getTime();
-  const b = new Date(bIso).getTime();
-  if (Number.isNaN(a) || Number.isNaN(b)) return null;
-  return Math.ceil((b - a) / (1000*60*60*24));
-}
-
-function setBlockedStatus(title, subtitle, pill, notif){
-  $("statusLine").textContent = title;
-  $("expiryLine").textContent = subtitle;
-  $("dot").classList.remove("ok");
-  $("dot").classList.add("bad");
-  $("pillStatus").innerHTML = `Statut : <b>${pill}</b>`;
-  setNotifs([notif]);
-}
-
-async function sbGetSubscriptionBySlug(slug){
-  const params = new URLSearchParams({
-    select: "phone,module,slug",
-    slug: `eq.${slug}`,
-    module: `eq.${MODULE_CODE}`,
-    limit: "1"
-  });
-
-  const url = `${SUPABASE_URL}/rest/v1/digiy_subscriptions_public?${params.toString()}`;
-  const r = await fetch(url, {
-    headers: {
-      apikey: SUPABASE_ANON,
-      authorization: `Bearer ${SUPABASE_ANON}`,
-      accept: "application/json"
-    }
-  });
-
-  if(!r.ok) throw new Error("Cannot read digiy_subscriptions_public");
-  const data = await r.json();
-  return data[0] || null;
-}
-
-async function sbRpc(name, payload){
-  const url = `${SUPABASE_URL}/rest/v1/rpc/${name}`;
-  const r = await fetch(url, {
-    method:"POST",
-    headers: {
-      "content-type":"application/json",
-      apikey: SUPABASE_ANON,
-      authorization: `Bearer ${SUPABASE_ANON}`,
-      accept: "application/json"
-    },
-    body: JSON.stringify(payload || {})
-  });
-
-  if(!r.ok){
-    const t = await r.text().catch(()=> "");
-    throw new Error(`RPC ${name} failed: ${t || r.status}`);
+  function normPhone(v){
+    return String(v || "").replace(/[^\d]/g, "");
   }
 
-  return r.json();
-}
-
-async function digiyHasAccess(phone, module){
-  const res = await sbRpc("digiy_has_access", { p_phone: phone, p_module: module });
-  if(typeof res === "boolean") return res;
-  if(res && typeof res.ok === "boolean") return res.ok;
-  if(res && typeof res.has_access === "boolean") return res.has_access;
-  if(res && typeof res.access === "boolean") return res.access;
-  return !!res;
-}
-
-async function digiyGetSubscriptionFull(phone, module){
-  try{
-    return await sbRpc("digiy_get_subscription_status", { p_phone: phone, p_module: module });
-  }catch(e){
-    return null;
-  }
-}
-
-async function digiyGetDashboardStats(phone, module){
-  try{
-    return await sbRpc("digiy_get_dashboard_stats", { p_phone: phone, p_module: module });
-  }catch(e){
-    return { month_xof: null, tx_count: null, today_hint: "Aujourd’hui" };
-  }
-}
-
-async function digiyGetBoostStatus(phone){
-  try{
-    return await sbRpc("digiy_get_boost_status", { p_phone: phone });
-  }catch(e){
-    return null;
-  }
-}
-
-async function digiyBuildPayUrl(module, phone, plan){
-  return await sbRpc("digiy_build_pay_url", { p_module: module, p_phone: phone, p_plan_code: plan });
-}
-
-(async function init(){
-  $("brandTitle").textContent = MODULE_LABEL;
-  $("brandSub").textContent = "Dashboard pro simple et utile";
-  $("btnPrimaryAction").textContent = PRIMARY_ACTION_LABEL;
-  $("actionHint").textContent = PRIMARY_ACTION_HINT;
-  $("pillStatus").innerHTML = `Statut : <b>…</b>`;
-
-  let guardState = {};
-  let guardSession = {};
-
-  try{
-    if (window.DIGIY_GUARD?.ready) {
-      await window.DIGIY_GUARD.ready;
-    }
-    guardState = window.DIGIY_GUARD?.state || {};
-    guardSession = window.DIGIY_GUARD?.getSession?.() || {};
-  }catch(e){
-    console.warn("DIGIY_GUARD non prêt pour dashboard:", e);
+  function normSlug(v){
+    return String(v || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   }
 
-  let slug = normSlug(
-    getSlugFromUrl() ||
-    guardState.slug ||
-    guardSession.slug ||
-    ""
-  );
+  function fmtDateFR(iso){
+    if(!iso) return "—";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("fr-FR", { year:"numeric", month:"long", day:"numeric" });
+  }
 
-  if(!slug){
-    refreshBackupCard("", false);
-    setBlockedStatus(
-      "Slug manquant",
-      "Ajoute ?slug=… dans le lien.",
-      "Bloqué",
-      { level:"warn", tag:"ACTION", title:"Lien incomplet", text:"Le dashboard doit être ouvert avec un slug valide." }
+  function daysBetween(fromIso, toIso){
+    const a = new Date(fromIso).getTime();
+    const b = new Date(toIso).getTime();
+    if (Number.isNaN(a) || Number.isNaN(b)) return null;
+    return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
+  }
+
+  function getHintedSlug(){
+    const params = new URLSearchParams(location.search);
+    return normSlug(
+      params.get("slug") ||
+      sessionStorage.getItem("digiy_build_slug") ||
+      sessionStorage.getItem("digiy_build_last_slug") ||
+      localStorage.getItem("digiy_build_last_slug") ||
+      ""
     );
-    return;
   }
 
-  let phone = normPhone(
-    guardState.phone ||
-    guardSession.phone ||
-    ""
-  );
+  function cockpitUrl(){
+    return "./cockpit.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+  }
 
-  let subPublic = null;
+  function profileUrl(){
+    return "./profile.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+  }
 
-  if(!phone){
+  function pinUrl(){
+    return "./pin.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+  }
+
+  function manageSubUrl(){
+    const url = new URL(ABOS_URL);
+    url.searchParams.set("module", MODULE_CODE);
+    if (CURRENT.phone) url.searchParams.set("phone", CURRENT.phone);
+    if (CURRENT.slug) url.searchParams.set("slug", CURRENT.slug);
+    return url.toString();
+  }
+
+  function supportUrl(){
+    const msg = encodeURIComponent(
+      "Bonjour support " + MODULE_LABEL + ".\n" +
+      "Slug : " + (CURRENT.slug || "") + "\n" +
+      "Téléphone : " + (CURRENT.phone || "")
+    );
+    return "https://wa.me/" + SUPPORT_PHONE + "?text=" + msg;
+  }
+
+  function quotesStorageKey(){
+    return "DIGIY_BUILD_QUOTES::" + (CURRENT.slug || "noslug");
+  }
+
+  function getLocalQuotes(){
     try{
-      subPublic = await sbGetSubscriptionBySlug(slug);
-    }catch(e){
-      refreshBackupCard(slug, false);
-      setBlockedStatus(
-        "Erreur connexion",
-        "Impossible de vérifier le compte.",
-        "Erreur",
-        { level:"warn", tag:"RÉSEAU", title:"Connexion", text:"Vérifie internet ou la configuration Supabase." }
-      );
-      return;
+      return JSON.parse(localStorage.getItem(quotesStorageKey()) || "[]");
+    }catch(_){
+      return [];
     }
-
-    if(!subPublic || !subPublic.phone){
-      refreshBackupCard(slug, false);
-      setBlockedStatus(
-        "Compte introuvable",
-        "Ce slug n’existe pas.",
-        "Inconnu",
-        { level:"warn", tag:"INFO", title:"Slug inconnu", text:"Demande un nouveau lien d’accès ou vérifie le slug." }
-      );
-      return;
-    }
-
-    phone = normPhone(subPublic.phone);
   }
 
-  CURRENT.slug = slug;
-  CURRENT.phone = phone;
-  CURRENT.live = !!guardState.access_ok;
+  function exportLocalQuotes(){
+    const rows = getLocalQuotes();
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "build-backup-" + (CURRENT.slug || "noslug") + ".json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    return rows.length;
+  }
 
-  refreshBackupCard(slug, CURRENT.live);
+  function refreshBackupCard(){
+    const rows = getLocalQuotes();
+    const count = rows.length;
 
-  $("btnCockpit").onclick = () => {
-    location.href = cockpitUrl(slug);
-  };
+    $("backupText").textContent =
+      "Tes devis sont gardés localement pour ce slug sur cet appareil. Pense à exporter une copie régulièrement pour garder une sécurité simple.";
 
-  $("btnExportBackup").onclick = () => {
-    const count = exportLocalQuotes(CURRENT.slug, CURRENT.live);
-    alert(
+    $("backupCount").textContent =
       count > 0
-        ? `Export terminé. ${count} devis exporté(s). Pense à envoyer le fichier sur ton Drive.`
-        : "Export terminé. Aucun devis local trouvé pour le moment. Tu peux quand même garder ce fichier comme point de départ."
-    );
-  };
-
-  $("btnDriveGuide").onclick = () => {
-    alert(
-      "Conseil pro : après un gros chantier ou en fin de journée, clique sur “Exporter mes devis”, puis envoie le fichier sur ton Drive pour garder une sauvegarde sécurité."
-    );
-  };
-
-  let ok = false;
-
-  if (guardState.access_ok === true && normPhone(guardState.phone) === phone) {
-    ok = true;
-    CURRENT.live = true;
-    refreshBackupCard(slug, true);
-  } else {
-    ok = await digiyHasAccess(phone, MODULE_CODE).catch(()=> false);
+        ? count + " devis trouvé(s) sur cet appareil pour " + (CURRENT.slug || "ce profil") + "."
+        : "Aucun devis local trouvé pour " + (CURRENT.slug || "ce profil") + " pour le moment.";
   }
 
-  if(!ok){
-    $("statusLine").textContent = "Abonnement requis";
-    $("expiryLine").textContent = "Active ton accès pour ouvrir ton espace.";
+  function setNotifs(items){
+    const box = $("notifList");
+    box.innerHTML = "";
+
+    if(!items.length){
+      box.innerHTML = `
+        <div class="notif">
+          <div>
+            <b>Rien à signaler</b>
+            <div class="muted" style="font-weight:750;margin-top:2px">Tout roule.</div>
+          </div>
+          <div class="tag ok">OK</div>
+        </div>
+      `;
+      return;
+    }
+
+    for(const it of items){
+      const tagClass = it.level === "warn" ? "warn" : it.level === "ok" ? "ok" : "info";
+      const div = document.createElement("div");
+      div.className = "notif";
+      div.innerHTML = `
+        <div>
+          <b>${it.title}</b>
+          <div class="muted" style="font-weight:750;margin-top:2px">${it.text}</div>
+        </div>
+        <div class="tag ${tagClass}">${it.tag}</div>
+      `;
+      box.appendChild(div);
+    }
+  }
+
+  function setHeader(){
+    $("slugText").textContent = CURRENT.slug || "—";
+    $("phoneText").textContent = CURRENT.phone || "—";
+    $("btnPinEntry").href = pinUrl();
+    $("btnManageSubLocked").href = manageSubUrl();
+  }
+
+  function setLockedView(title, subtitle){
+    $("lockText").textContent = subtitle || "Ouvre ta session avec ton PIN pour accéder à ton dashboard interne.";
+    $("pillStatus").innerHTML = `Statut : <b>Bloqué</b>`;
     $("dot").classList.remove("ok");
     $("dot").classList.add("bad");
-    $("pillStatus").innerHTML = `Statut : <b>Inactif</b>`;
+    $("statusLine").textContent = title || "Accès protégé";
+    $("expiryLine").textContent = "Session requise";
+    $("lockBox").classList.add("show");
+    $("workspace").classList.add("hidden");
+  }
 
-    setNotifs([
-      {level:"warn",tag:"ABO",title:"Accès fermé",text:"Ton abonnement n’est pas actif sur ce module."}
-    ]);
+  function setLiveView(){
+    $("lockBox").classList.remove("show");
+    $("workspace").classList.remove("hidden");
+    $("pillStatus").innerHTML = `Statut : <b>Actif</b>`;
+    $("dot").classList.remove("bad");
+    $("dot").classList.add("ok");
+  }
+
+  async function sbRpc(name, payload){
+    const url = `${SUPABASE_URL}/rest/v1/rpc/${name}`;
+    const r = await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        apikey: SUPABASE_ANON,
+        authorization: `Bearer ${SUPABASE_ANON}`,
+        accept: "application/json"
+      },
+      body: JSON.stringify(payload || {})
+    });
+
+    if(!r.ok){
+      const t = await r.text().catch(() => "");
+      throw new Error(`RPC ${name} failed: ${t || r.status}`);
+    }
+
+    return r.json();
+  }
+
+  async function getSubscriptionStatus(phone){
+    try{
+      return await sbRpc("digiy_get_subscription_status", {
+        p_phone: phone,
+        p_module: MODULE_CODE
+      });
+    }catch(_){
+      return null;
+    }
+  }
+
+  async function getDashboardStats(phone){
+    try{
+      return await sbRpc("digiy_get_dashboard_stats", {
+        p_phone: phone,
+        p_module: MODULE_CODE
+      });
+    }catch(_){
+      return { month_xof: null, tx_count: null, today_hint: "Aujourd’hui" };
+    }
+  }
+
+  async function getBoostStatus(phone){
+    try{
+      return await sbRpc("digiy_get_boost_status", { p_phone: phone });
+    }catch(_){
+      return null;
+    }
+  }
+
+  async function buildPayUrl(module, phone, plan){
+    return sbRpc("digiy_build_pay_url", {
+      p_module: module,
+      p_phone: phone,
+      p_plan_code: plan
+    });
+  }
+
+  function bindStaticUi(){
+    $("btnCockpit").onclick = () => { location.href = cockpitUrl(); };
+    $("btnPrimaryAction").onclick = () => { location.href = cockpitUrl(); };
+    $("btnSettings").onclick = () => { location.href = profileUrl(); };
 
     $("btnManageSub").onclick = () => {
-      location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+      location.href = manageSubUrl();
     };
 
-    $("btnPrimaryAction").onclick = () => {
-      location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+    $("btnExportBackup").onclick = () => {
+      const count = exportLocalQuotes();
+      alert(
+        count > 0
+          ? `Export terminé. ${count} devis exporté(s).`
+          : "Export terminé. Aucun devis local trouvé pour le moment."
+      );
     };
 
-    $("btnSettings").onclick = () => {
-      location.href = `./pin.html?slug=${encodeURIComponent(slug)}`;
+    $("btnDriveGuide").onclick = () => {
+      alert(
+        "Conseil pro : après un gros chantier ou en fin de journée, exporte tes devis puis envoie le fichier sur ton Drive pour garder une sauvegarde simple."
+      );
+    };
+
+    $("btnBoostInfo").onclick = () => {
+      alert("BOOST visibilité : +50% d’apparition pendant 7 jours. Paiement direct.");
     };
 
     $("linkSupport").onclick = (ev) => {
       ev.preventDefault();
-      location.href = "https://wa.me/221771342889?text=" + encodeURIComponent(
-        "Bonjour, j’ai besoin d’aide pour mon accès ENTREPRENEUR MULTI SERVICES."
-      );
+      location.href = supportUrl();
     };
 
     $("linkPayments").onclick = (ev) => {
       ev.preventDefault();
-      location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+      location.href = manageSubUrl();
     };
 
-    return;
+    $("btnLogout").onclick = () => {
+      try{
+        if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.logout === "function") {
+          window.DIGIY_GUARD.logout();
+        }
+      }catch(_){}
+      location.href = pinUrl();
+    };
   }
 
-  const status = await digiyGetSubscriptionFull(phone, MODULE_CODE);
-  const expiresAt = status?.expires_at || status?.current_period_end || null;
-  const plan = status?.plan || status?.plan_code || "standard";
-  const pay = status?.payment_ref ? "validé" : "ok";
+  async function init(){
+    bindStaticUi();
 
-  $("dot").classList.remove("bad");
-  $("dot").classList.add("ok");
-  $("statusLine").textContent = guardState.access_ok ? "Session PIN active" : "Abonnement actif";
-  $("expiryLine").textContent = expiresAt ? `Expire le ${fmtDateFR(expiresAt)}` : "Expiration : —";
-  $("pillStatus").innerHTML = `Statut : <b>Actif</b>`;
-  $("metaLine").innerHTML = `<span>Plan : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
+    const hintedSlug = getHintedSlug();
 
-  const stats = await digiyGetDashboardStats(phone, MODULE_CODE);
-  const month = stats?.month_xof ?? null;
-  const tx = stats?.tx_count ?? null;
-
-  $("moneyMonth").textContent = month ? `${Number(month).toLocaleString("fr-FR")} FCFA` : "— FCFA";
-  $("txCount").textContent = tx ? `${tx} opérations` : "— opérations";
-  $("todayHint").textContent = stats?.today_hint || "Aujourd’hui";
-
-  const notifs = [];
-
-  if (guardState.access_ok) {
-    notifs.push({level:"ok",tag:"PIN",title:"Session ouverte",text:"Ton accès PIN est validé sur ce module."});
-  }
-
-  if(expiresAt){
-    const d = daysBetween(new Date().toISOString(), expiresAt);
-    if(d !== null && d <= 3){
-      notifs.push({level:"warn",tag:"J-3",title:"Abonnement bientôt expiré",text:`Expire dans ${d} jour(s). Renouvelle pour éviter une coupure.`});
-    }else{
-      notifs.push({level:"ok",tag:"OK",title:"Abonnement",text:"Ton accès est actif."});
+    if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
+      CURRENT.slug = hintedSlug;
+      CURRENT.phone = "";
+      CURRENT.live = false;
+      setHeader();
+      setLockedView("Session absente", "Le dashboard interne a besoin d’une vraie session PRO. Ouvre avec ton PIN pour reprendre la circulation normale.");
+      return;
     }
-  }
 
-  const localCount = getLocalQuotes(slug, CURRENT.live).length;
-  if (localCount > 0) {
-    notifs.push({level:"info",tag:"BACKUP",title:"Sauvegarde conseillée",text:`${localCount} devis local(aux) détecté(s). Pense à exporter une copie sur ton Drive.`});
-  } else {
-    notifs.push({level:"info",tag:"LOCAL",title:"Stockage local prêt",text:"Tes futurs devis pourront être exportés depuis cette page pour sauvegarde."});
-  }
+    await window.DIGIY_GUARD.ready;
 
-  const boost = await digiyGetBoostStatus(phone);
-  if(boost?.active){
-    $("boostStatus").textContent = `Statut boost : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
-    $("btnBoost").textContent = "Actif";
-    $("btnBoost").disabled = true;
-    notifs.push({level:"info",tag:"BOOST",title:"Boost actif",text:"Ta visibilité est augmentée."});
-  }else{
-    $("boostStatus").textContent = "Statut boost : inactif";
-    notifs.push({level:"info",tag:"OPTION",title:"Boost disponible",text:"Active le boost si tu veux plus de visibilité."});
-  }
+    const st = window.DIGIY_GUARD.state || {};
+    CURRENT.slug = normSlug(st.slug || hintedSlug);
+    CURRENT.phone = normPhone(st.phone || "");
+    CURRENT.live = !!(st.access_ok && CURRENT.slug && CURRENT.phone);
 
-  setNotifs(notifs);
+    if (CURRENT.slug) {
+      try{
+        sessionStorage.setItem("digiy_build_slug", CURRENT.slug);
+        sessionStorage.setItem("digiy_build_last_slug", CURRENT.slug);
+        localStorage.setItem("digiy_build_last_slug", CURRENT.slug);
+      }catch(_){}
+    }
 
-  $("btnManageSub").onclick = () => {
-    location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
-  };
+    setHeader();
 
-  $("btnPrimaryAction").onclick = () => {
-    location.href = cockpitUrl(slug);
-  };
+    if (!CURRENT.slug) {
+      setLockedView("Slug manquant", "Ajoute un slug valide ou repasse par le PIN pour reconstruire la session proprement.");
+      return;
+    }
 
-  $("btnBoostInfo").onclick = () => {
-    alert("BOOST visibilité : +50% d’apparition pendant 7 jours. Paiement direct.");
-  };
+    if (!CURRENT.live) {
+      setLockedView("Session interne requise", "Le dashboard ne s’ouvre pas en mode libre. Le PIN sert d’entrée ou de secours, puis la circulation interne reprend normalement.");
+      return;
+    }
 
-  $("btnBoost").onclick = async () => {
-    try{
+    setLiveView();
+    refreshBackupCard();
+
+    $("statusLine").textContent = "Session PIN active";
+    $("expiryLine").textContent = "Lecture de l’abonnement…";
+    $("metaLine").innerHTML = `<span>Plan : —</span><span>•</span><span>Paiement : —</span>`;
+    $("moneyMonth").textContent = "— FCFA";
+    $("txCount").textContent = "— opérations";
+    $("todayHint").textContent = "Aujourd’hui";
+    $("boostStatus").textContent = "Statut boost : vérification…";
+
+    const [status, stats, boost] = await Promise.all([
+      getSubscriptionStatus(CURRENT.phone),
+      getDashboardStats(CURRENT.phone),
+      getBoostStatus(CURRENT.phone)
+    ]);
+
+    const expiresAt = status?.expires_at || status?.current_period_end || null;
+    const plan = status?.plan || status?.plan_code || "standard";
+    const pay = status?.payment_ref ? "validé" : "ok";
+
+    $("statusLine").textContent = "Session PIN active";
+    $("expiryLine").textContent = expiresAt ? `Expire le ${fmtDateFR(expiresAt)}` : "Expiration : —";
+    $("metaLine").innerHTML = `<span>Plan : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
+
+    const month = stats?.month_xof ?? null;
+    const tx = stats?.tx_count ?? null;
+
+    $("moneyMonth").textContent = month ? `${Number(month).toLocaleString("fr-FR")} FCFA` : "— FCFA";
+    $("txCount").textContent = tx ? `${tx} opérations` : "— opérations";
+    $("todayHint").textContent = stats?.today_hint || "Aujourd’hui";
+
+    const localCount = getLocalQuotes().length;
+    const notifs = [];
+
+    notifs.push({
+      level: "ok",
+      tag: "PIN",
+      title: "Session ouverte",
+      text: "Ta session interne est active. Tu peux circuler entre dashboard, cockpit et fiche sans repasser par le PIN."
+    });
+
+    if (expiresAt) {
+      const d = daysBetween(new Date().toISOString(), expiresAt);
+      if (d !== null && d <= 3) {
+        notifs.push({
+          level: "warn",
+          tag: "J-3",
+          title: "Abonnement bientôt expiré",
+          text: `Expire dans ${d} jour(s). Renouvelle pour éviter une coupure.`
+        });
+      } else {
+        notifs.push({
+          level: "ok",
+          tag: "OK",
+          title: "Abonnement actif",
+          text: "Ton accès BUILD est bien actif."
+        });
+      }
+    }
+
+    if (localCount > 0) {
+      notifs.push({
+        level: "info",
+        tag: "BACKUP",
+        title: "Sauvegarde conseillée",
+        text: `${localCount} devis local(aux) détecté(s). Pense à exporter une copie sur ton Drive.`
+      });
+    } else {
+      notifs.push({
+        level: "info",
+        tag: "LOCAL",
+        title: "Stockage local prêt",
+        text: "Tes futurs devis resteront attachés à ce slug sur cet appareil."
+      });
+    }
+
+    if (boost?.active) {
+      $("boostStatus").textContent =
+        `Statut boost : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
+      $("btnBoost").textContent = "Actif";
       $("btnBoost").disabled = true;
-      $("btnBoost").textContent = "…";
-      const payRes = await digiyBuildPayUrl(BOOST.module, phone, BOOST.plan);
-      const url = (typeof payRes === "string") ? payRes : (payRes?.url || payRes?.pay_url || null);
-      if(!url) throw new Error("URL paiement BOOST manquante");
-      location.href = url;
-    }catch(e){
-      console.error(e);
-      alert("Impossible d’activer le boost. Vérifie la configuration.");
-      $("btnBoost").disabled = false;
+
+      notifs.push({
+        level: "info",
+        tag: "BOOST",
+        title: "Boost actif",
+        text: "Ta visibilité est actuellement augmentée."
+      });
+    } else {
+      $("boostStatus").textContent = "Statut boost : inactif";
       $("btnBoost").textContent = "Activer";
+      $("btnBoost").disabled = false;
+
+      notifs.push({
+        level: "info",
+        tag: "OPTION",
+        title: "Boost disponible",
+        text: "Active le boost si tu veux pousser ta visibilité."
+      });
     }
-  };
 
-  $("btnSettings").onclick = () => {
-    location.href = `./profile.html?slug=${encodeURIComponent(slug)}`;
-  };
+    setNotifs(notifs);
 
-  $("linkSupport").onclick = (ev) => {
-    ev.preventDefault();
-    location.href = "https://wa.me/221771342889?text=" + encodeURIComponent(
-      "Bonjour support ENTREPRENEUR MULTI SERVICES.\nSlug : " + slug + "\nTéléphone : " + phone
-    );
-  };
+    $("btnBoost").onclick = async () => {
+      try{
+        $("btnBoost").disabled = true;
+        $("btnBoost").textContent = "…";
 
-  $("linkPayments").onclick = (ev) => {
-    ev.preventDefault();
-    location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
-  };
+        const payRes = await buildPayUrl(BOOST.module, CURRENT.phone, BOOST.plan);
+        const url = typeof payRes === "string"
+          ? payRes
+          : (payRes?.url || payRes?.pay_url || null);
+
+        if (!url) throw new Error("URL paiement BOOST manquante");
+        location.href = url;
+      } catch (e) {
+        console.error(e);
+        alert("Impossible d’activer le boost. Vérifie la configuration.");
+        $("btnBoost").disabled = false;
+        $("btnBoost").textContent = "Activer";
+      }
+    };
+  }
+
+  init().catch((err) => {
+    console.error("BUILD dashboard init error", err);
+    CURRENT.slug = getHintedSlug();
+    CURRENT.phone = "";
+    CURRENT.live = false;
+    setHeader();
+    setLockedView("Erreur de chargement", "Le dashboard n’a pas pu se charger proprement. Rentre par le PIN pour reconstruire la session.");
+  });
 })();
 </script>
 </body>
