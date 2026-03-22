@@ -25,6 +25,8 @@
   const LEGACY_SESSION_KEY = "DIGIY_SESSION";
   const LEGACY_ACCESS_KEY = "DIGIY_ACCESS";
 
+  const EIGHT_HOURS = 8 * 60 * 60 * 1000;
+
   const state = {
     preview: false,
     access_ok: false,
@@ -143,7 +145,7 @@
     }
   }
 
-  function rememberIdentity({ slug, phone }) {
+  function rememberIdentity({ slug, phone, access_ok = false }) {
     const s = normSlug(slug);
     const p = normPhone(phone);
 
@@ -151,7 +153,9 @@
       module: MODULE_CODE,
       slug: s || "",
       phone: p || "",
-      at: nowIso()
+      at: nowIso(),
+      access_ok: !!access_ok,
+      validated_at: access_ok ? nowIso() : null
     };
 
     try {
@@ -211,11 +215,26 @@
 
       if (!slug && !phone) continue;
       if (!module || module === MODULE_CODE) {
-        return { slug, phone, module: MODULE_CODE };
+        return {
+          slug,
+          phone,
+          module: MODULE_CODE,
+          access_ok: !!item.access_ok,
+          validated_at: item.validated_at || null
+        };
       }
     }
 
     return null;
+  }
+
+  function isSessionStillValid(stored) {
+    if (!stored) return false;
+    if (!stored.access_ok) return false;
+    if (!stored.validated_at) return false;
+
+    const age = Date.now() - new Date(stored.validated_at).getTime();
+    return age < EIGHT_HOURS;
   }
 
   function getSession() {
@@ -524,7 +543,8 @@
       return { ok: false, error: "Abonnement inactif." };
     }
 
-    rememberIdentity({ slug: s, phone: finalPhone });
+    // ✅ FIX : on mémorise avec access_ok: true + validated_at
+    rememberIdentity({ slug: s, phone: finalPhone, access_ok: true });
     enrichUrlIfMissingSlug(s);
 
     setState({
@@ -622,12 +642,21 @@
       }
 
       if (phone) {
-        const ok = await checkAccess(phone);
+        // ✅ FIX PRINCIPAL : si session validée < 8h → on ne rappelle pas checkAccess
+        const stored = readStoredSession();
+        const sessionValid = isSessionStillValid(stored);
+
+        const ok = sessionValid ? true : await checkAccess(phone);
 
         if (ok) {
           if (slug) enrichUrlIfMissingSlug(slug);
 
-          rememberIdentity({ slug, phone });
+          // ✅ FIX : on préserve validated_at si session déjà valide
+          rememberIdentity({
+            slug,
+            phone,
+            access_ok: true
+          });
 
           setState({
             preview: false,
@@ -702,4 +731,4 @@
   }
 
   ready();
-})();;
+})();
