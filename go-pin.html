@@ -293,8 +293,19 @@
         return url.toString();
       }
 
-      const slug = readSlug();
-      const phone = readPhone();
+    (async () => {
+  const slug = readSlug();
+  const phone = readPhone();
+
+  // 👉 si session déjà existante → cockpit direct
+  if (phone && slug) {
+    location.href = `./cockpit.html?slug=${slug}&v=11`;
+    return;
+  }
+
+  // 👉 sinon on force passage PIN
+  location.href = `./pin.html?slug=${slug}`;
+})();
 
       const slugValue = document.getElementById("slugValue");
       const phoneMeta = document.getElementById("phoneMeta");
