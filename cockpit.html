@@ -4,10 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Ma gestion</title>
+  <title>Je propose mes services — Service</title>
   <meta
     name="description"
-    content="Espace pro ENTREPRENEUR MULTI SERVICES. Devis, chantiers, organisation terrain et circulation directe dans ton activité."
+    content="Je propose mes services — demandes, service, devis, chantiers, notes rapides et Mon argent."
   />
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -45,7 +45,7 @@
         radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
         linear-gradient(135deg,var(--bg),var(--bg2));
       min-height:100vh;
-      padding:16px;
+      padding:16px 16px calc(104px + env(safe-area-inset-bottom,0px));
     }
 
     .wrap{max-width:1160px;margin:0 auto}
@@ -681,6 +681,62 @@
         height:68px;
       }
     }
+
+    #demandes, #service, #quickBuildNote{scroll-margin-top:96px}
+
+    .bottomNav{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:99990;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(6,27,20,.94);
+      border-top:1px solid rgba(255,255,255,.10);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+    }
+    .bottomNavInner{
+      width:min(100%,760px);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+    .bottomNav a{
+      min-height:58px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      align-content:center;
+      gap:3px;
+      color:rgba(234,255,241,.70);
+      font-size:11px;
+      font-weight:950;
+      text-align:center;
+      border:1px solid transparent;
+      text-decoration:none;
+    }
+    .bottomNav .ico{font-size:18px;line-height:1}
+    .bottomNav a.active{
+      color:#062015;
+      background:linear-gradient(135deg,var(--gold),var(--ok));
+      border-color:rgba(250,204,21,.28);
+      box-shadow:0 12px 26px rgba(34,197,94,.18);
+    }
+
+    .serviceFastRow{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+    @media(max-width:680px){
+      .serviceFastRow{grid-template-columns:1fr 1fr}
+      .top-actions .btn{width:100%}
+    }
+
   </style>
 </head>
 
@@ -695,7 +751,7 @@
         alt="Logo DIGIYLYFE"
       />
       <div>
-        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Mon espace</h1>
+        <h1>🧰 Je propose mes services — Service</h1>
         <div class="sub">
           Identifiant : <b id="slug">—</b> • Téléphone : <b id="owner">—</b><br>
           Accès : <b id="stat">initialisation…</b>
@@ -705,11 +761,24 @@
 
     <div class="top-actions">
       <button class="btn primary" id="btnNew" type="button">➕ Nouveau devis</button>
-      <div class="pill" id="modePill">activité terrain</div>
-      <button class="btn dashboard" id="btnDashboard" type="button">📊 Mon activité</button>
-      <button class="btn profile" id="btnProfile" type="button">🪪 Ma fiche</button>
+      <div class="pill" id="modePill">service terrain</div>
+      <button class="btn dashboard" id="btnDashboard" type="button">🏠 Accueil</button>
+      <button class="btn profile" id="btnProfile" type="button">⚙️ Plus</button>
       <button class="btn" id="btnHelp" type="button">💬 Support</button>
       <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
+    </div>
+  </div>
+
+  <div class="card" id="service" style="margin-top:12px">
+    <div class="title">Service terrain</div>
+    <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6;margin-top:6px">
+      Ici tu poses un devis, suis une demande, notes une dépense ou un acompte, puis tu gardes la trace propre.
+    </div>
+    <div class="serviceFastRow">
+      <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
+      <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
+      <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
+      <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
     </div>
   </div>
 
@@ -726,16 +795,16 @@
 
   <div id="workspace" class="grid hidden">
 
-    <div class="card">
-      <div class="title">⚡ Mes actions rapides</div>
+    <div class="card" id="demandes">
+      <div class="title">⚡ Actions utiles</div>
       <div class="row">
-        <button class="btn" id="btnJobs" type="button">🏗️ Voir ce qui est en cours</button>
+        <button class="btn" id="btnJobs" type="button">📋 Voir les demandes</button>
       </div>
 
 
       <div class="card quickBuild" id="quickBuildNote">
-        <div class="quickBuildTitle">🧠 Note rapide chantier</div>
-        <div class="quickBuildSub">Écris court, DIGIY prépare. Tu confirmes avant toute suite.</div>
+        <div class="quickBuildTitle">✍️ Notes rapides</div>
+        <div class="quickBuildSub">Écris comme tu parles. DIGIY prépare la trace vers Mon argent.</div>
 
         <div class="quickGuide">
           <strong>Une phrase suffit.</strong>
@@ -763,8 +832,8 @@
         <div class="memoryBox">
           <div class="memoryHead">
             <div>
-              <div class="memoryTitle">Aide-mémoire chantier</div>
-              <div class="memoryHelp">Dernières notes confirmées ici. Avec Mon argent, tu peux les transformer en entrées, dépenses ou suivi clair.</div>
+              <div class="memoryTitle">Aide-mémoire service</div>
+              <div class="memoryHelp">Dernières notes confirmées ici. Elles peuvent nourrir Mon argent.</div>
             </div>
             <button class="tinybtn" id="btnQuickBuildMemoryClear" type="button">Vider</button>
           </div>
@@ -776,7 +845,7 @@
 
       <div style="height:10px"></div>
 
-      <div class="title">🌡️ Température de mon activité</div>
+      <div class="title">🌡️ Température du service</div>
       <div class="kpis">
         <div class="kpi">
           <div class="k">À préparer</div>
@@ -803,7 +872,7 @@
       <div style="height:12px"></div>
 
       <div class="split">
-        <div class="title" style="flex:1">📋 Mes devis et mes chantiers</div>
+        <div class="title" style="flex:1">📋 Demandes, devis et chantiers</div>
 
         <select id="filter" style="max-width:250px">
           <option value="all">Tout voir</option>
@@ -848,16 +917,16 @@
 
         <div class="item">
           <div>
-            <div class="a">Retour rapide</div>
-            <div class="b">Tu peux revenir à ta vue principale sans repasser par le code d’accès.</div>
+            <div class="a">Accueil rapide</div>
+            <div class="b">Tu peux revenir à l’accueil sans repasser par le code.</div>
           </div>
-          <button class="tinybtn" id="btnGoDashboard" type="button">📊 Mon activité</button>
+          <button class="tinybtn" id="btnGoDashboard" type="button">🏠 Accueil</button>
         </div>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="title">🧰 Outils utiles</div>
+      <div class="title">🧰 Outils service</div>
       <div class="row">
         <button class="btn" id="btnPrint" type="button">🖨️ Imprimer</button>
         <button class="btn" id="btnWhatsApp" type="button">📲 Écrire au client</button>
@@ -865,7 +934,7 @@
 
       <div style="height:12px"></div>
 
-      <div class="title">Outils secondaires</div>
+      <div class="title">Plus utiles</div>
       <div class="row">
         <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder une copie</button>
         <button class="btn danger" id="btnReset" type="button">🧹 Effacer les copies de cet appareil</button>
@@ -946,6 +1015,17 @@
     <button class="close" id="close" type="button">Fermer</button>
   </div>
 </div>
+
+
+<nav class="bottomNav" aria-label="Navigation BUILD">
+  <div class="bottomNavInner">
+    <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
+    <a id="bottomDemandes" href="#demandes"><span class="ico">📋</span><span>Demandes</span></a>
+    <a class="active" id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
+    <a id="bottomNotes" href="#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
+    <a id="bottomMore" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
+  </div>
+</nav>
 
 <script>
 (() => {
@@ -1117,6 +1197,27 @@
 
     $("btnPinEntry").href = pinUrl();
     $("btnManageSub").href = manageSubUrl();
+
+    const links = {
+      fastPlus: profileUrl(),
+      bottomHome: dashboardUrl(),
+      bottomMore: profileUrl()
+    };
+    Object.entries(links).forEach(([id, href]) => {
+      const el = $(id);
+      if(el) el.href = href;
+    });
+
+    const bottomDemandes = $("bottomDemandes");
+    const bottomService = $("bottomService");
+    const bottomNotes = $("bottomNotes");
+    const fastDemandes = $("fastDemandes");
+    const fastNotes = $("fastNotes");
+    if(bottomDemandes) bottomDemandes.href = "#demandes";
+    if(bottomService) bottomService.href = buildSafeUrl("./cockpit.html", { slug: ACCESS.slug, phone: ACCESS.phone });
+    if(bottomNotes) bottomNotes.href = "#quickBuildNote";
+    if(fastDemandes) fastDemandes.href = "#demandes";
+    if(fastNotes) fastNotes.href = "#quickBuildNote";
   }
 
   function refreshBackupCard() {
@@ -1542,14 +1643,17 @@
     qsPay.set("direction", item?.direction === "in" ? "in" : "out");
     qsPay.set("scope", "pro");
     qsPay.set("amount", String(Math.round(Number(item?.amount_xof || 0))));
+    qsPay.set("amount_xof", String(Math.round(Number(item?.amount_xof || 0))));
     qsPay.set("kind", item?.kind || (item?.direction === "in" ? "sale" : "expense"));
     qsPay.set("channel", item?.channel || "other");
     qsPay.set("category", item?.category || "build_note");
     qsPay.set("source_module", "BUILD");
+    if(ACCESS.slug) qsPay.set("source_slug", ACCESS.slug);
+    qsPay.set("source_id", item?.memory_id || ("build-note-" + Date.now()));
     qsPay.set("label", payBuildLabel(item));
     qsPay.set("note", String(item?.sentence || "").trim());
     qsPay.set("complement", String(item?.complement || "").trim());
-    qsPay.set("intent", "build_quick_note");
+    qsPay.set("intent", "quick_note");
 
     return "https://pro-pay.digiylyfe.com/admin.html?" + qsPay.toString();
   }
@@ -1622,7 +1726,7 @@
     if(!confirm("Vider l’aide-mémoire chantier sur cet appareil ?")) return;
     writeQuickBuildMemory([]);
     renderQuickBuildMemory();
-    alert("Aide-mémoire chantier vidé.");
+    alert("Aide-mémoire service vidé.");
   }
 
   function bindQuickBuildNote(){
@@ -1693,9 +1797,11 @@
     };
 
     $("btnNew").onclick = () => openModal();
+    $("fastNewQuote").onclick = () => openModal();
     $("btnJobs").onclick = () => {
-      $("filter").value = "running";
+      $("filter").value = "all";
       renderList();
+      location.hash = "#demandes";
     };
 
     $("btnExport").onclick = () => {
