@@ -4,10 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Ma fiche</title>
+  <title>Je propose mes services — Plus</title>
   <meta
     name="description"
-    content="Ma fiche ENTREPRENEUR MULTI SERVICES. Présentation, services, zone d’intervention, contact et publication."
+    content="Je propose mes services — Plus : fiche publique, activité, zone, contact et visibilité."
   />
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -27,6 +27,101 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js?v=build-pro-profile-v8"></script>
   <script defer src="./profile.js?v=build-pro-profile-v6"></script>
+
+  <style>
+    body{
+      padding-bottom:calc(104px + env(safe-area-inset-bottom,0px));
+    }
+
+    #guard_status{
+      display:none !important;
+    }
+
+    .digiyBuildBottomNav{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:99990;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(6,27,20,.94);
+      border-top:1px solid rgba(255,255,255,.10);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    .digiyBuildBottomNavInner{
+      width:min(100%,760px);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+
+    .digiyBuildBottomNav a{
+      min-height:58px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      align-content:center;
+      gap:3px;
+      color:rgba(234,255,241,.70);
+      font-size:11px;
+      font-weight:950;
+      text-align:center;
+      border:1px solid transparent;
+      text-decoration:none;
+      background:transparent;
+    }
+
+    .digiyBuildBottomNav .ico{
+      font-size:18px;
+      line-height:1;
+    }
+
+    .digiyBuildBottomNav a.active{
+      color:#062015;
+      background:linear-gradient(135deg,#facc15,#22c55e);
+      border-color:rgba(250,204,21,.28);
+      box-shadow:0 12px 26px rgba(34,197,94,.18);
+    }
+
+    .digiyBuildProfileFastRow{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin:14px 0 0;
+    }
+
+    .digiyBuildProfileFastRow a{
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      color:inherit;
+      text-decoration:none;
+      font-weight:900;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 12px;
+    }
+
+    .digiyBuildProfileFastRow a.primary{
+      background:linear-gradient(90deg,#22c55e,#facc15);
+      color:#062015;
+      border:none;
+    }
+
+    @media(max-width:680px){
+      .digiyBuildProfileFastRow{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -44,11 +139,10 @@
               alt="Logo DIGIYLYFE"
             />
             <div>
-              <div class="hero-kicker">ENTREPRENEUR MULTI SERVICES</div>
-              <h1>🛠️ Ma fiche</h1>
+              <div class="hero-kicker">JE PROPOSE MES SERVICES</div>
+              <h1>⚙️ Ma fiche service</h1>
               <p class="sub">
-                Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
-                Si tu publies, ta fiche peut apparaître dans la vitrine publique.
+                Ici tu présentes ton service, ta zone, ton contact et ce que le client peut comprendre vite.
               </p>
             </div>
           </div>
@@ -60,7 +154,14 @@
         </div>
 
         <div class="note top-note">
-          <b>Repère utile :</b> une fois ton accès ouvert, tu peux passer de ta gestion à ta fiche et revenir sans repasser par le code d’accès.
+          <b>Repère utile :</b> une fois ton accès ouvert, tu peux passer de l’accueil au service, aux notes et à ta fiche sans repasser par le code.
+        </div>
+
+        <div class="digiyBuildProfileFastRow">
+          <a href="./dashboard-pro.html">🏠 Accueil</a>
+          <a href="./cockpit.html#demandes">📋 Demandes</a>
+          <a class="primary" href="./cockpit.html">🧰 Service</a>
+          <a href="./cockpit.html#quickBuildNote">✍️ Notes</a>
         </div>
 
         <div class="hr"></div>
@@ -78,7 +179,7 @@
 
         <div class="row">
           <div>
-            <label>Activité principale</label>
+            <label>Service principal</label>
             <input id="trade" placeholder="Ex : Entrepreneur multi services, plombier, électricien, maçon"/>
           </div>
           <div>
@@ -94,7 +195,7 @@
 
         <div class="row">
           <div>
-            <label>Famille de services</label>
+            <label>Famille métier</label>
             <select id="sector">
               <option value="multi">Multi services</option>
               <option value="construction">Construction</option>
@@ -103,7 +204,7 @@
             </select>
           </div>
           <div>
-            <label>Niveau de mise en avant (0–100)</label>
+            <label>Priorité interne (0–100)</label>
             <input id="priority" type="number" min="0" max="100" value="1"/>
           </div>
         </div>
@@ -124,11 +225,11 @@
 
         <div class="row">
           <div>
-            <label>Photo de présentation</label>
+            <label>Photo du service</label>
             <input id="photo_url" placeholder="Lien image (https://...png/jpg)"/>
           </div>
           <div>
-            <label>Lien de ma fiche</label>
+            <label>Lien public de ma fiche</label>
             <input id="profile_url" placeholder="https://digiylyfe.com/..."/>
           </div>
         </div>
@@ -157,7 +258,7 @@
 
         <div class="row">
           <div>
-            <label>Nom du lien de ma fiche</label>
+            <label>Identifiant de ma fiche</label>
             <input id="slug" placeholder="auto"/>
             <div class="hint">
               Par défaut on garde l’identifiant déjà posé pour rester stable. Tu peux le régénérer si besoin.
@@ -178,12 +279,23 @@
           <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
           <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer l’identifiant</button>
           <button class="btn ghost" id="btnOpenListing" type="button">🌍 Ouvrir la vitrine</button>
-          <button class="btn ghost" id="btnBack" type="button">↩️ Retour à ma gestion</button>
+          <button class="btn ghost" id="btnBack" type="button">↩️ Retour au service</button>
         </div>
 
         <div class="note" id="msg">Statut : —</div>
       </div>
     </div>
   </div>
+
+  <nav class="digiyBuildBottomNav" aria-label="Navigation BUILD">
+    <div class="digiyBuildBottomNavInner">
+      <a href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
+      <a href="./cockpit.html#demandes"><span class="ico">📋</span><span>Demandes</span></a>
+      <a href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
+      <a href="./cockpit.html#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
+      <a class="active" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
+    </div>
+  </nav>
+
 </body>
 </html>
