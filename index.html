@@ -4,11 +4,15 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>Mes services — Accès sécurisé DIGIY</title>
+  <title>Mes services — Accès DIGIY</title>
   <meta
     name="description"
-    content="Accès sécurisé MES SERVICES avec reprise directe."
+    content="Mes services — entrée simple et sécurisée vers l’espace métier DIGIY."
   />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
     :root{
@@ -20,20 +24,22 @@
       --muted:rgba(234,255,241,.74);
       --gold:#facc15;
       --ok:#22c55e;
+      --bad:#fb7185;
       --shadow:0 22px 60px rgba(0,0,0,.45);
       --radius:22px;
     }
 
     *{box-sizing:border-box}
 
+    html,body{margin:0;padding:0}
+
     body{
-      margin:0;
       min-height:100vh;
       display:grid;
       place-items:center;
       padding:16px;
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
         radial-gradient(circle at 20% 0%, rgba(250,204,21,.14), transparent 40%),
         radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 40%),
@@ -42,12 +48,42 @@
 
     .box{
       width:100%;
-      max-width:560px;
+      max-width:580px;
       background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:24px;
+    }
+
+    .routeNav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:0 0 14px;
+    }
+
+    .routeNav a{
+      flex:1;
+      min-width:140px;
+      min-height:42px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    .routeNav a:hover{
+      border-color:rgba(250,204,21,.44);
+      background:rgba(250,204,21,.08);
     }
 
     .top{
@@ -58,17 +94,13 @@
     }
 
     .logo{
-      width:54px;
-      height:54px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      font-size:26px;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(250,204,21,.28), transparent 55%),
-        linear-gradient(135deg, rgba(34,197,94,.22), rgba(56,189,248,.12));
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
+      width:58px;
+      height:58px;
+      border-radius:17px;
+      object-fit:cover;
+      background:#fff;
+      border:1px solid rgba(250,204,21,.28);
+      box-shadow:0 14px 34px rgba(0,0,0,.26);
       flex:0 0 auto;
     }
 
@@ -100,7 +132,7 @@
       line-height:1.55;
     }
 
-    .slugbox{
+    .statebox{
       margin-top:14px;
       padding:14px 15px;
       border-radius:16px;
@@ -108,7 +140,7 @@
       background:rgba(255,255,255,.04);
     }
 
-    .sluglabel{
+    .stateLabel{
       font-size:12px;
       text-transform:uppercase;
       letter-spacing:.08em;
@@ -117,16 +149,15 @@
       margin-bottom:6px;
     }
 
-    .slugvalue{
+    .stateValue{
       font-size:15px;
       font-weight:900;
       word-break:break-word;
     }
 
-    .slugvalue.empty{
-      color:var(--muted);
-      font-weight:800;
-    }
+    .stateValue.ok{color:#bbf7d0}
+    .stateValue.wait{color:#fde68a}
+    .stateValue.none{color:var(--muted)}
 
     .meta{
       margin-top:8px;
@@ -159,6 +190,7 @@
       font-weight:900;
       cursor:pointer;
       transition:.15s;
+      text-align:center;
     }
 
     .btn:hover{
@@ -181,36 +213,6 @@
     }
 
     .mini b{color:var(--text)}
-
-    .routeNav{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin:0 0 14px;
-    }
-
-    .routeNav a{
-      flex:1;
-      min-width:140px;
-      min-height:42px;
-      border-radius:999px;
-      border:1px solid rgba(250,204,21,.24);
-      background:rgba(255,255,255,.045);
-      color:var(--text);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:7px;
-      padding:10px 12px;
-      font-size:13px;
-      font-weight:1000;
-    }
-
-    .routeNav a:hover{
-      border-color:rgba(250,204,21,.44);
-      background:rgba(250,204,21,.08);
-    }
 
     .audioBox{
       position:relative;
@@ -253,7 +255,7 @@
       color:#fff7cf;
       font-size:15px;
       line-height:1.25;
-      font-weight:1100;
+      font-weight:1000;
     }
 
     .audioText{
@@ -277,10 +279,11 @@
       border:1px solid rgba(250,204,21,.55);
       background:linear-gradient(135deg, var(--gold), #f59e0b);
       color:#062015;
-      font-weight:1100;
+      font-weight:1000;
       padding:10px 14px;
       cursor:pointer;
       box-shadow:0 12px 26px rgba(250,204,21,.22);
+      font-family:inherit;
     }
 
     .audioBtn.stop{
@@ -321,30 +324,33 @@
     @media(max-width:560px){
       .routeNav a,
       .audioBtn{width:100%}
+      .box{padding:18px}
     }
-
   </style>
 </head>
 <body>
-  <div class="box">
+  <main class="box">
     <nav class="routeNav" aria-label="Navigation DIGIY">
       <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
       <a id="btnHubTop" href="https://pro-espace.digiylyfe.com/" rel="noopener">🧭 HUB</a>
       <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
     </nav>
+
     <div class="top">
-      <div class="logo">🔑</div>
+      <img
+        class="logo"
+        src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+        alt="Logo DIGIYLYFE"
+      />
       <div>
         <h1>MES SERVICES</h1>
-        <div class="sub">
-          Entrée directe vers ton activité de service.
-        </div>
+        <div class="sub">Entrée vers ton activité de service.</div>
       </div>
     </div>
 
     <div class="hero">
-      Cette page sert de <b>passage rapide</b> vers ton accès sécurisé.
-      Une fois validé, tu reprends ton activité : demandes clients, services, suivi et mise en relation.
+      Cette page ouvre ton espace de travail : demandes clients, devis, suivi terrain, notes rapides et retour vers Mon argent.
+      Si ta session est déjà ouverte, tu reprends directement. Sinon, ton code d’accès suffit.
     </div>
 
     <div class="audioBox" aria-label="Explication audio DIGIY Mes services">
@@ -362,38 +368,49 @@
       <div class="audioProgressWrap" aria-hidden="true"><div class="audioProgress" id="buildAudioProgress"></div></div>
     </div>
 
-    <div class="slugbox">
-      <div class="sluglabel">Repère retrouvé</div>
-      <div class="slugvalue" id="slugValue">Chargement…</div>
-      <div class="meta" id="phoneMeta">Téléphone retrouvé en mémoire locale : —</div>
+    <div class="statebox">
+      <div class="stateLabel">Accès</div>
+      <div class="stateValue wait" id="accessState">Vérification de cet appareil…</div>
+      <div class="meta" id="accessMeta">
+        Aucune information sensible n’est affichée ici. L’accès privé reste gardé localement sur ton appareil.
+      </div>
     </div>
 
     <div class="actions">
       <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code d’accès</a>
-      <a
-        class="btn"
-        id="btnSupport"
-        target="_blank"
-        rel="noopener"
-        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s."
-      >
-        💬 Support
-      </a>
+      <a class="btn" id="btnHelp" href="https://pro-espace.digiylyfe.com/" rel="noopener">🧭 Besoin d’aide</a>
     </div>
 
     <div class="mini">
-      <b>Conseil :</b> garde l’identifiant dans le lien quand tu reprends l’accès.
-      Une demande client doit arriver claire : besoin, lieu, contact, urgence et prochaine action.
+      <b>Conseil :</b> une demande client doit arriver claire : besoin, lieu, urgence et prochaine action.
+      DIGIY garde le chemin simple, sans exposer tes informations privées en façade.
     </div>
-  </div>
+  </main>
 
   <script>
     (() => {
       "use strict";
 
       const MODULE = "BUILD";
-      const AUTO_REDIRECT_MS = 0;
+      const SESSION_HOURS = 8;
+      const CLEAN_QUERY_KEYS = ["slug","phone","tel","build_tel","module","from","return","v"];
       const qs = new URLSearchParams(location.search);
+
+      const STORAGE_KEYS = {
+        slug: "digiy_build_slug",
+        phone: "digiy_build_phone",
+        lastSlug: "digiy_build_last_slug"
+      };
+
+      const SESSION_KEYS = [
+        "DIGIY_BUILD_PIN_SESSION",
+        "DIGIY_BUILD_SESSION",
+        "DIGIY_BUILD_ACCESS",
+        "DIGIY_MASTER_PIN_SESSION",
+        "DIGIY_PIN_SESSION",
+        "DIGIY_ACCESS",
+        "digiy_build_session"
+      ];
 
       function normSlug(v){
         return String(v || "")
@@ -409,76 +426,144 @@
         return String(v || "").replace(/[^\d]/g, "");
       }
 
-      function readSlug(){
-        return normSlug(
-          qs.get("slug") ||
-          sessionStorage.getItem("digiy_build_slug") ||
-          sessionStorage.getItem("digiy_build_last_slug") ||
-          localStorage.getItem("digiy_build_last_slug") ||
-          ""
-        );
+      function safeJsonParse(raw){
+        try { return JSON.parse(raw); } catch (_) { return null; }
       }
 
-      function readPhone(){
-        return normPhone(
-          sessionStorage.getItem("digiy_build_phone") ||
-          localStorage.getItem("digiy_build_phone") ||
-          ""
-        );
-      }
-
-      function maskPhone(phone){
+      function saveLocalIdentity(slug, phone){
+        const s = normSlug(slug);
         const p = normPhone(phone);
-        if (!p) return "—";
-        if (p.length <= 4) return "••••";
-        return `${p.slice(0, 3)}••••${p.slice(-2)}`;
-      }
 
-      function buildPinUrl(slug){
-        const url = new URL("./pin.html", location.href);
-        url.searchParams.set("module", MODULE);
-        if (slug) url.searchParams.set("slug", slug);
-
-        for (const [k, v] of qs.entries()) {
-          if (k === "slug" || k === "phone" || k === "module") continue;
-          if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+        if(s){
+          try{ sessionStorage.setItem(STORAGE_KEYS.slug, s); }catch(_){}
+          try{ sessionStorage.setItem(STORAGE_KEYS.lastSlug, s); }catch(_){}
+          try{ localStorage.setItem(STORAGE_KEYS.slug, s); }catch(_){}
+          try{ localStorage.setItem(STORAGE_KEYS.lastSlug, s); }catch(_){}
         }
 
-        url.searchParams.set("v", "13");
-        return url.toString();
+        if(p){
+          try{ sessionStorage.setItem(STORAGE_KEYS.phone, p); }catch(_){}
+          try{ localStorage.setItem(STORAGE_KEYS.phone, p); }catch(_){}
+        }
       }
 
-      const slug = readSlug();
-      const phone = readPhone();
-
-      const slugValue = document.getElementById("slugValue");
-      const phoneMeta = document.getElementById("phoneMeta");
-      const btnEnter = document.getElementById("btnEnter");
-
-      if (slug) {
-        slugValue.textContent = slug;
-      } else {
-        slugValue.textContent = "Aucun identifiant détecté pour le moment.";
-        slugValue.classList.add("empty");
-      }
-
-      phoneMeta.textContent = phone
-        ? `Téléphone retrouvé en mémoire locale : ${maskPhone(phone)}`
-        : "Téléphone retrouvé en mémoire locale : —";
-
-      const pinUrl = buildPinUrl(slug);
-      btnEnter.href = pinUrl;
-
-
-      function updateHubLink(){
-        const hub = document.getElementById("btnHubTop");
-        if(!hub) return;
+      function cleanVisibleUrl(){
         try{
-          const url = new URL("https://pro-espace.digiylyfe.com/");
-          const phone = readPhone();
-          if(phone) url.searchParams.set("phone", phone);
-          hub.href = url.toString();
+          const url = new URL(window.location.href);
+
+          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+          const incomingPhone = normPhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("build_tel") ||
+            ""
+          );
+
+          saveLocalIdentity(incomingSlug, incomingPhone);
+
+          let changed = false;
+          CLEAN_QUERY_KEYS.forEach((key) => {
+            if(url.searchParams.has(key)){
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+
+          if(changed){
+            history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+          }
         }catch(_){}
+      }
+
+      function readSavedSlug(){
+        return normSlug(
+          sessionStorage.getItem(STORAGE_KEYS.slug) ||
+          sessionStorage.getItem(STORAGE_KEYS.lastSlug) ||
+          localStorage.getItem(STORAGE_KEYS.slug) ||
+          localStorage.getItem(STORAGE_KEYS.lastSlug) ||
+          ""
+        );
+      }
+
+      function readSavedPhone(){
+        return normPhone(
+          sessionStorage.getItem(STORAGE_KEYS.phone) ||
+          localStorage.getItem(STORAGE_KEYS.phone) ||
+          ""
+        );
+      }
+
+      function readStoredSession(){
+        for(const key of SESSION_KEYS){
+          let parsed = null;
+          try{
+            parsed = safeJsonParse(localStorage.getItem(key)) || safeJsonParse(sessionStorage.getItem(key));
+          }catch(_){}
+
+          if(!parsed || typeof parsed !== "object") continue;
+
+          const moduleName = String(parsed.module || parsed.module_code || "").toUpperCase();
+          if(moduleName && moduleName !== MODULE) continue;
+
+          const access =
+            parsed.access === true ||
+            parsed.access_ok === true ||
+            parsed.ok === true ||
+            parsed.has_access === true;
+
+          if(!access) continue;
+
+          return parsed;
+        }
+
+        return null;
+      }
+
+      function sessionStillValid(session){
+        if(!session) return false;
+
+        const ts =
+          Number(session.verified_at || session.validated_at_ms || session.ts || 0) ||
+          (session.validated_at ? new Date(session.validated_at).getTime() : 0);
+
+        if(!ts) return false;
+
+        const age = Date.now() - ts;
+        return age >= 0 && age < SESSION_HOURS * 60 * 60 * 1000;
+      }
+
+      function setAccessState(){
+        const accessState = document.getElementById("accessState");
+        const accessMeta = document.getElementById("accessMeta");
+        const btnEnter = document.getElementById("btnEnter");
+        if(!accessState || !accessMeta || !btnEnter) return;
+
+        const session = readStoredSession();
+        const hasLocalIdentity = !!(readSavedSlug() || readSavedPhone());
+
+        if(sessionStillValid(session)){
+          accessState.textContent = "Session active sur cet appareil.";
+          accessState.className = "stateValue ok";
+          accessMeta.textContent = "Tu peux revenir à ton accueil sans repasser par le code.";
+          btnEnter.href = "./dashboard-pro.html";
+          btnEnter.textContent = "🏠 Ouvrir mon accueil";
+          return;
+        }
+
+        if(hasLocalIdentity){
+          accessState.textContent = "Appareil reconnu.";
+          accessState.className = "stateValue wait";
+          accessMeta.textContent = "Entre ton code d’accès pour rouvrir une session privée de 8 heures.";
+          btnEnter.href = "./pin.html";
+          btnEnter.textContent = "🔐 Entrer mon code";
+          return;
+        }
+
+        accessState.textContent = "Nouvel appareil.";
+        accessState.className = "stateValue none";
+        accessMeta.textContent = "Ouvre l’accès avec ton code. Aucune information privée n’est affichée sur cette page.";
+        btnEnter.href = "./pin.html";
+        btnEnter.textContent = "🔐 Ouvrir mon accès";
       }
 
       const buildAudioText =
@@ -490,7 +575,7 @@
       let buildAudioPlaying = false;
       let buildAudioTimer = null;
       let buildAudioStart = 0;
-      let buildAudioDuration = 52000;
+      const buildAudioDuration = 52000;
 
       function setBuildAudioProgress(percent){
         const bar = document.getElementById("buildAudioProgress");
@@ -564,25 +649,19 @@
         };
 
         utter.onerror = stopBuildAudio;
-
         window.speechSynthesis.speak(utter);
       }
+
+      cleanVisibleUrl();
+      setAccessState();
 
       document.getElementById("btnBuildAudio")?.addEventListener("click", playBuildAudio);
       document.getElementById("btnBuildAudioStop")?.addEventListener("click", stopBuildAudio);
       window.addEventListener("beforeunload", stopBuildAudio);
       document.addEventListener("visibilitychange", () => { if(document.hidden) stopBuildAudio(); });
+
       if("speechSynthesis" in window){
         window.speechSynthesis.onvoiceschanged = () => {};
-      }
-
-      updateHubLink();
-
-
-      if (slug && AUTO_REDIRECT_MS > 0) {
-        setTimeout(() => {
-          location.replace(pinUrl);
-        }, AUTO_REDIRECT_MS);
       }
     })();
   </script>
