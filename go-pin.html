@@ -122,11 +122,7 @@
       font-size:15px;
       font-weight:1000;
       word-break:break-word;
-    }
-
-    .idvalue.empty{
-      color:var(--muted);
-      font-weight:800;
+      color:#fde68a;
     }
 
     .meta{
@@ -232,9 +228,9 @@
       border-color:rgba(250,204,21,.28);
       box-shadow:0 12px 26px rgba(34,197,94,.18);
     }
-
   </style>
 </head>
+
 <body>
   <div class="box">
     <div class="top">
@@ -246,35 +242,33 @@
       <div>
         <h1>Ouvrir mon accès — Je propose mes services</h1>
         <div class="sub">
-          Une porte propre vers ton accès.
+          Une porte propre vers ton espace de service.
         </div>
       </div>
     </div>
 
     <div class="hero">
-      Accès simple et direct. Cette page t’envoie vers ton vrai code d’accès. Une fois la session ouverte, tu reviens vers Accueil, Demandes, Service, Notes et Plus sans retaper ton code.
+      Accès simple et direct. Si ta session est déjà ouverte, tu reviens vers Accueil, Demandes, Service, Notes et Plus sans retaper ton code.
     </div>
 
     <div class="idbox">
-      <div class="idlabel">Repère retrouvé</div>
-      <div class="idvalue" id="idValue">Chargement…</div>
-      <div class="meta" id="phoneMeta">Téléphone : —</div>
+      <div class="idlabel">État de l’accès</div>
+      <div class="idvalue" id="accessValue">Vérification…</div>
+      <div class="meta" id="accessMeta">DIGIY garde les informations sensibles dans le coffre local de l’appareil.</div>
     </div>
 
     <div class="actions">
       <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Entrer avec mon code</a>
       <a class="btn info" id="btnSpace" href="./dashboard-pro.html">🏠 Aller à l’accueil</a>
       <a class="btn" id="btnActivity" href="./cockpit.html">🧰 Service</a>
-      <a class="btn" id="btnSupport" href="https://wa.me/221771342889">💬 Support</a>
+      <a class="btn" id="btnSupport" href="https://commencer-a-payer.digiylyfe.com/?module=BUILD&besoin=support">💬 Support</a>
     </div>
 
     <div class="mini">
-      <b>Conseil :</b> garde l’identifiant dans le lien quand tu partages cet accès.
-      Cette page ne remplace pas l’entrée sécurisée principale, elle sert de raccourci propre.
-      Si la session n’est pas encore ouverte, ton espace et ton activité repasseront naturellement par le code d’accès.
+      <b>Conseil :</b> cette page sert de raccourci propre.
+      Si la session n’est pas ouverte ou si elle a expiré, ton espace repasse naturellement par le code d’accès.
     </div>
   </div>
-
 
   <nav class="bottomNav" aria-label="Navigation BUILD">
     <div class="bottomNavInner">
@@ -290,7 +284,28 @@
     (() => {
       "use strict";
 
-      const qs = new URLSearchParams(window.location.search);
+      const MODULE = "BUILD";
+      const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
+
+      const CLEAN_URLS = {
+        pin: "./pin.html",
+        home: "./dashboard-pro.html",
+        demandes: "./cockpit.html#demandes",
+        service: "./cockpit.html",
+        notes: "./cockpit.html#quickBuildNote",
+        more: "./go-pin.html",
+        support: "https://commencer-a-payer.digiylyfe.com/?module=BUILD&besoin=support"
+      };
+
+      const SENSITIVE_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "build_tel",
+        "module",
+        "from",
+        "return"
+      ];
 
       function normSlug(v){
         return String(v || "")
@@ -306,148 +321,140 @@
         return String(v || "").replace(/[^\d]/g, "");
       }
 
-      function buildSafeUrl(path, params = {}){
+      function safeJsonParse(raw){
+        try { return JSON.parse(raw); } catch (_) { return null; }
+      }
+
+      function saveIncomingIdentity(){
         try{
-          const url = new URL(path, window.location.href);
-          Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && String(value).trim() !== "") {
-              url.searchParams.set(key, String(value));
+          const url = new URL(window.location.href);
+          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+          const incomingPhone = normPhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("build_tel") ||
+            ""
+          );
+
+          if(incomingSlug){
+            sessionStorage.setItem("digiy_build_slug", incomingSlug);
+            sessionStorage.setItem("digiy_build_last_slug", incomingSlug);
+            localStorage.setItem("digiy_build_slug", incomingSlug);
+            localStorage.setItem("digiy_build_last_slug", incomingSlug);
+          }
+
+          if(incomingPhone){
+            sessionStorage.setItem("digiy_build_phone", incomingPhone);
+            localStorage.setItem("digiy_build_phone", incomingPhone);
+          }
+        }catch(_){}
+      }
+
+      function cleanVisibleUrl(){
+        try{
+          const url = new URL(window.location.href);
+          let changed = false;
+
+          SENSITIVE_KEYS.forEach((key) => {
+            if(url.searchParams.has(key)){
+              url.searchParams.delete(key);
+              changed = true;
             }
           });
 
-          for (const [k, v] of qs.entries()) {
-            if (k in params) continue;
-            if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+          if(changed){
+            window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
           }
-
-          return url.pathname + url.search + url.hash;
-        }catch(_){
-          return path || "#";
-        }
+        }catch(_){}
       }
 
-      function readSlug(){
-        return normSlug(
-          qs.get("slug") ||
-          sessionStorage.getItem("digiy_build_slug") ||
-          sessionStorage.getItem("digiy_build_last_slug") ||
-          localStorage.getItem("digiy_build_last_slug") ||
-          ""
-        );
-      }
-
-      function readPhone(){
-        return normPhone(
-          qs.get("phone") ||
-          sessionStorage.getItem("digiy_build_phone") ||
-          localStorage.getItem("digiy_build_phone") ||
-          ""
-        );
-      }
-
-      function hasLiveSession(){
+      function readLiveSession(){
         const keys = [
           "DIGIY_BUILD_PIN_SESSION",
           "DIGIY_BUILD_SESSION",
-          "DIGIY_PIN_SESSION"
+          "DIGIY_BUILD_ACCESS",
+          "DIGIY_PIN_SESSION",
+          "DIGIY_ACCESS",
+          "digiy_build_session"
         ];
 
-        for (const key of keys) {
+        for(const key of keys){
           try{
             const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
-            if (!raw) continue;
-            const parsed = JSON.parse(raw);
-            if (!parsed || parsed.module !== "BUILD") continue;
-            if (!parsed.validated_at) continue;
+            if(!raw) continue;
 
-            const age = Date.now() - new Date(parsed.validated_at).getTime();
-            if (age >= 0 && age < 8 * 60 * 60 * 1000 && parsed.access_ok) {
-              return {
-                ok: true,
-                slug: normSlug(parsed.slug || ""),
-                phone: normPhone(parsed.phone || "")
-              };
+            const parsed = safeJsonParse(raw);
+            if(!parsed || typeof parsed !== "object") continue;
+
+            const moduleName = String(parsed.module || parsed.module_code || "").toUpperCase();
+            if(moduleName && moduleName !== MODULE) continue;
+
+            const ok =
+              parsed.access_ok === true ||
+              parsed.access === true ||
+              parsed.ok === true ||
+              parsed.has_access === true;
+
+            if(!ok) continue;
+
+            const stamp =
+              Number(parsed.verified_at || parsed.validated_at_ms || parsed.ts || 0) ||
+              (parsed.validated_at ? new Date(parsed.validated_at).getTime() : 0);
+
+            if(!stamp) continue;
+
+            const age = Date.now() - stamp;
+            if(age >= 0 && age < SESSION_MAX_AGE_MS){
+              return { ok:true };
             }
           }catch(_){}
         }
 
-        return { ok:false, slug:"", phone:"" };
+        return { ok:false };
       }
 
-      const slug = readSlug();
-      const phone = readPhone();
-      const liveSession = hasLiveSession();
+      function applyCleanLinks(){
+        const map = {
+          btnEnter: CLEAN_URLS.pin,
+          btnSpace: CLEAN_URLS.home,
+          btnActivity: CLEAN_URLS.service,
+          btnSupport: CLEAN_URLS.support,
+          bottomHome: CLEAN_URLS.home,
+          bottomDemandes: CLEAN_URLS.demandes,
+          bottomService: CLEAN_URLS.service,
+          bottomNotes: CLEAN_URLS.notes,
+          bottomMore: CLEAN_URLS.more
+        };
 
-      const idValue = document.getElementById("idValue");
-      const phoneMeta = document.getElementById("phoneMeta");
-
-      const btnEnter = document.getElementById("btnEnter");
-      const btnSpace = document.getElementById("btnSpace");
-      const btnActivity = document.getElementById("btnActivity");
-      const btnSupport = document.getElementById("btnSupport");
-      const bottomHome = document.getElementById("bottomHome");
-      const bottomDemandes = document.getElementById("bottomDemandes");
-      const bottomService = document.getElementById("bottomService");
-      const bottomNotes = document.getElementById("bottomNotes");
-      const bottomMore = document.getElementById("bottomMore");
-
-      if (slug) {
-        idValue.textContent = slug;
-      } else {
-        idValue.textContent = "Aucun identifiant détecté pour le moment.";
-        idValue.classList.add("empty");
-      }
-
-      phoneMeta.textContent = phone ? `Téléphone : ${phone}` : "Téléphone : —";
-
-      const activeSlug = liveSession.slug || slug;
-      const activePhone = liveSession.phone || phone;
-
-      if (btnEnter) {
-        btnEnter.href = buildSafeUrl("./pin.html", { slug, phone });
-      }
-
-      if (btnSpace) {
-        btnSpace.href = buildSafeUrl("./dashboard-pro.html", {
-          slug: activeSlug,
-          phone: activePhone
+        Object.entries(map).forEach(([id, href]) => {
+          const node = document.getElementById(id);
+          if(node) node.href = href;
         });
       }
 
-      if (btnActivity) {
-        btnActivity.href = buildSafeUrl("./cockpit.html", {
-          slug: activeSlug,
-          phone: activePhone
-        });
+      function setAccessText(live){
+        const accessValue = document.getElementById("accessValue");
+        const accessMeta = document.getElementById("accessMeta");
+
+        if(live){
+          if(accessValue) accessValue.textContent = "Session active";
+          if(accessMeta) accessMeta.textContent = "Tu peux entrer sans repasser par le code pendant la durée de ta session.";
+          return;
+        }
+
+        if(accessValue) accessValue.textContent = "Code requis";
+        if(accessMeta) accessMeta.textContent = "Entre ton code pour ouvrir ton espace. La session reste active 8 heures sur cet appareil.";
       }
 
-      if (bottomHome) bottomHome.href = buildSafeUrl("./dashboard-pro.html", { slug: activeSlug, phone: activePhone });
-      if (bottomDemandes) bottomDemandes.href = buildSafeUrl("./cockpit.html#demandes", { slug: activeSlug, phone: activePhone });
-      if (bottomService) bottomService.href = buildSafeUrl("./cockpit.html", { slug: activeSlug, phone: activePhone });
-      if (bottomNotes) bottomNotes.href = buildSafeUrl("./cockpit.html#quickBuildNote", { slug: activeSlug, phone: activePhone });
-      if (bottomMore) bottomMore.href = buildSafeUrl("./go-pin.html", { slug: activeSlug, phone: activePhone });
+      saveIncomingIdentity();
+      cleanVisibleUrl();
+      applyCleanLinks();
 
-      const supportUrl = new URL("https://wa.me/221771342889");
-      const supportText =
-        "Bonjour support ENTREPRENEUR MULTI SERVICES.\n" +
-        "J’ai besoin d’aide pour mon accès." +
-        (slug ? `\nIdentifiant : ${slug}` : "") +
-        (phone ? `\nTéléphone : ${phone}` : "");
-      supportUrl.searchParams.set("text", supportText);
-      if (btnSupport) btnSupport.href = supportUrl.toString();
+      const liveSession = readLiveSession();
+      setAccessText(liveSession.ok);
 
-      if (liveSession.ok) {
-        const target = buildSafeUrl("./dashboard-pro.html", {
-          slug: liveSession.slug || slug,
-          phone: liveSession.phone || phone
-        });
-        window.location.replace(target);
-        return;
-      }
-
-      if (!slug && !phone) {
-        if (btnSpace) btnSpace.href = "./pin.html";
-        if (btnActivity) btnActivity.href = "./pin.html";
+      if(liveSession.ok){
+        window.location.replace(CLEAN_URLS.home);
       }
     })();
   </script>
