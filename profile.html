@@ -7,7 +7,7 @@
   <title>Je propose mes services — Plus</title>
   <meta
     name="description"
-    content="Je propose mes services — Plus : fiche publique, activité, zone, contact et visibilité."
+    content="Je propose mes services — Plus : fiche publique, activité, zone, contact client et visibilité."
   />
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -142,7 +142,7 @@
               <div class="hero-kicker">JE PROPOSE MES SERVICES</div>
               <h1>⚙️ Ma fiche service</h1>
               <p class="sub">
-                Ici tu présentes ton service, ta zone, ton contact et ce que le client peut comprendre vite.
+                Ici tu présentes ton service, ta zone, ton contact client et ce que la personne peut comprendre vite.
               </p>
             </div>
           </div>
@@ -211,12 +211,12 @@
 
         <div class="row">
           <div>
-            <label>WhatsApp</label>
-            <input id="whatsapp" placeholder="Ex : 221774513523"/>
+            <label>Contact client public</label>
+            <input id="whatsapp" placeholder="Ex : contact direct visible par le client"/>
           </div>
           <div>
-            <label>Téléphone</label>
-            <input id="phone" placeholder="Ex : +221..."/>
+            <label>Contact secondaire public</label>
+            <input id="phone" placeholder="Optionnel — autre contact client"/>
           </div>
         </div>
 
@@ -229,7 +229,7 @@
             <input id="photo_url" placeholder="Lien image (https://...png/jpg)"/>
           </div>
           <div>
-            <label>Lien public de ma fiche</label>
+            <label>Adresse publique de ma fiche</label>
             <input id="profile_url" placeholder="https://digiylyfe.com/..."/>
           </div>
         </div>
@@ -258,10 +258,10 @@
 
         <div class="row">
           <div>
-            <label>Identifiant de ma fiche</label>
+            <label>Nom court de ma fiche</label>
             <input id="slug" placeholder="auto"/>
             <div class="hint">
-              Par défaut on garde l’identifiant déjà posé pour rester stable. Tu peux le régénérer si besoin.
+              Par défaut on garde le nom court déjà posé pour rester stable. Tu peux le régénérer si besoin.
             </div>
           </div>
           <div>
@@ -277,7 +277,7 @@
 
         <div class="actions">
           <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
-          <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer l’identifiant</button>
+          <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer le nom court</button>
           <button class="btn ghost" id="btnOpenListing" type="button">🌍 Ouvrir la vitrine</button>
           <button class="btn ghost" id="btnBack" type="button">↩️ Retour au service</button>
         </div>
@@ -296,6 +296,53 @@
       <a class="active" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
     </div>
   </nav>
+
+
+  <script>
+    (() => {
+      "use strict";
+      const CLEAN_KEYS = ["phone", "tel", "build_tel", "slug", "module", "from", "return"];
+
+      function cleanCurrentUrl(){
+        try{
+          const url = new URL(window.location.href);
+          let changed = false;
+          CLEAN_KEYS.forEach((key) => {
+            if(url.searchParams.has(key)){
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+          if(changed){
+            window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+          }
+        }catch(_){}
+      }
+
+      function cleanLocalLinks(){
+        document.querySelectorAll('a[href]').forEach((a) => {
+          const raw = a.getAttribute('href') || '';
+          if(!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return;
+          try{
+            const url = new URL(raw, window.location.href);
+            if(url.origin !== window.location.origin) return;
+            CLEAN_KEYS.forEach((key) => url.searchParams.delete(key));
+            const file = url.pathname.split('/').pop() || 'dashboard-pro.html';
+            a.setAttribute('href', `./${file}${url.search || ''}${url.hash || ''}`);
+          }catch(_){}
+        });
+      }
+
+      cleanCurrentUrl();
+      cleanLocalLinks();
+      window.addEventListener('DOMContentLoaded', () => {
+        cleanCurrentUrl();
+        cleanLocalLinks();
+        setTimeout(cleanLocalLinks, 250);
+        setTimeout(cleanLocalLinks, 900);
+      });
+    })();
+  </script>
 
 </body>
 </html>
