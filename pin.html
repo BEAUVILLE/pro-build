@@ -369,25 +369,19 @@
           />
           <div>
             <h1>JE PROPOSE MES SERVICES</h1>
-            <p>Accès simple par identifiant, téléphone et code</p>
+            <p>Accès simple avec ton téléphone et ton code</p>
           </div>
         </div>
       </div>
 
       <div class="body">
         <p class="intro">
-          Entre avec ton <strong>identifiant</strong> ou ton <strong>téléphone</strong>, puis ton <strong>code d’accès</strong>.
-          Une fois validé, tu arrives sur l’Accueil puis tu circules entre Demandes, Service, Notes et Plus.
+          Entre ton <strong>téléphone</strong> et ton <strong>code d’accès</strong>.
+          Si cet appareil connaît déjà ton espace, ton code suffit pour rouvrir la session.
         </p>
-
-        <div class="field">
-          <label for="slug">Identifiant</label>
-          <input id="slug" type="text" placeholder="build-221771342889" autocomplete="off"/>
-        </div>
-
         <div class="field">
           <label for="phone">Téléphone</label>
-          <input id="phone" type="tel" inputmode="numeric" placeholder="221771342889" autocomplete="tel"/>
+          <input id="phone" type="tel" inputmode="numeric" placeholder="Ex : 221771234567" autocomplete="tel"/>
         </div>
 
         <div class="field">
@@ -399,9 +393,9 @@
         </div>
 
         <div class="actions">
-          <button id="btnOpen" class="primary" type="button">🔓 Entrer dans BUILD</button>
+          <button id="btnOpen" class="primary" type="button">🔓 Entrer dans mes services</button>
           <a id="btnCockpit" class="btn secondary hidden" href="./cockpit.html">🏠 Aller à l’accueil</a>
-          <a id="btnAbos" class="btn pay" href="https://commencer-a-payer.digiylyfe.com/" target="_blank" rel="noopener">💳 Gérer mon abonnement</a>
+          <a id="btnAbos" class="btn pay" href="https://commencer-a-payer.digiylyfe.com/?module=BUILD" target="_blank" rel="noopener">💳 Gérer mon abonnement</a>
         </div>
 
         <div class="fastLinks">
@@ -430,7 +424,7 @@
       </div>
 
       <div class="foot">
-        DIGIYLYFE • entrée normale • accès gardé ici pendant quelques heures
+        DIGIYLYFE • entrée normale • accès gardé ici pendant 8 heures
       </div>
     </section>
   </div>
@@ -445,7 +439,6 @@
       <a class="active" id="bottomMore" href="./pin.html"><span class="ico">🔐</span><span>Accès</span></a>
     </div>
   </nav>
-
   <script>
     (() => {
       "use strict";
@@ -453,13 +446,18 @@
       const MODULE = "BUILD";
       const SESSION_HOURS = 8;
       const SUPPORT_URL = "https://commencer-a-payer.digiylyfe.com/";
+
       const SUPABASE_URL = window.DIGIY_SUPABASE_URL;
       const SUPABASE_KEY = window.DIGIY_SUPABASE_ANON_KEY || window.DIGIY_SUPABASE_ANON;
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
       const SESSION_KEYS = [
         "DIGIY_BUILD_PIN_SESSION",
         "DIGIY_BUILD_SESSION",
-        "DIGIY_PIN_SESSION"
+        "DIGIY_PIN_SESSION",
+        "DIGIY_ACCESS",
+        "DIGIY_SESSION_BUILD",
+        "digiy_build_session"
       ];
 
       const STORAGE_KEYS = {
@@ -469,10 +467,15 @@
         lastSession: "DIGIY_LAST_SESSION"
       };
 
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const CLEAN_URLS = {
+        home: "./dashboard-pro.html",
+        demandes: "./cockpit.html#demandes",
+        service: "./cockpit.html",
+        notes: "./cockpit.html#quickBuildNote",
+        pin: "./pin.html"
+      };
 
       const el = {
-        slug: document.getElementById("slug"),
         phone: document.getElementById("phone"),
         pin: document.getElementById("pin"),
         togglePin: document.getElementById("togglePin"),
@@ -483,12 +486,11 @@
         sessionInfo: document.getElementById("sessionInfo")
       };
 
-      function qs(name){
-        return new URLSearchParams(window.location.search).get(name);
-      }
-
       function normPhone(v){
-        return String(v || "").replace(/\D+/g, "").trim();
+        const digits = String(v || "").replace(/\D+/g, "").trim();
+        if (!digits) return "";
+        if (digits.length === 9) return "221" + digits;
+        return digits;
       }
 
       function normSlug(v){
@@ -501,71 +503,65 @@
           .replace(/^-|-$/g, "");
       }
 
+      function safeJsonParse(raw){
+        try { return JSON.parse(raw); } catch(_) { return null; }
+      }
+
       function setStatus(message, type = ""){
         el.status.className = `status${type ? " " + type : ""}`;
         el.status.textContent = message;
       }
 
-      function buildSafeUrl(path, params = {}){
+      function cleanVisibleUrl(){
         try{
-          const url = new URL(path, window.location.href);
-          Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && String(value).trim() !== "") {
-              url.searchParams.set(key, String(value));
-            }
-          });
-          return url.pathname + url.search + url.hash;
-        }catch(_){
-          return path || "#";
-        }
+          const url = new URL(window.location.href);
+          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+          const incomingPhone = normPhone(url.searchParams.get("phone") || url.searchParams.get("tel") || "");
+
+          if (incomingSlug){
+            try { sessionStorage.setItem(STORAGE_KEYS.slug, incomingSlug); } catch(_) {}
+            try { sessionStorage.setItem(STORAGE_KEYS.lastSlug, incomingSlug); } catch(_) {}
+            try { localStorage.setItem(STORAGE_KEYS.slug, incomingSlug); } catch(_) {}
+            try { localStorage.setItem(STORAGE_KEYS.lastSlug, incomingSlug); } catch(_) {}
+          }
+
+          if (incomingPhone){
+            try { sessionStorage.setItem(STORAGE_KEYS.phone, incomingPhone); } catch(_) {}
+            try { localStorage.setItem(STORAGE_KEYS.phone, incomingPhone); } catch(_) {}
+          }
+
+          ["slug","phone","tel","build_tel","module","from","return"].forEach((key) => url.searchParams.delete(key));
+          window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }catch(_){}
       }
 
-      function buildCockpitUrl(slug, phone){
-        return buildSafeUrl("./dashboard-pro.html", { slug, phone });
-      }
-
-      function buildServiceUrl(slug, phone){
-        return buildSafeUrl("./cockpit.html", { slug, phone });
-      }
-
-      function buildDemandesUrl(slug, phone){
-        return buildSafeUrl("./cockpit.html#demandes", { slug, phone });
-      }
-
-      function buildNotesUrl(slug, phone){
-        return buildSafeUrl("./cockpit.html#quickBuildNote", { slug, phone });
-      }
-
-      function buildProfileUrl(slug, phone){
-        return buildSafeUrl("./profile.html", { slug, phone });
-      }
-
-      function refreshMobileLinks(slug, phone){
+      function applyCleanLinks(){
         const map = {
-          fastHome: buildCockpitUrl(slug, phone),
-          fastDemandes: buildDemandesUrl(slug, phone),
-          fastService: buildServiceUrl(slug, phone),
-          fastNotes: buildNotesUrl(slug, phone),
-          bottomHome: buildCockpitUrl(slug, phone),
-          bottomDemandes: buildDemandesUrl(slug, phone),
-          bottomService: buildServiceUrl(slug, phone),
-          bottomNotes: buildNotesUrl(slug, phone),
-          bottomMore: buildSafeUrl("./pin.html", { slug, phone })
+          fastHome: CLEAN_URLS.home,
+          fastDemandes: CLEAN_URLS.demandes,
+          fastService: CLEAN_URLS.service,
+          fastNotes: CLEAN_URLS.notes,
+          bottomHome: CLEAN_URLS.home,
+          bottomDemandes: CLEAN_URLS.demandes,
+          bottomService: CLEAN_URLS.service,
+          bottomNotes: CLEAN_URLS.notes,
+          bottomMore: CLEAN_URLS.pin
         };
 
         Object.entries(map).forEach(([id, href]) => {
           const node = document.getElementById(id);
           if (node) node.href = href;
         });
-      }
 
-      function buildAbosUrl(slug, phone){
-        const url = new URL(SUPPORT_URL);
-        url.searchParams.set("module", MODULE);
-        if (phone) url.searchParams.set("phone", phone);
-        if (slug) url.searchParams.set("slug", slug);
-        url.searchParams.set("return", buildCockpitUrl(slug, phone));
-        return url.toString();
+        el.btnCockpit.href = CLEAN_URLS.home;
+
+        try{
+          const pay = new URL(SUPPORT_URL);
+          pay.searchParams.set("module", MODULE);
+          el.btnAbos.href = pay.toString();
+        }catch(_){
+          el.btnAbos.href = SUPPORT_URL;
+        }
       }
 
       function saveSession(payload){
@@ -574,9 +570,11 @@
           slug: normSlug(payload.slug || ""),
           phone: normPhone(payload.phone || ""),
           access_ok: true,
+          access: true,
+          ok: true,
           reason: payload.reason || "pin_ok",
-          validated_at: payload.validated_at || new Date().toISOString(),
-          expires_at: payload.expires_at || new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString(),
+          validated_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString(),
           ts: Date.now(),
           verified_at: Date.now()
         };
@@ -602,6 +600,8 @@
           }));
         } catch(_) {}
 
+        try{ window.DIGIY_ACCESS = Object.assign({}, window.DIGIY_ACCESS || {}, session); }catch(_){}
+
         return session;
       }
 
@@ -610,94 +610,107 @@
           try {
             const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
             if (!raw) continue;
-            const parsed = JSON.parse(raw);
-            if (parsed && parsed.module === MODULE) return parsed;
+            const parsed = safeJsonParse(raw);
+            if (!parsed || typeof parsed !== "object") continue;
+            const moduleName = String(parsed.module || parsed.module_code || "").toUpperCase();
+            if (moduleName && moduleName !== MODULE) continue;
+            return parsed;
           } catch(_) {}
         }
         return null;
       }
 
       function sessionStillValid(s){
-        if (!s?.validated_at) return false;
-        const ms = Date.now() - new Date(s.validated_at).getTime();
+        const ts =
+          Number(s?.verified_at || s?.validated_at_ms || s?.ts || 0) ||
+          (s?.validated_at ? new Date(s.validated_at).getTime() : 0);
+        if (!ts) return false;
+        const ms = Date.now() - ts;
         return ms >= 0 && ms < SESSION_HOURS * 60 * 60 * 1000;
       }
 
+      function readSavedPhone(){
+        const s = loadSession();
+        return normPhone(
+          sessionStorage.getItem(STORAGE_KEYS.phone) ||
+          localStorage.getItem(STORAGE_KEYS.phone) ||
+          s?.phone ||
+          ""
+        );
+      }
+
       function readSavedSlug(){
+        const s = loadSession();
         return normSlug(
-          qs("slug") ||
           sessionStorage.getItem(STORAGE_KEYS.slug) ||
           sessionStorage.getItem(STORAGE_KEYS.lastSlug) ||
           localStorage.getItem(STORAGE_KEYS.slug) ||
           localStorage.getItem(STORAGE_KEYS.lastSlug) ||
+          s?.slug ||
           ""
         );
       }
 
-      function readSavedPhone(){
-        return normPhone(
-          qs("phone") ||
-          sessionStorage.getItem(STORAGE_KEYS.phone) ||
-          localStorage.getItem(STORAGE_KEYS.phone) ||
-          ""
-        );
-      }
-
-      function setOpenLink(slug, phone){
-        const cockpit = buildCockpitUrl(slug, phone);
-        el.btnCockpit.href = cockpit;
+      function setOpenLink(){
+        el.btnCockpit.href = CLEAN_URLS.home;
         el.btnCockpit.classList.remove("hidden");
-        el.btnAbos.href = buildAbosUrl(slug, phone);
-        refreshMobileLinks(slug, phone);
+        applyCleanLinks();
       }
 
-      function hydrateFromUrlOrSession(){
-        const qSlug = readSavedSlug();
-        const qPhone = readSavedPhone();
+      function hydrateSessionState(){
+        cleanVisibleUrl();
+        applyCleanLinks();
+
         const s = loadSession();
-
-        if (qSlug) el.slug.value = qSlug;
-        else if (s?.slug) el.slug.value = s.slug;
-
-        if (qPhone) el.phone.value = qPhone;
-        else if (s?.phone) el.phone.value = s.phone;
-
-        refreshMobileLinks(qSlug || s?.slug || "", qPhone || s?.phone || "");
 
         if (s && sessionStillValid(s)){
           el.sessionInfo.textContent = "Active";
-          if (s.slug) setOpenLink(s.slug, s.phone);
+          setOpenLink();
           setStatus("Session déjà active. Tu peux ouvrir directement l’accueil.", "ok");
-        } else {
-          el.sessionInfo.textContent = "Aucune";
-          el.btnAbos.href = buildAbosUrl(qSlug, qPhone);
+          return;
+        }
+
+        const rememberedPhone = readSavedPhone();
+        el.sessionInfo.textContent = rememberedPhone ? "Appareil connu" : "Aucun";
+
+        if (rememberedPhone){
+          setStatus("Appareil reconnu. Entre ton code pour rouvrir ton espace.", "");
+        }else{
+          setStatus("Prêt. Entre ton téléphone et ton code.", "");
         }
       }
 
       async function resolvePhoneBySlug(slug){
+        const s = normSlug(slug);
+        if (!s) return "";
+
         const { data, error } = await supabase
           .from("digiy_subscriptions_public")
           .select("phone,module,slug")
-          .eq("slug", slug)
-          .limit(1)
-          .maybeSingle();
-
-        if (error) throw error;
-        if (!data) return null;
-        return normPhone(data.phone);
-      }
-
-      async function resolveSlugByPhone(phone){
-        const { data, error } = await supabase
-          .from("digiy_subscriptions_public")
-          .select("phone,module,slug")
-          .eq("phone", phone)
+          .eq("slug", s)
           .eq("module", MODULE)
           .limit(1)
           .maybeSingle();
 
         if (error) throw error;
-        if (!data) return null;
+        if (!data) return "";
+        return normPhone(data.phone);
+      }
+
+      async function resolveSlugByPhone(phone){
+        const p = normPhone(phone);
+        if (!p) return "";
+
+        const { data, error } = await supabase
+          .from("digiy_subscriptions_public")
+          .select("phone,module,slug")
+          .eq("phone", p)
+          .eq("module", MODULE)
+          .limit(1)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) return "";
         return normSlug(data.slug);
       }
 
@@ -733,24 +746,23 @@
       }
 
       async function verifyPin(phone, pin){
+        const p = normPhone(phone);
+
         const { data, error } = await supabase.rpc("digiy_verify_pin", {
-          p_phone: phone,
+          p_phone: p,
           p_module: MODULE,
           p_pin: pin
         });
 
         if (error) throw error;
-
-        if (!data) {
-          return { ok:false, reason:"pin_refuse" };
-        }
+        if (!data) return { ok:false, reason:"pin_refuse" };
 
         if (typeof data === "object" && !Array.isArray(data)) {
           return {
             ok: data.ok === true || data.ok === "t" || data.ok === "true",
             reason: data.reason || (data.ok ? "pin_ok" : "pin_refuse"),
             slug: data.slug || "",
-            phone: data.phone || phone,
+            phone: data.phone || p,
             module: data.module || MODULE,
             label: data.label || ""
           };
@@ -759,23 +771,25 @@
         if (Array.isArray(data)) {
           if (!data.length) return { ok:false, reason:"pin_refuse" };
           const first = data[0];
+
           if (typeof first === "object" && first !== null) {
             return {
               ok: first.ok === true || first.ok === "t" || first.ok === "true",
               reason: first.reason || (first.ok ? "pin_ok" : "pin_refuse"),
               slug: first.slug || "",
-              phone: first.phone || phone,
+              phone: first.phone || p,
               module: first.module || MODULE,
               label: first.label || ""
             };
           }
+
           if (typeof first === "string") {
             const tuple = parseCompositeTuple(first);
             if (tuple && tuple.length) {
               return {
                 ok: tuple[0] === "t" || tuple[0] === "true",
                 module: tuple[1] || MODULE,
-                phone: normPhone(tuple[2] || phone),
+                phone: normPhone(tuple[2] || p),
                 label: tuple[3] || "",
                 session_token: tuple[4] || "",
                 slug: "",
@@ -792,7 +806,7 @@
             return {
               ok: tuple[0] === "t" || tuple[0] === "true",
               module: tuple[1] || MODULE,
-              phone: normPhone(tuple[2] || phone),
+              phone: normPhone(tuple[2] || p),
               label: tuple[3] || "",
               session_token: tuple[4] || "",
               slug: "",
@@ -802,11 +816,11 @@
           }
 
           if (data.trim() === "t" || data.trim() === "true") {
-            return { ok:true, reason:"pin_ok", phone, module:MODULE };
+            return { ok:true, reason:"pin_ok", phone:p, module:MODULE };
           }
 
           if (data.trim() === "f" || data.trim() === "false") {
-            return { ok:false, reason:"pin_refuse", phone, module:MODULE };
+            return { ok:false, reason:"pin_refuse", phone:p, module:MODULE };
           }
         }
 
@@ -815,73 +829,63 @@
 
       async function openWithPin(){
         try{
-          const slug = normSlug(el.slug.value);
-          let phone = normPhone(el.phone.value);
+          const visiblePhone = normPhone(el.phone.value);
+          const rememberedPhone = readSavedPhone();
+          const rememberedSlug = readSavedSlug();
+          let phone = visiblePhone || rememberedPhone;
           const pin = String(el.pin.value || "").trim();
 
-          if (!slug && !phone){
-            setStatus("Renseigne au moins ton identifiant ou ton téléphone.", "err");
+          if (!phone && rememberedSlug){
+            phone = await resolvePhoneBySlug(rememberedSlug);
+          }
+
+          if (!phone){
+            setStatus("Entre ton téléphone et ton code.", "err");
             return;
           }
 
           if (!pin){
-            setStatus("Entre ton code PIN.", "err");
+            setStatus("Entre ton code.", "err");
             return;
           }
 
           el.btnOpen.disabled = true;
-          setStatus("Vérification du PIN en cours...");
-
-          if (!phone && slug){
-            const resolvedPhone = await resolvePhoneBySlug(slug);
-            if (!resolvedPhone){
-              setStatus("Identifiant inconnu.", "err");
-              el.btnOpen.disabled = false;
-              return;
-            }
-            phone = resolvedPhone;
-            el.phone.value = phone;
-          }
+          setStatus("Vérification du code en cours...");
 
           const result = await verifyPin(phone, pin);
 
           if (!result || result.ok !== true){
-            const reason = result?.reason || "pin_refuse";
-
-            if (reason === "subscription_inactive") {
-              setStatus("Abonnement inactif. Passe par l’activation du module.", "err");
-            } else {
-              setStatus("Code invalide.", "err");
-            }
-
+            setStatus("Accès non reconnu. Vérifie tes informations.", "err");
             el.btnOpen.disabled = false;
             return;
           }
 
-          let finalSlug = normSlug(result.slug || slug);
           const finalPhone = normPhone(result.phone || phone);
+          let finalSlug = normSlug(result.slug || rememberedSlug);
 
           if (!finalSlug && finalPhone){
             finalSlug = await resolveSlugByPhone(finalPhone);
           }
 
-          if (!finalSlug){
-            finalSlug = slug || `build-${finalPhone}`;
+          if (!finalSlug && finalPhone){
+            finalSlug = `build-${finalPhone}`;
           }
 
-          const session = saveSession({
+          saveSession({
             slug: finalSlug,
             phone: finalPhone,
             reason: "pin_ok"
           });
 
+          el.phone.value = "";
+          el.pin.value = "";
           el.sessionInfo.textContent = "Active";
-          setOpenLink(session.slug, session.phone);
-          setStatus("Code validé. Ouverture de l’accueil BUILD...", "ok");
+          setOpenLink();
+          setStatus("Code validé. Ouverture de l’accueil...", "ok");
 
           setTimeout(() => {
-            window.location.href = buildCockpitUrl(session.slug, session.phone);
-          }, 500);
+            window.location.href = CLEAN_URLS.home;
+          }, 350);
 
         } catch (err){
           console.error("[BUILD PIN] erreur", err);
@@ -899,11 +903,13 @@
 
       el.btnOpen.addEventListener("click", openWithPin);
 
-      el.pin.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") openWithPin();
+      [el.phone, el.pin].forEach((node) => {
+        node.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") openWithPin();
+        });
       });
 
-      hydrateFromUrlOrSession();
+      hydrateSessionState();
     })();
   </script>
 </body>
