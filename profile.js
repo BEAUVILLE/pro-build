@@ -3,7 +3,7 @@
 
   const MODULE = "BUILD";
   const TABLE = "digiy_build_public_profiles";
-  const SUPPORT_PHONE = "221771342889";
+  const SUPPORT_URL = "https://commencer-a-payer.digiylyfe.com/?module=BUILD";
   const DRAFT_PREFIX = "DIGIY_BUILD_PROFILE_DRAFT::";
   const CACHE_PREFIX = "DIGIY_BUILD_PROFILE_CACHE::";
 
@@ -162,14 +162,36 @@
     return fallback;
   }
 
+  function cleanRouteUrl(path, fallback = "./dashboard-pro.html") {
+    const blocked = new Set(["phone", "tel", "build_tel", "slug", "return", "from"]);
+
+    try {
+      const url = new URL(String(path || fallback), window.location.href);
+      blocked.forEach((key) => url.searchParams.delete(key));
+
+      if (url.origin === window.location.origin) {
+        return url.pathname + url.search + url.hash;
+      }
+
+      return url.toString();
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   function buildSafeUrl(path, params = {}) {
     try {
       const url = new URL(path, window.location.href);
+      const blocked = new Set(["phone", "tel", "build_tel", "slug", "return", "from"]);
+
       Object.entries(params).forEach(([key, value]) => {
+        if (blocked.has(key)) return;
         if (value !== undefined && value !== null && String(value).trim() !== "") {
           url.searchParams.set(key, String(value));
         }
       });
+
+      blocked.forEach((key) => url.searchParams.delete(key));
       return url.pathname + url.search + url.hash;
     } catch (_) {
       return path || "#";
@@ -177,10 +199,11 @@
   }
 
   function dashboardUrl() {
-    return buildSafeUrl("./dashboard-pro.html", {
-      slug: state.slug,
-      phone: state.phone
-    });
+    return cleanRouteUrl("./dashboard-pro.html");
+  }
+
+  function serviceUrl() {
+    return cleanRouteUrl("./cockpit.html");
   }
 
   function publicOrigin() {
@@ -195,17 +218,31 @@
     }
   }
 
-  function inferredProfileUrl() {
-    const explicit = maybeUrl(els.profile_url?.value);
-    if (explicit) return explicit;
+  function cleanPublicUrl(raw) {
+    const explicit = maybeUrl(raw);
+    if (!explicit) return "";
 
     try {
-      const url = new URL("/", publicOrigin());
-      if (state.slug) url.searchParams.set("slug", state.slug);
+      const url = new URL(explicit);
+      ["phone", "tel", "build_tel", "slug", "return", "from"].forEach((key) => {
+        url.searchParams.delete(key);
+      });
       return url.toString();
     } catch (_) {
       return "";
     }
+  }
+
+  function inferredProfileUrl() {
+    const explicit = cleanPublicUrl(els.profile_url?.value);
+    if (explicit) return explicit;
+
+    const rowUrl = cleanPublicUrl(
+      state.row?.profile_url || state.row?.public_url || state.row?.url || ""
+    );
+    if (rowUrl) return rowUrl;
+
+    return "";
   }
 
   function listingUrl() {
@@ -280,13 +317,14 @@
   }
 
   function supportUrl() {
-    const txt = encodeURIComponent(
-      "Support ENTREPRENEUR MULTI SERVICES.\n" +
-      "Identifiant : " + (state.slug || "") + "\n" +
-      "Téléphone : " + (state.phone || "") + "\n" +
-      "Besoin d’aide sur la fiche."
-    );
-    return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
+    try {
+      const url = new URL(SUPPORT_URL);
+      url.searchParams.set("module", MODULE);
+      url.searchParams.set("besoin", "support-fiche-service");
+      return url.toString();
+    } catch (_) {
+      return "./pin.html";
+    }
   }
 
   function getSupabaseClient() {
@@ -312,7 +350,7 @@
     const phone = normPhone(els.phone?.value || state.phone);
     const whatsapp = normPhone(els.whatsapp?.value || phone);
     const tagsArr = parseTags(els.tags?.value);
-    const profileUrl = maybeUrl(els.profile_url?.value) || inferredProfileUrl();
+    const profileUrl = cleanPublicUrl(els.profile_url?.value) || inferredProfileUrl();
 
     return {
       slug,
@@ -362,7 +400,7 @@
     els.phone.value = normPhone(firstOf(safe, ["phone", "owner_phone", "contact_phone"], state.phone));
     els.bio.value = text(firstOf(safe, ["bio", "description", "short_description", "about"]));
     els.photo_url.value = text(firstOf(safe, ["photo_url", "photo", "image_url", "cover_url"]));
-    els.profile_url.value = maybeUrl(firstOf(safe, ["profile_url", "public_url", "url"])) || inferredProfileUrl();
+    els.profile_url.value = cleanPublicUrl(firstOf(safe, ["profile_url", "public_url", "url"])) || inferredProfileUrl();
     els.badge.value = text(firstOf(safe, ["badge", "tagline", "headline_badge"]));
     els.hub_badge.value = text(firstOf(safe, ["hub_badge", "public_badge"]));
     els.price_label.value = text(firstOf(safe, ["price_label", "price_text", "offer_label"]));
@@ -575,7 +613,7 @@
 
     const form = buildFormState();
     if (!form.slug) {
-      setMsg("Ajoute un identifiant ou un nom visible pour générer ta fiche.", "bad");
+      setMsg("Ajoute un repère ou un nom visible pour générer ta fiche.", "bad");
       els.slug.focus();
       return;
     }
@@ -631,7 +669,7 @@
       els.profile_url.value = inferredProfileUrl();
     }
     saveDraft();
-    setMsg("Identifiant régénéré. Vérifie-le avant d’enregistrer.");
+    setMsg("Repère régénéré. Vérifie-le avant d’enregistrer.");
   }
 
   async function copyProfileLink() {
@@ -658,7 +696,7 @@
   function openProfileLink() {
     const url = inferredProfileUrl();
     if (!url) {
-      setMsg("Ajoute ou génère d’abord un lien de fiche.", "bad");
+      setMsg("Ajoute d’abord un lien public de fiche, ou ouvre la vitrine.", "bad");
       return;
     }
     window.open(url, "_blank", "noopener");
@@ -671,7 +709,7 @@
 
   function bindUi() {
     els.btnBack.addEventListener("click", () => {
-      window.location.href = dashboardUrl();
+      window.location.href = serviceUrl();
     });
 
     els.btnSave.addEventListener("click", saveProfile);
