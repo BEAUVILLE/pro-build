@@ -1,56 +1,56 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#071711" />
-  <title>Je propose mes services — Accueil</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>Je propose mes services — Service</title>
   <meta
     name="description"
-    content="Je propose mes services — Accueil mobile : demandes, service, notes rapides, argent et plus."
+    content="Je propose mes services — demandes, service, devis, chantiers, notes rapides et Mon argent."
   />
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
-  <script src="./guard.js"></script>
+  <script src="./guard.js?v=build-guard-v10"></script>
 
   <style>
     :root{
-      --bg:#071711;
-      --bg2:#0b241a;
-      --card:rgba(8,30,22,.90);
-      --line:rgba(255,255,255,.12);
-      --text:#ecfff5;
-      --muted:rgba(236,255,245,.72);
+      --bg:#061b14;
+      --bg2:#0a2b1f;
+      --card:rgba(8,30,22,.88);
+      --line:rgba(255,255,255,.14);
+      --text:#eafff1;
+      --muted:rgba(234,255,241,.74);
       --gold:#facc15;
       --ok:#22c55e;
-      --warn:#f59e0b;
       --bad:#fb7185;
       --info:#38bdf8;
-      --accent:#6366f1;
+      --warn:#f59e0b;
+      --violet:#818cf8;
       --shadow:0 18px 55px rgba(0,0,0,.45);
       --radius:22px;
     }
 
     *{box-sizing:border-box}
+
     html,body{margin:0;padding:0}
 
     body{
-      min-height:100vh;
       color:var(--text);
       font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
         radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(99,102,241,.15), transparent 35%),
         linear-gradient(135deg,var(--bg),var(--bg2));
+      min-height:100vh;
       padding:16px 16px calc(104px + env(safe-area-inset-bottom,0px));
     }
 
-    .wrap{max-width:1100px;margin:0 auto}
+    .wrap{max-width:1160px;margin:0 auto}
 
-    .topbar{
+    .top{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -71,12 +71,12 @@
     }
 
     .brand-logo{
-      width:74px;
-      height:74px;
-      border-radius:20px;
+      width:78px;
+      height:78px;
+      border-radius:22px;
       object-fit:cover;
       background:#fff;
-      border:1px solid rgba(250,204,21,.28);
+      border:1px solid rgba(250,204,21,.30);
       box-shadow:0 14px 34px rgba(0,0,0,.28);
       flex:0 0 auto;
     }
@@ -96,37 +96,70 @@
       line-height:1.55;
     }
 
-    .right{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      align-items:center;
-    }
-
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:9px 12px;
-      border-radius:999px;
       border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
+      background:rgba(250,204,21,.10);
+      padding:8px 11px;
+      border-radius:999px;
       font-size:12px;
       font-weight:900;
       white-space:nowrap;
     }
 
-    .pill b{color:var(--text)}
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    @media(min-width:980px){
+      .grid{grid-template-columns:1.18fr .82fr}
+    }
+
+    .card{
+      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    .title{
+      font-weight:1000;
+      letter-spacing:.04em;
+      font-size:12px;
+      color:rgba(234,255,241,.90);
+      text-transform:uppercase;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
 
     .btn{
-      padding:11px 14px;
+      flex:1;
+      min-width:180px;
+      padding:12px 14px;
       border-radius:14px;
       border:1px solid var(--line);
       background:rgba(0,0,0,.18);
       color:var(--text);
-      font-weight:1000;
+      font-weight:900;
       cursor:pointer;
       text-decoration:none;
       display:inline-flex;
@@ -138,8 +171,8 @@
     }
 
     .btn:hover{
+      border-color:rgba(250,204,21,.55);
       transform:translateY(-1px);
-      border-color:rgba(250,204,21,.45);
     }
 
     .btn:disabled{
@@ -149,8 +182,14 @@
     }
 
     .btn.primary{
-      border:none;
       background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;
+      border:none;
+    }
+
+    .btn.profile{
+      border:none;
+      background:linear-gradient(90deg, rgba(56,189,248,.92), rgba(34,197,94,.88));
       color:#062015;
     }
 
@@ -160,23 +199,22 @@
       color:#eef1ff;
     }
 
-    .btn.profile{
-      border:none;
-      background:linear-gradient(90deg, rgba(56,189,248,.92), rgba(34,197,94,.88));
-      color:#062015;
+    .btn.danger{
+      border-color:rgba(251,113,133,.35);
+      background:rgba(251,113,133,.10);
     }
 
-    .btn.danger{
-      background:rgba(251,113,133,.10);
-      border-color:rgba(251,113,133,.30);
+    .btn.warn{
+      border-color:rgba(245,158,11,.35);
+      background:rgba(245,158,11,.10);
     }
 
     .lock{
       display:none;
       margin-top:12px;
-      padding:18px;
-      border-radius:22px;
-      border:1px solid rgba(250,204,21,.28);
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(250,204,21,.26);
       background:rgba(250,204,21,.08);
       box-shadow:var(--shadow);
     }
@@ -186,231 +224,465 @@
     .lock .big{
       font-size:16px;
       font-weight:1000;
-      color:#fff0ad;
+      color:#fff1a8;
       margin-bottom:6px;
     }
 
     .lock .small{
       color:#fde68a;
-      line-height:1.6;
+      line-height:1.55;
       font-size:13px;
     }
 
-    .lock .row{
+    .kpis{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    @media(min-width:520px){
+      .kpis{grid-template-columns:repeat(2,1fr)}
+    }
+
+    .kpi{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+    }
+
+    .kpi .k{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .kpi .v{
+      font-size:22px;
+      font-weight:1000;
+      margin-top:6px;
+    }
+
+    .kpi .s{
+      font-size:12px;
+      color:rgba(234,255,241,.80);
+      margin-top:4px;
+      line-height:1.45;
+    }
+
+    .split{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    select,input,textarea{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      padding:10px 12px;
+      outline:none;
+      width:100%;
+      font:inherit;
+      font-family:inherit;
+    }
+
+    input,select{font-weight:800}
+    textarea{
+      min-height:90px;
+      resize:vertical;
+      font-weight:700;
+    }
+
+    .list{
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      overflow:hidden;
+    }
+
+    .item{
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.14);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .item:first-child{border-top:none}
+
+    .a{
+      font-weight:1000;
+      line-height:1.35;
+    }
+
+    .b{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+      line-height:1.5;
+    }
+
+    .badge{
+      font-size:12px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.10);
+      white-space:nowrap;
+    }
+
+    .badge.ok{
+      background:rgba(34,197,94,.12);
+      border-color:rgba(34,197,94,.35);
+    }
+
+    .badge.bad{
+      background:rgba(251,113,133,.12);
+      border-color:rgba(251,113,133,.35);
+    }
+
+    .badge.neutral{
+      background:rgba(148,163,184,.10);
+      border-color:rgba(148,163,184,.28);
+    }
+
+    .badge.info{
+      background:rgba(56,189,248,.12);
+      border-color:rgba(56,189,248,.35);
+    }
+
+    .tinyrow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .tinybtn{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      font-family:inherit;
+    }
+
+    .tinybtn:hover{
+      border-color:rgba(250,204,21,.55);
+    }
+
+    .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+
+    .quickBuild{
+      margin-top:12px;
+      border-color:rgba(250,204,21,.22);
+      background:
+        radial-gradient(420px 170px at 100% 0%, rgba(250,204,21,.10), transparent 70%),
+        linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+    }
+
+    .quickBuildTitle{
+      font-weight:1000;
+      letter-spacing:.04em;
+      font-size:12px;
+      color:rgba(234,255,241,.90);
+      text-transform:uppercase;
+    }
+
+    .quickBuildSub{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:850;
+      line-height:1.45;
+      font-size:13px;
+    }
+
+    .quickGuide{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      display:grid;
+      gap:8px;
+    }
+
+    .quickGuide strong{
+      color:#fde68a;
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    .quickGuide p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.45;
+    }
+
+    .quickExamples{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .quickExamples button{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .quickExamples button:hover{
+      border-color:rgba(250,204,21,.55);
+      color:#fde68a;
+    }
+
+    .quickDraft{
+      display:none;
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(34,197,94,.35);
+      background:rgba(34,197,94,.10);
+      color:#bbf7d0;
+      font-size:13px;
+      font-weight:850;
+      line-height:1.5;
+    }
+
+    .quickDraft strong{color:#fff}
+
+    .memoryBox{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      display:grid;
+      gap:10px;
+    }
+
+    .memoryHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .memoryTitle{
+      font-size:13px;
+      font-weight:1000;
+      color:#fde68a;
+      line-height:1.25;
+    }
+
+    .memoryHelp{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.4;
+    }
+
+    .memoryList{
+      display:grid;
+      gap:8px;
+    }
+
+    .memoryItem{
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.15);
+      display:grid;
+      gap:5px;
+    }
+
+    .memoryItemTop{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    .memoryItemTitle{
+      font-size:13px;
+      font-weight:1000;
+      color:var(--text);
+      line-height:1.35;
+    }
+
+    .memoryItemAmount{
+      font-size:12px;
+      font-weight:1000;
+      color:#bbf7d0;
+      white-space:nowrap;
+    }
+
+    .memoryItemMeta{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.35;
+    }
+
+    .memoryEmpty{
+      padding:10px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.16);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.45;
+    }
+
+    .memoryPayAction{
+      margin-top:6px;
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      min-height:36px;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.32);
+      background:rgba(250,204,21,.12);
+      color:#fde68a;
+      font-size:12px;
+      font-weight:1000;
+      text-decoration:none;
+    }
+
+    .memoryPayHint{
+      color:rgba(234,255,241,.70);
+      font-size:11px;
+      font-weight:800;
+      line-height:1.35;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      background:rgba(0,0,0,.60);
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:1000;
+    }
+
+    .modal .box{
+      width:min(860px,94vw);
+      background:linear-gradient(145deg,rgba(11,42,31,.98),rgba(6,35,25,.98));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 24px 60px rgba(0,0,0,.65);
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:6px 0;
+      font-weight:800;
+    }
+
+    .fgrid{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    @media(min-width:820px){
+      .fgrid{grid-template-columns:1fr 1fr}
+    }
+
+    .actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       margin-top:12px;
     }
 
-    .grid{
-      display:grid;
-      gap:12px;
-      margin-top:12px;
+    .actions button{
+      flex:1;
+      min-width:180px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.12);
+      color:var(--text);
+      font-weight:1000;
+      cursor:pointer;
+      font-family:inherit;
     }
 
-    @media(min-width:960px){
-      .grid{grid-template-columns:1.02fr .98fr}
+    .actions .primary{
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;
+      border:none;
+    }
+
+    .close{
+      margin-top:10px;
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      font-weight:1000;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .empty{
+      padding:14px;
+      color:var(--muted);
+      line-height:1.55;
     }
 
     .hidden{display:none!important}
 
-    .card{
-      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:15px;
-    }
-
-    .card h3{
-      margin:0 0 8px 0;
-      font-size:14px;
-      letter-spacing:.03em;
-    }
-
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .statusDot{
-      width:11px;
-      height:11px;
-      border-radius:999px;
-      background:var(--warn);
-      box-shadow:0 0 0 4px rgba(245,158,11,.10);
-      flex:0 0 auto;
-    }
-
-    .statusDot.ok{
-      background:var(--ok);
-      box-shadow:0 0 0 4px rgba(34,197,94,.10);
-    }
-
-    .statusDot.bad{
-      background:var(--bad);
-      box-shadow:0 0 0 4px rgba(251,113,133,.10);
-    }
-
-    .muted{color:var(--muted)}
-
-    .mini{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      font-size:13px;
-      color:var(--muted);
-      font-weight:750;
-      line-height:1.45;
-    }
-
-    .hr{
-      height:1px;
-      background:rgba(255,255,255,.10);
-      margin:12px 0;
-    }
-
-    .bigMoney{
-      font-size:32px;
-      font-weight:1000;
-      letter-spacing:-.7px;
-      margin:4px 0 3px 0;
-      line-height:1.1;
-    }
-
-    .boostBox{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px;
-      border-radius:16px;
-      background:rgba(99,102,241,.12);
-      border:1px solid rgba(99,102,241,.24);
-    }
-
-    .boostActions{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width:170px;
-    }
-
-    .backupBox{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px;
-      border-radius:16px;
-      background:rgba(34,197,94,.08);
-      border:1px solid rgba(34,197,94,.20);
-    }
-
-    .backupActions{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width:190px;
-    }
-
-    .notifList{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top:8px;
-    }
-
-    .notif{
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.14);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .tag{
-      font-size:12px;
-      font-weight:1000;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      color:var(--muted);
-      white-space:nowrap;
-    }
-
-    .tag.ok{
-      color:#ccffd9;
-      border-color:rgba(34,197,94,.35);
-      background:rgba(34,197,94,.08);
-    }
-
-    .tag.warn{
-      color:#ffe2b0;
-      border-color:rgba(245,158,11,.35);
-      background:rgba(245,158,11,.10);
-    }
-
-    .tag.info{
-      color:#d5e6ff;
-      border-color:rgba(56,189,248,.35);
-      background:rgba(56,189,248,.10);
-    }
-
-    .footer{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .smallLink{
-      color:var(--muted);
-      text-decoration:none;
-      font-weight:800;
-    }
-
-    .smallLink:hover{color:var(--text)}
-
     @media(max-width:680px){
       .brand-logo{
-        width:66px;
-        height:66px;
-        border-radius:18px;
-      }
-
-      .right{
-        width:100%;
-      }
-
-      .right .btn,
-      .lock .row .btn,
-      .backupActions .btn,
-      .boostActions .btn{
-        width:100%;
-      }
-
-      .backupBox,
-      .boostBox{
-        flex-direction:column;
-      }
-
-      .backupActions,
-      .boostActions{
-        width:100%;
-        min-width:100%;
+        width:68px;
+        height:68px;
       }
     }
 
-    #buildNotes, #buildService, #buildDemandes{scroll-margin-top:96px}
+    #demandes, #service, #quickBuildNote{scroll-margin-top:96px}
 
     .bottomNav{
       position:fixed;
@@ -419,7 +691,7 @@
       bottom:0;
       z-index:99990;
       padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-      background:rgba(7,23,17,.94);
+      background:rgba(6,27,20,.94);
       border-top:1px solid rgba(255,255,255,.10);
       backdrop-filter:blur(16px);
       -webkit-backdrop-filter:blur(16px);
@@ -438,7 +710,7 @@
       place-items:center;
       align-content:center;
       gap:3px;
-      color:rgba(236,255,245,.70);
+      color:rgba(234,255,241,.70);
       font-size:11px;
       font-weight:950;
       text-align:center;
@@ -453,296 +725,339 @@
       box-shadow:0 12px 26px rgba(34,197,94,.18);
     }
 
-    .mobileHeroActions{
+    .serviceFastRow{
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
       gap:10px;
       margin-top:12px;
     }
 
-    .quickBuild{
-      border-color:rgba(250,204,21,.24);
-      background:
-        radial-gradient(460px 180px at 100% 0%, rgba(250,204,21,.10), transparent 70%),
-        linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
-    }
-
-    .quickBuild textarea{
-      width:100%;
-      min-height:92px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.18);
-      color:var(--text);
-      padding:12px;
-      font:inherit;
-      font-weight:850;
-      outline:none;
-      resize:vertical;
-    }
-
-    .noteChips{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .noteChip{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      border-radius:999px;
-      padding:8px 10px;
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      font-family:inherit;
-    }
-
-    .draftBox{
-      display:none;
-      margin-top:10px;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid rgba(34,197,94,.28);
-      background:rgba(34,197,94,.08);
-      color:#d9ffe8;
-      font-size:13px;
-      font-weight:850;
-      line-height:1.55;
-    }
-
     @media(max-width:680px){
-      .mobileHeroActions{grid-template-columns:1fr 1fr}
-      .footer{justify-content:stretch}
-      .footer .btn{width:100%}
+      .serviceFastRow{grid-template-columns:1fr 1fr}
+      .top-actions .btn{width:100%}
     }
 
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <div class="topbar">
-      <div class="brand">
-        <img
-          class="brand-logo"
-          src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
-          alt="Logo DIGIYLYFE"
-        />
-        <div>
-          <h1>JE PROPOSE MES SERVICES — Accueil</h1>
-          <div class="sub">
-            Demandes, service, notes, argent et sauvegardes.<br>
-            Session personnelle gardée ici pendant 8 heures.
-          </div>
+  <div class="top">
+    <div class="brand">
+      <img
+        class="brand-logo"
+        src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+        alt="Logo DIGIYLYFE"
+      />
+      <div>
+        <h1>🧰 Je propose mes services — Service</h1>
+        <div class="sub">
+          Identifiant : <b id="slug">—</b><br>
+          Session : <b id="stat">initialisation…</b> · accès privé 8h après ton code
         </div>
-      </div>
-
-      <div class="right">
-        <div class="pill" id="pillStatus">Accès : <b>…</b></div>
-        <button class="btn dashboard" id="btnCockpit" type="button">🧰 Service</button>
-        <button class="btn profile" id="btnSettings" type="button">⚙️ Plus</button>
-        <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
       </div>
     </div>
 
-    <div class="card" id="buildService" style="margin-top:12px">
-      <h3>Accueil terrain</h3>
-      <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6">
-        En deux secondes : suivre les demandes, ouvrir le service, noter une dépense ou un acompte, puis garder Mon argent clair.
-      </div>
-      <div class="mobileHeroActions">
-        <a class="btn primary" id="quickService" href="./cockpit.html">🧰 Service</a>
-        <a class="btn" id="quickDemandes" href="./cockpit.html#demandes">📋 Demandes</a>
-        <a class="btn" id="quickNotes" href="#buildNotes">✍️ Notes</a>
-        <a class="btn profile" id="quickPlus" href="./profile.html">⚙️ Plus</a>
-      </div>
-    </div>
-
-    <div id="lockBox" class="lock">
-      <div class="big">🔒 Accès protégé</div>
-      <div class="small" id="lockText">
-        Cette page fait partie de ton espace interne. Ouvre ta session avec ton code d’accès pour retrouver ton activité.
-      </div>
-      <div class="row">
-        <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon code</a>
-        <a class="btn" id="btnManageSubLocked" href="https://commencer-a-payer.digiylyfe.com/">💳 Mon abonnement</a>
-      </div>
-    </div>
-
-    <div id="workspace" class="grid hidden">
-
-      <div class="card">
-        <h3>Statut et accès</h3>
-
-        <div class="row">
-          <div class="statusDot" id="dot"></div>
-          <div style="flex:1">
-            <div style="font-weight:1000" id="statusLine">Chargement…</div>
-            <div class="muted" style="font-weight:750;font-size:13px;margin-top:2px" id="expiryLine">—</div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="mini" id="metaLine">
-          <span>Formule : —</span>
-          <span>•</span>
-          <span>Paiement : —</span>
-        </div>
-
-        <div class="footer">
-          <button class="btn" id="btnManageSub" type="button">Mon abonnement</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Mon argent</h3>
-
-        <div class="bigMoney" id="moneyMonth">— FCFA</div>
-        <div class="mini" id="moneyMeta">
-          <span id="txCount">— opérations</span>
-          <span>•</span>
-          <span id="todayHint">—</span>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="boostBox">
-          <div>
-            <div style="font-weight:1000;margin-bottom:4px">🚀 Visibilité service</div>
-            <div class="muted" style="font-weight:750;font-size:13px" id="boostText">
-              +50% d’apparition • 7 jours • 5 000 FCFA
-            </div>
-            <div class="muted" style="font-weight:750;font-size:12px;margin-top:6px" id="boostStatus">
-              Statut : —
-            </div>
-          </div>
-
-          <div class="boostActions">
-            <button class="btn primary" id="btnBoost" type="button">Activer</button>
-            <button class="btn" id="btnBoostInfo" type="button">Détails</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card quickBuild" id="buildNotes" style="grid-column:1/-1">
-        <h3>✍️ Notes rapides → Mon argent</h3>
-        <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6;margin-bottom:10px">
-          Matériel, acompte, main d’œuvre, transport, client qui doit : une phrase suffit. DIGIY prépare la trace vers Mon argent.
-        </div>
-
-        <textarea id="buildQuickNote" placeholder="Ex : Achat ciment 8000 cash"></textarea>
-
-        <div class="noteChips">
-          <button class="noteChip" type="button">Réparation robinet 15000 cash</button>
-          <button class="noteChip" type="button">Achat ciment 8000 cash</button>
-          <button class="noteChip" type="button">Main d’œuvre 25000 wave</button>
-          <button class="noteChip" type="button">Client doit 10000</button>
-          <button class="noteChip" type="button">Transport matériel 3000</button>
-          <button class="noteChip" type="button">Acompte chantier 50000</button>
-        </div>
-
-        <div class="footer">
-          <button class="btn primary" id="btnPrepareBuildNote" type="button">Préparer</button>
-          <a class="btn" id="btnSendBuildPay" href="https://pro-pay.digiylyfe.com/admin.html">Envoyer vers Mon argent</a>
-        </div>
-
-        <div class="draftBox" id="buildNoteDraft"></div>
-      </div>
-
-      <div class="card" style="grid-column:1/-1">
-        <h3>💾 Mes devis gardés</h3>
-
-        <div class="backupBox">
-          <div>
-            <div style="font-weight:1000">Devis gardés sur ce téléphone</div>
-            <div class="muted" style="font-weight:750;font-size:13px;line-height:1.55;margin-top:8px" id="backupText">
-              Vérification des copies gardées ici…
-            </div>
-            <div class="muted" style="font-weight:800;font-size:13px;line-height:1.55;margin-top:8px" id="backupCount">
-              —
-            </div>
-          </div>
-
-          <div class="backupActions">
-            <button class="btn primary" id="btnExportBackup" type="button">⬇️ Sauvegarder une copie de mes devis</button>
-            <button class="btn" id="btnDriveGuide" type="button">☁️ Rappel Drive</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="grid-column:1/-1">
-        <h3>Ce qui demande attention</h3>
-        <div class="muted" style="font-weight:750;margin-bottom:10px" id="actionDesc">
-          Le geste utile maintenant.
-        </div>
-
-        <div class="row" style="justify-content:space-between">
-          <div class="muted" style="font-weight:800" id="actionHint">
-            Ouvre ton service, tes demandes ou tes notes rapides.
-          </div>
-          <button class="btn primary" id="btnPrimaryAction" type="button">🧰 Ouvrir mon service</button>
-        </div>
-
-        <div class="hr"></div>
-
-        <h3>À surveiller</h3>
-        <div class="notifList" id="notifList"></div>
-
-        <div class="footer">
-          <a class="smallLink" href="#" id="linkSupport">Support</a>
-          <a class="smallLink" href="#" id="linkPayments">Mes paiements</a>
-        </div>
-      </div>
-
+    <div class="top-actions">
+      <button class="btn primary" id="btnNew" type="button">➕ Nouveau devis</button>
+      <div class="pill" id="modePill">service terrain</div>
+      <button class="btn dashboard" id="btnDashboard" type="button">🏠 Accueil</button>
+      <button class="btn profile" id="btnProfile" type="button">⚙️ Plus</button>
+      <button class="btn" id="btnHelp" type="button">💬 Support</button>
+      <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
     </div>
   </div>
 
-
-  <nav class="bottomNav" aria-label="Navigation BUILD">
-    <div class="bottomNavInner">
-      <a class="active" id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
-      <a id="bottomDemandes" href="./cockpit.html#demandes"><span class="ico">📋</span><span>Demandes</span></a>
-      <a id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
-      <a id="bottomNotes" href="#buildNotes"><span class="ico">✍️</span><span>Notes</span></a>
-      <a id="bottomMore" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
+  <div class="card" id="service" style="margin-top:12px">
+    <div class="title">Service terrain</div>
+    <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6;margin-top:6px">
+      Ici tu poses un devis, suis une demande, notes une dépense ou un acompte, puis tu gardes la trace propre.
     </div>
-  </nav>
+    <div class="serviceFastRow">
+      <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
+      <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
+      <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
+      <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
+    </div>
+  </div>
+
+  <div id="lockBox" class="lock">
+    <div class="big">🔒 Accès protégé</div>
+    <div class="small" id="lockText">
+      Cette page fait partie de ton espace privé. Ouvre ta session avec ton code d’accès pour gérer tes devis et tes chantiers.
+    </div>
+    <div class="row">
+      <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon code</a>
+      <a class="btn warn" id="btnManageSub" href="https://commencer-a-payer.digiylyfe.com/">💳 Gérer mon abonnement</a>
+    </div>
+  </div>
+
+  <div id="workspace" class="grid hidden">
+
+    <div class="card" id="demandes">
+      <div class="title">⚡ Actions utiles</div>
+      <div class="row">
+        <button class="btn" id="btnJobs" type="button">📋 Voir les demandes</button>
+      </div>
+
+
+      <div class="card quickBuild" id="quickBuildNote">
+        <div class="quickBuildTitle">✍️ Notes rapides</div>
+        <div class="quickBuildSub">Écris comme tu parles. DIGIY prépare la trace vers Mon argent.</div>
+
+        <div class="quickGuide">
+          <strong>Une phrase suffit.</strong>
+          <p>Exemples : dépannage, achat matériel, avance client, main d’œuvre ou client qui doit encore.</p>
+          <div class="quickExamples" id="quickBuildExamples">
+            <button type="button">Dépannage plomberie 15000 cash</button>
+            <button type="button">Achat ciment 12000</button>
+            <button type="button">Avance client 50000 Wave</button>
+            <button type="button">Main d’œuvre 10000</button>
+            <button type="button">Client Moussa doit 20000</button>
+            <button type="button">Réparation porte 8000 cash</button>
+          </div>
+        </div>
+
+        <textarea id="quickBuildInput" placeholder="Ex : Dépannage plomberie 15000 cash"></textarea>
+
+        <div class="row">
+          <button class="btn primary" id="btnQuickBuildPrepare" type="button">Préparer</button>
+          <button class="btn" id="btnQuickBuildConfirm" type="button" style="display:none">✅ Confirmer</button>
+          <button class="btn" id="btnQuickBuildClear" type="button">Effacer</button>
+        </div>
+
+        <div class="quickDraft" id="quickBuildDraft"></div>
+
+        <div class="memoryBox">
+          <div class="memoryHead">
+            <div>
+              <div class="memoryTitle">Aide-mémoire service</div>
+              <div class="memoryHelp">Dernières notes confirmées ici. Elles peuvent nourrir Mon argent.</div>
+            </div>
+            <button class="tinybtn" id="btnQuickBuildMemoryClear" type="button">Vider</button>
+          </div>
+          <div class="memoryList" id="quickBuildMemoryList">
+            <div class="memoryEmpty">Aucune note chantier confirmée pour le moment.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="title">🌡️ Température du service</div>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">À préparer</div>
+          <div class="v" id="kDraft">0</div>
+          <div class="s">devis encore en brouillon</div>
+        </div>
+        <div class="kpi">
+          <div class="k">En attente</div>
+          <div class="v" id="kSent">0</div>
+          <div class="s">devis envoyés au client</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Prêts à démarrer</div>
+          <div class="v" id="kOk">0</div>
+          <div class="s">devis acceptés</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Sur le terrain</div>
+          <div class="v" id="kRun">0</div>
+          <div class="s">chantiers en cours</div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="split">
+        <div class="title" style="flex:1">📋 Demandes, devis et chantiers</div>
+
+        <select id="filter" style="max-width:250px">
+          <option value="all">Tout voir</option>
+          <option value="draft">À préparer</option>
+          <option value="sent">En attente</option>
+          <option value="accepted">Acceptés</option>
+          <option value="running">En cours</option>
+          <option value="done">Terminés</option>
+          <option value="cancelled">Annulés</option>
+        </select>
+
+        <input id="q" placeholder="Recherche : client, téléphone, ville, note…" style="max-width:280px"/>
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="note">
+        <b>Repère utile :</b> tes devis et tes chantiers restent gardés sur cet appareil pour cette activité,
+        tant qu’aucune copie partagée n’a encore été mise en place pour cette partie métier.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">🧭 Mon accès</div>
+
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">Accès en cours</div>
+            <div class="b" id="sessionText">Chargement…</div>
+          </div>
+          <div class="badge info" id="sessionBadge">…</div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="a">Sauvegarde sur cet appareil</div>
+            <div class="b" id="backupText">Vérification…</div>
+          </div>
+          <div class="badge neutral" id="backupBadge">—</div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="a">Accueil rapide</div>
+            <div class="b">Tu peux revenir à l’accueil sans repasser par le code.</div>
+          </div>
+          <button class="tinybtn" id="btnGoDashboard" type="button">🏠 Accueil</button>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="title">🧰 Outils service</div>
+      <div class="row">
+        <button class="btn" id="btnPrint" type="button">🖨️ Imprimer</button>
+        <button class="btn" id="btnWhatsApp" type="button">📲 Écrire au client</button>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="title">Plus utiles</div>
+      <div class="row">
+        <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder une copie</button>
+        <button class="btn danger" id="btnReset" type="button">🧹 Effacer les copies de cet appareil</button>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="title">📣 Besoin d’aide</div>
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">Support DIGIY</div>
+            <div class="b">Assistance rapide si tu bloques sur ton accès ou sur ta fiche.</div>
+          </div>
+          <button class="tinybtn" id="btnSupportInline" type="button">💬 Écrire</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal" id="modalNew">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000" id="modalTitle">➕ Nouveau devis</div>
+      <div class="badge neutral" id="mSlug">—</div>
+    </div>
+
+    <div class="fgrid">
+      <div>
+        <label>Client</label>
+        <input id="client" placeholder="Ex : Mamadou"/>
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="phone" placeholder="22177…"/>
+      </div>
+      <div>
+        <label>Ville / quartier</label>
+        <input id="city" placeholder="Ex : Saly / Dakar / Mbour"/>
+      </div>
+      <div>
+        <label>Type de service</label>
+        <select id="type">
+          <option value="plomberie">Plomberie</option>
+          <option value="electricite">Électricité</option>
+          <option value="maconnerie">Maçonnerie</option>
+          <option value="peinture">Peinture</option>
+          <option value="menuiserie">Menuiserie</option>
+          <option value="clim">Climatisation</option>
+          <option value="soudure">Soudure</option>
+          <option value="aluminium">Aluminium</option>
+          <option value="mecanique">Mécanique</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div>
+        <label>Montant estimé (FCFA)</label>
+        <input id="amount" inputmode="numeric" placeholder="Ex : 120000"/>
+      </div>
+      <div>
+        <label>Date souhaitée</label>
+        <input id="date" type="date"/>
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <label>Description / note</label>
+      <textarea id="note" placeholder="Ex : dépannage, entretien, chantier, matériel, main d’œuvre, délai…"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="save" type="button">✅ Enregistrer</button>
+      <button id="cancel" type="button">Annuler</button>
+    </div>
+
+    <button class="close" id="close" type="button">Fermer</button>
+  </div>
+</div>
+
+
+<nav class="bottomNav" aria-label="Navigation service">
+  <div class="bottomNavInner">
+    <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
+    <a id="bottomDemandes" href="#demandes"><span class="ico">📋</span><span>Demandes</span></a>
+    <a class="active" id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
+    <a id="bottomNotes" href="#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
+    <a id="bottomMore" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
+  </div>
+</nav>
 
 <script>
 (() => {
   "use strict";
 
   const MODULE_CODE = "BUILD";
-  const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
-  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
   const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
+  const SUPPORT_BASE_URL = ABOS_URL;
 
-  const BOOST = {
-    module: "BOOST",
-    plan: "boost_7d",
-    price_xof: 5000,
-    label: "BOOST visibilité"
-  };
-
-  const CURRENT = {
+  const ACCESS = {
     slug: "",
     phone: "",
     live: false
   };
 
+  const EDIT = {
+    id: null
+  };
+
   const $ = (id) => document.getElementById(id);
 
-  function normPhone(v){
-    return String(v || "").replace(/[^\d]/g, "");
+  function uid() {
+    return (crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : ("id_" + Math.random().toString(16).slice(2) + Date.now());
   }
 
-  function normSlug(v){
+  function nowISO() {
+    return new Date().toISOString();
+  }
+
+  function normSlug(v) {
     return String(v || "")
       .trim()
       .toLowerCase()
@@ -752,556 +1067,847 @@
       .replace(/^-|-$/g, "");
   }
 
-  function fmtDateFR(iso){
-    if(!iso) return "—";
+  function normPhone(v) {
+    return String(v || "").replace(/[^\d]/g, "");
+  }
+
+  function escapeHtml(v) {
+    return String(v ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function buildSafeUrl(path, params = {}) {
+    try {
+      const url = new URL(path, window.location.href);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          url.searchParams.set(key, String(value));
+        }
+      });
+      return url.pathname + url.search + url.hash;
+    } catch (_) {
+      return path || "#";
+    }
+  }
+
+  function storageKey() {
+    return "DIGIY_BUILD_QUOTES::" + (ACCESS.slug || "noslug");
+  }
+
+  function dashboardUrl() {
+    return buildSafeUrl("./dashboard-pro.html", {
+      slug: ACCESS.slug
+    });
+  }
+
+  function profileUrl() {
+    return buildSafeUrl("./profile.html", {
+      slug: ACCESS.slug
+    });
+  }
+
+  function pinUrl() {
+    return buildSafeUrl("./pin.html", {
+      slug: ACCESS.slug
+    });
+  }
+
+  function manageSubUrl() {
+    const url = new URL(ABOS_URL);
+    url.searchParams.set("module", MODULE_CODE);
+    if (ACCESS.slug) url.searchParams.set("slug", ACCESS.slug);
+    url.searchParams.set("return", dashboardUrl());
+    return url.toString();
+  }
+
+  function money(v) {
+    const n = Number(String(v || "").replace(/[^\d]/g, "")) || 0;
+    return n ? (n.toLocaleString("fr-FR") + " FCFA") : "—";
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "—";
-    return d.toLocaleDateString("fr-FR", { year:"numeric", month:"long", day:"numeric" });
+    return d.toLocaleString("fr-FR");
   }
 
-  function daysBetween(fromIso, toIso){
-    const a = new Date(fromIso).getTime();
-    const b = new Date(toIso).getTime();
-    if (Number.isNaN(a) || Number.isNaN(b)) return null;
-    return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
+  function loadRows() {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey()) || "[]");
+    } catch (_) {
+      return [];
+    }
   }
 
-  function cleanVisibleUrl(){
-    try{
-      const url = new URL(location.href);
-      ["slug","phone","tel","build_tel","module","from","return"].forEach((key) => url.searchParams.delete(key));
-      history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-    }catch(_){}
+  function saveRows(rows) {
+    localStorage.setItem(storageKey(), JSON.stringify(rows || []));
   }
 
-  function homeUrl(){ return "./dashboard-pro.html"; }
-  function cockpitUrl(){ return "./cockpit.html"; }
-  function demandesUrl(){ return "./cockpit.html#demandes"; }
-  function profileUrl(){ return "./profile.html"; }
-  function pinUrl(){ return "./pin.html"; }
+  function exportRows() {
+    const rows = loadRows();
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    const objectUrl = URL.createObjectURL(blob);
+    a.href = objectUrl;
+    a.download = "build-" + (ACCESS.slug || "noslug") + ".json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 900);
+    return rows.length;
+  }
 
-  function manageSubUrl(){
-    const url = new URL(ABOS_URL);
+  function badge(st) {
+    if (st === "draft") return `<span class="badge neutral">À PRÉPARER</span>`;
+    if (st === "sent") return `<span class="badge info">EN ATTENTE</span>`;
+    if (st === "accepted") return `<span class="badge ok">ACCEPTÉ</span>`;
+    if (st === "running") return `<span class="badge ok">EN COURS</span>`;
+    if (st === "done") return `<span class="badge ok">TERMINÉ</span>`;
+    if (st === "cancelled") return `<span class="badge bad">ANNULÉ</span>`;
+    return `<span class="badge neutral">${escapeHtml(String(st || "—").toUpperCase())}</span>`;
+  }
+
+  function matches(row, q) {
+    q = String(q || "").trim().toLowerCase();
+    if (!q) return true;
+
+    const hay = [
+      row.client, row.phone, row.city, row.type, row.note, row.status, row.date
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    return hay.includes(q);
+  }
+
+  function setTopState() {
+    $("slug").textContent = ACCESS.slug || "—";
+    $("modePill").textContent = ACCESS.live ? "session active" : "accès sécurisé";
+    $("stat").textContent = ACCESS.live ? "ouverte" : "fermée";
+    $("sessionText").textContent = ACCESS.live
+      ? "Ta session privée est active pour 8h. Tu peux circuler entre ta gestion, ta fiche et tes autres pages sans repasser par le code d’accès."
+      : "Ta session n’est pas active. Le code d’accès reste ta porte d’entrée ou de secours.";
+    $("sessionBadge").textContent = ACCESS.live ? "OK" : "FERMÉ";
+
+    $("btnPinEntry").href = pinUrl();
+    $("btnManageSub").href = manageSubUrl();
+
+    const links = {
+      fastPlus: profileUrl(),
+      bottomHome: dashboardUrl(),
+      bottomMore: profileUrl()
+    };
+    Object.entries(links).forEach(([id, href]) => {
+      const el = $(id);
+      if(el) el.href = href;
+    });
+
+    const bottomDemandes = $("bottomDemandes");
+    const bottomService = $("bottomService");
+    const bottomNotes = $("bottomNotes");
+    const fastDemandes = $("fastDemandes");
+    const fastNotes = $("fastNotes");
+    if(bottomDemandes) bottomDemandes.href = "#demandes";
+    if(bottomService) bottomService.href = buildSafeUrl("./cockpit.html", { slug: ACCESS.slug });
+    if(bottomNotes) bottomNotes.href = "#quickBuildNote";
+    if(fastDemandes) fastDemandes.href = "#demandes";
+    if(fastNotes) fastNotes.href = "#quickBuildNote";
+  }
+
+  function refreshBackupCard() {
+    const rows = loadRows();
+    const count = rows.length;
+    $("backupText").textContent = count > 0
+      ? `${count} devis ou chantier(s) gardé(s) sur cet appareil pour cette activité.`
+      : "Aucun devis ni chantier enregistré pour le moment sur cet appareil.";
+    $("backupBadge").textContent = count > 0 ? String(count) : "VIDE";
+  }
+
+  function setLockedView() {
+    $("lockBox").classList.add("show");
+    $("workspace").classList.add("hidden");
+  }
+
+  function setLiveView() {
+    $("lockBox").classList.remove("show");
+    $("workspace").classList.remove("hidden");
+  }
+
+  function clearForm() {
+    EDIT.id = null;
+    $("modalTitle").textContent = "➕ Nouveau devis";
+    $("client").value = "";
+    $("phone").value = "";
+    $("city").value = "";
+    $("type").value = "plomberie";
+    $("amount").value = "";
+    $("date").value = "";
+    $("note").value = "";
+  }
+
+  const modal = $("modalNew");
+
+  function openModal(row = null) {
+    if (!ACCESS.live) {
+      location.href = pinUrl();
+      return;
+    }
+
+    clearForm();
+    $("mSlug").textContent = ACCESS.slug || "—";
+
+    if (row) {
+      EDIT.id = row.id;
+      $("modalTitle").textContent = "✏️ Modifier le devis ou le chantier";
+      $("client").value = row.client || "";
+      $("phone").value = row.phone || "";
+      $("city").value = row.city || "";
+      $("type").value = row.type || "plomberie";
+      $("amount").value = row.amount || "";
+      $("date").value = row.date || "";
+      $("note").value = row.note || "";
+    }
+
+    modal.style.display = "flex";
+    setTimeout(() => $("client").focus(), 80);
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  function getCurrentViewRows() {
+    const all = loadRows().sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
+    const filter = $("filter").value;
+    const q = $("q").value;
+
+    let rows = all.filter(r => matches(r, q));
+    if (filter !== "all") rows = rows.filter(r => r.status === filter);
+    return { all, rows };
+  }
+
+  function renderStats(allRows) {
+    $("kDraft").textContent = String(allRows.filter(r => r.status === "draft").length);
+    $("kSent").textContent = String(allRows.filter(r => r.status === "sent").length);
+    $("kOk").textContent = String(allRows.filter(r => r.status === "accepted").length);
+    $("kRun").textContent = String(allRows.filter(r => r.status === "running").length);
+  }
+
+  function rowActionsHtml(row) {
+    const wa = normPhone(row.phone);
+    const quoteText = encodeURIComponent(
+      "Bonjour " + (row.client || "") + ",\n" +
+      "Je te recontacte pour le devis ou le chantier.\n" +
+      "Service : " + (row.type || "—") + "\n" +
+      "Montant : " + money(row.amount) + "\n" +
+      "Date : " + (row.date || "—") + "\n" +
+      "Identifiant : " + (ACCESS.slug || "")
+    );
+
+    return `
+      <div class="tinyrow">
+        ${wa ? `<a class="tinybtn" href="https://wa.me/${wa}?text=${quoteText}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ""}
+        <button class="tinybtn" data-act="edit" data-id="${escapeHtml(row.id)}">✏️ Modifier</button>
+        <button class="tinybtn" data-act="sent" data-id="${escapeHtml(row.id)}">📤 Envoyé</button>
+        <button class="tinybtn" data-act="accept" data-id="${escapeHtml(row.id)}">✅ Accepté</button>
+        <button class="tinybtn" data-act="run" data-id="${escapeHtml(row.id)}">🏗️ En cours</button>
+        <button class="tinybtn" data-act="done" data-id="${escapeHtml(row.id)}">🏁 Terminé</button>
+        <button class="tinybtn" data-act="cancel" data-id="${escapeHtml(row.id)}">🧨 Annuler</button>
+        <button class="tinybtn" data-act="del" data-id="${escapeHtml(row.id)}">🗑️ Supprimer</button>
+      </div>
+    `;
+  }
+
+  function renderList() {
+    const { all, rows } = getCurrentViewRows();
+    renderStats(all);
+    refreshBackupCard();
+
+    const list = $("list");
+    list.innerHTML = "";
+
+    if (rows.length === 0) {
+      list.innerHTML = `
+        <div class="empty">
+          Aucun devis ni chantier pour ce filtre. Clique sur <b>Nouveau devis</b> pour poser une première entrée.
+        </div>
+      `;
+      return;
+    }
+
+    for (const row of rows) {
+      const title = `${escapeHtml(row.client || "—")} • ${escapeHtml(row.type || "—")} • ${escapeHtml(row.city || "—")}`;
+      const sub = [
+        `Tel : ${escapeHtml(row.phone || "—")} • Montant : ${escapeHtml(money(row.amount))}`,
+        row.date ? `Date : ${escapeHtml(row.date)}` : null,
+        row.note ? `Note : ${escapeHtml(row.note)}` : null,
+        `Créé : ${escapeHtml(fmtDate(row.created_at))}`,
+        row.updated_at ? `Mise à jour : ${escapeHtml(fmtDate(row.updated_at))}` : null
+      ].filter(Boolean).join("<br>");
+
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <div style="flex:1">
+          <div class="a">${title}</div>
+          <div class="b">${sub}</div>
+          ${rowActionsHtml(row)}
+        </div>
+        <div>${badge(row.status)}</div>
+      `;
+      list.appendChild(item);
+    }
+  }
+
+  function upsertRowFromForm() {
+    const rows = loadRows();
+    const payload = {
+      id: EDIT.id || uid(),
+      slug: ACCESS.slug,
+      phone_owner: ACCESS.phone || "",
+      client: $("client").value.trim(),
+      phone: $("phone").value.trim(),
+      city: $("city").value.trim(),
+      type: $("type").value,
+      amount: $("amount").value.trim(),
+      date: $("date").value,
+      note: $("note").value.trim(),
+      status: "draft",
+      created_at: nowISO()
+    };
+
+    if (!payload.client) {
+      alert("Ajoute au moins le nom du client.");
+      return;
+    }
+
+    if (EDIT.id) {
+      const i = rows.findIndex(x => x.id === EDIT.id);
+      if (i >= 0) {
+        rows[i] = {
+          ...rows[i],
+          ...payload,
+          status: rows[i].status || "draft",
+          created_at: rows[i].created_at || nowISO(),
+          updated_at: nowISO()
+        };
+      } else {
+        rows.unshift(payload);
+      }
+    } else {
+      rows.unshift(payload);
+    }
+
+    saveRows(rows);
+    closeModal();
+    clearForm();
+    renderList();
+  }
+
+  function updateRowStatus(id, patch) {
+    const rows = loadRows();
+    const i = rows.findIndex(x => x.id === id);
+    if (i < 0) return;
+    rows[i] = { ...rows[i], ...patch, updated_at: nowISO() };
+    saveRows(rows);
+    renderList();
+  }
+
+  function deleteRow(id) {
+    const rows = loadRows().filter(x => x.id !== id);
+    saveRows(rows);
+    renderList();
+  }
+
+  function findRow(id) {
+    return loadRows().find(x => x.id === id) || null;
+  }
+
+  function supportUrl() {
+    const url = new URL(SUPPORT_BASE_URL);
     url.searchParams.set("module", MODULE_CODE);
+    if (ACCESS.slug) url.searchParams.set("slug", ACCESS.slug);
+    url.searchParams.set("besoin", "support");
     return url.toString();
   }
 
-  function supportUrl(){
-    const url = new URL(ABOS_URL);
-    url.searchParams.set("module", MODULE_CODE);
-    url.searchParams.set("support", "1");
-    return url.toString();
+
+  function quickBuildNorm(text){
+    return String(text || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function quotesStorageKey(){
-    return "DIGIY_BUILD_QUOTES::" + (CURRENT.slug || "build");
+  function quickBuildAmount(text){
+    const m = String(text || "").replace(/\s+/g, " ").match(/(\d[\d\s.,]*)\s*(f|fcfa|xof)?/i);
+    if(!m) return 0;
+    const raw = String(m[1] || "").replace(/[^\d]/g, "");
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 0;
   }
 
-  function getLocalQuotes(){
+  function quickBuildChannel(text){
+    const t = quickBuildNorm(text);
+    if(/\bwave\b/.test(t)) return "wave";
+    if(/\b(cash|especes|liquide)\b/.test(t)) return "cash";
+    if(/\b(orange money|om)\b/.test(t)) return "orange_money";
+    if(/\b(banque|virement)\b/.test(t)) return "bank";
+    return "other";
+  }
+
+  function quickBuildComplement(text, type){
+    const lower = quickBuildNorm(text);
+    if(/\b(plomberie|robinet|fuite)\b/.test(lower)) return "plomberie";
+    if(/\b(electricite|cable|ampoule|prise)\b/.test(lower)) return "électricité";
+    if(/\b(ciment|fer|sable|peinture|bois|materiel|materiaux)\b/.test(lower)) return "matériel";
+    if(/\b(main d oeuvre|main-d oeuvre|ouvrier|manoeuvre|macon|maconerie|maconnerie)\b/.test(lower)) return "main d’œuvre";
+    if(/\b(porte|serrure|menuiserie)\b/.test(lower)) return "porte";
+    if(/\b(acompte|avance)\b/.test(lower)) return "avance";
+    if(/\b(client)\b/.test(lower) && /\b(doit|reste)\b/.test(lower)){
+      const words = String(text || "").replace(/[.,;:!?]/g, " ").split(/\s+/).filter(Boolean);
+      const banned = new Set(["client","doit","reste","payer","cash","wave","fcfa","xof","f"]);
+      const candidates = words.filter(w => {
+        const clean = quickBuildNorm(w).replace(/[^\p{L}\p{N}-]/gu, "");
+        if(!clean || /^\d+$/.test(clean)) return false;
+        return !banned.has(clean);
+      });
+      if(candidates.length){
+        const raw = candidates[candidates.length - 1].replace(/[^\p{L}\p{N}-]/gu, "");
+        return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : "";
+      }
+    }
+    return "";
+  }
+
+  function quickBuildDraftFromText(text){
+    const sentence = String(text || "").trim().replace(/\s+/g, " ");
+    const lower = quickBuildNorm(sentence);
+    const amount = quickBuildAmount(sentence);
+    const channel = quickBuildChannel(sentence);
+
+    let type = "note";
+    let title = "Note chantier";
+    let direction = "none";
+    let category = "build_note";
+    let kind = "other";
+    let impact = "à classer";
+
+    if(/\b(client)\b.*\b(doit|reste)\b|\b(doit|reste)\b/.test(lower)){
+      type = "client_debt";
+      title = "Client doit encore";
+      direction = "out";
+      category = "client_debt";
+      kind = "expense";
+      impact = "à suivre";
+    } else if(/\b(acompte|avance)\b/.test(lower)){
+      type = "advance";
+      title = "Avance client";
+      direction = "in";
+      category = "advance";
+      kind = "sale";
+      impact = "entrée chantier";
+    } else if(/\b(achat|ciment|fer|sable|peinture|bois|materiel|materiaux)\b/.test(lower)){
+      type = "material_purchase";
+      title = "Achat matériel";
+      direction = "out";
+      category = "material_purchase";
+      kind = "expense";
+      impact = "dépense chantier";
+    } else if(/\b(main d oeuvre|main-d oeuvre|ouvrier|manoeuvre|macon|maconnerie)\b/.test(lower)){
+      type = "labor_cost";
+      title = "Main d’œuvre";
+      direction = "out";
+      category = "labor_cost";
+      kind = "expense";
+      impact = "dépense chantier";
+    } else if(/\b(depannage|reparation|service|chantier|plomberie|electricite|porte|serrure|peinture)\b/.test(lower)){
+      type = "service_income";
+      title = "Service encaissé";
+      direction = "in";
+      category = "service_income";
+      kind = "sale";
+      impact = "recette chantier";
+    }
+
+    const complement = quickBuildComplement(sentence, type);
+
+    return {
+      sentence,
+      type,
+      title,
+      amount_xof: amount,
+      channel,
+      direction,
+      category,
+      kind,
+      impact,
+      complement,
+      module: "BUILD",
+      status: "draft",
+      created_at: nowISO()
+    };
+  }
+
+  function quickBuildMemoryKey(){
+    return "DIGIY_BUILD_QUICK_MEMORY::" + (ACCESS.slug || "noslug");
+  }
+
+  function quickBuildDraftKey(){
+    return "DIGIY_BUILD_QUICK_DRAFT::" + (ACCESS.slug || "noslug");
+  }
+
+  function readQuickBuildMemory(){
     try{
-      return JSON.parse(localStorage.getItem(quotesStorageKey()) || "[]");
+      const raw = localStorage.getItem(quickBuildMemoryKey());
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
     }catch(_){
       return [];
     }
   }
 
-  function exportLocalQuotes(){
-    const rows = getLocalQuotes();
-    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    const objectUrl = URL.createObjectURL(blob);
-    a.href = objectUrl;
-    a.download = "build-backup.json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-    return rows.length;
+  function writeQuickBuildMemory(items){
+    try{
+      localStorage.setItem(quickBuildMemoryKey(), JSON.stringify((items || []).slice(0, 10)));
+      return true;
+    }catch(_){
+      return false;
+    }
   }
 
-  function refreshBackupCard(){
-    const rows = getLocalQuotes();
-    const count = rows.length;
-
-    $("backupText").textContent =
-      "Tes devis sont gardés localement pour cette activité sur cet appareil. Pense à exporter une copie régulièrement pour garder une sécurité simple.";
-
-    $("backupCount").textContent =
-      count > 0
-        ? count + " devis trouvé(s) sur cet appareil."
-        : "Aucun devis local trouvé pour cette activité pour le moment.";
+  function saveQuickBuildDraft(draft, confirmed = false){
+    try{
+      localStorage.setItem(quickBuildDraftKey(), JSON.stringify({
+        ...draft,
+        status: confirmed ? "confirmed_local" : "draft",
+        confirmed_at: confirmed ? nowISO() : null
+      }));
+      return true;
+    }catch(_){
+      return false;
+    }
   }
 
-  function setNotifs(items){
-    const box = $("notifList");
-    box.innerHTML = "";
+  function addQuickBuildMemory(draft){
+    const item = {
+      ...draft,
+      memory_id: "build_" + Date.now(),
+      confirmed_at: nowISO()
+    };
+    const list = readQuickBuildMemory();
+    list.unshift(item);
+    writeQuickBuildMemory(list);
+    renderQuickBuildMemory();
+  }
 
-    if(!items.length){
-      box.innerHTML = `
-        <div class="notif">
-          <div>
-            <b>Rien à signaler</b>
-            <div class="muted" style="font-weight:750;margin-top:2px">Tout roule.</div>
-          </div>
-          <div class="tag ok">OK</div>
-        </div>
-      `;
+  function isQuickBuildFinancial(item){
+    const type = String(item?.type || "").toLowerCase();
+    return ["service_income","advance","material_purchase","labor_cost","client_debt"].includes(type);
+  }
+
+  function payBuildLabel(item){
+    const type = String(item?.type || "").toLowerCase();
+    const comp = String(item?.complement || "").trim();
+
+    if(type === "service_income") return comp ? "Service " + comp : "Service chantier";
+    if(type === "advance") return "Avance client";
+    if(type === "material_purchase") return comp ? "Achat " + comp : "Achat matériel";
+    if(type === "labor_cost") return "Main d’œuvre";
+    if(type === "client_debt") return comp ? "Client doit " + comp : "Client doit encore";
+    return item?.title || "Note chantier";
+  }
+
+  function buildPayFromBuildUrl(item){
+    const qsPay = new URLSearchParams();
+
+    qsPay.set("fromDraft", "1");
+    qsPay.set("direction", item?.direction === "in" ? "in" : "out");
+    qsPay.set("scope", "pro");
+    qsPay.set("amount", String(Math.round(Number(item?.amount_xof || 0))));
+    qsPay.set("amount_xof", String(Math.round(Number(item?.amount_xof || 0))));
+    qsPay.set("kind", item?.kind || (item?.direction === "in" ? "sale" : "expense"));
+    qsPay.set("channel", item?.channel || "other");
+    qsPay.set("category", item?.category || "build_note");
+    qsPay.set("source_module", "BUILD");
+    if(ACCESS.slug) qsPay.set("source_slug", ACCESS.slug);
+    qsPay.set("source_id", item?.memory_id || ("build-note-" + Date.now()));
+    qsPay.set("label", payBuildLabel(item));
+    qsPay.set("note", String(item?.sentence || "").trim());
+    qsPay.set("complement", String(item?.complement || "").trim());
+    qsPay.set("intent", "quick_note");
+
+    return "https://pro-pay.digiylyfe.com/admin.html?" + qsPay.toString();
+  }
+
+  function renderQuickBuildDraft(draft){
+    const box = $("quickBuildDraft");
+    const confirmBtn = $("btnQuickBuildConfirm");
+    if(!box) return;
+
+    if(!draft || !draft.sentence){
+      box.style.display = "none";
+      box.innerHTML = "";
+      if(confirmBtn) confirmBtn.style.display = "none";
       return;
     }
 
-    for(const it of items){
-      const tagClass = it.level === "warn" ? "warn" : it.level === "ok" ? "ok" : "info";
-      const div = document.createElement("div");
-      div.className = "notif";
-      div.innerHTML = `
-        <div>
-          <b>${it.title}</b>
-          <div class="muted" style="font-weight:750;margin-top:2px">${it.text}</div>
+    const amountText = draft.amount_xof ? money(draft.amount_xof) : "montant à préciser";
+    const channelText = draft.channel === "other" ? "canal à préciser" : draft.channel;
+
+    box.style.display = "block";
+    if(confirmBtn) confirmBtn.style.display = "inline-flex";
+
+    box.innerHTML = `
+      <strong>Voilà ce que DIGIY BUILD a préparé :</strong><br>
+      Type : ${escapeHtml(draft.title)}<br>
+      Montant : ${escapeHtml(amountText)}<br>
+      Canal : ${escapeHtml(channelText)}<br>
+      Impact : ${escapeHtml(draft.impact)}<br>
+      ${draft.complement ? `Complément : ${escapeHtml(draft.complement)}<br>` : ``}
+      <br>
+      <span style="color:rgba(234,255,241,.70)">Brouillon seulement. Rien n’est envoyé en base automatiquement.</span>
+    `;
+  }
+
+  function renderQuickBuildMemory(){
+    const box = $("quickBuildMemoryList");
+    if(!box) return;
+
+    const list = readQuickBuildMemory();
+    if(!list.length){
+      box.innerHTML = `<div class="memoryEmpty">Aucune note chantier confirmée pour le moment.</div>`;
+      return;
+    }
+
+    box.innerHTML = list.slice(0, 10).map(item => {
+      const amount = item.amount_xof ? money(item.amount_xof) : "montant à préciser";
+      const channel = item.channel && item.channel !== "other" ? item.channel : "canal à préciser";
+      const comp = item.complement ? " · " + item.complement : "";
+
+      return `
+        <div class="memoryItem">
+          <div class="memoryItemTop">
+            <div class="memoryItemTitle">✅ ${escapeHtml(item.title || "Note chantier")}</div>
+            <div class="memoryItemAmount">${escapeHtml(amount)}</div>
+          </div>
+          <div class="memoryItemMeta">${escapeHtml(channel)} · ${escapeHtml(item.impact || "à classer")}${escapeHtml(comp)}</div>
+          <div class="memoryItemMeta">${escapeHtml(item.sentence || "")}</div>
+          ${isQuickBuildFinancial(item) ? `
+            <a class="memoryPayAction" href="${escapeHtml(buildPayFromBuildUrl(item))}">
+              💼 Envoyer vers Mon argent
+            </a>
+            <div class="memoryPayHint">Mon argent s’ouvrira avec sa session privée. Aucun téléphone n’est envoyé dans le lien.</div>
+          ` : ``}
         </div>
-        <div class="tag ${tagClass}">${it.tag}</div>
       `;
-      box.appendChild(div);
-    }
+    }).join("");
   }
 
-  function setHeader(){
-    $("btnPinEntry").href = pinUrl();
-    $("btnManageSubLocked").href = manageSubUrl();
-
-    const links = {
-      quickService: cockpitUrl(),
-      quickDemandes: demandesUrl(),
-      quickPlus: profileUrl(),
-      bottomHome: homeUrl(),
-      bottomDemandes: demandesUrl(),
-      bottomService: cockpitUrl(),
-      bottomMore: profileUrl()
-    };
-
-    Object.entries(links).forEach(([id, href]) => {
-      const el = $(id);
-      if (el) el.href = href;
-    });
-
-    const quickNotes = $("quickNotes");
-    const bottomNotes = $("bottomNotes");
-    if (quickNotes) quickNotes.href = "#buildNotes";
-    if (bottomNotes) bottomNotes.href = "#buildNotes";
-
-    const sendPay = $("btnSendBuildPay");
-    if (sendPay) sendPay.href = buildBuildPayDraftUrl(null);
+  function clearQuickBuildMemory(){
+    if(!confirm("Vider l’aide-mémoire chantier sur cet appareil ?")) return;
+    writeQuickBuildMemory([]);
+    renderQuickBuildMemory();
+    alert("Aide-mémoire service vidé.");
   }
 
-  function setLockedView(title, subtitle){
-    $("lockText").textContent = subtitle || "Ouvre ta session avec ton code d’accès pour accéder à ton activité.";
-    $("pillStatus").innerHTML = `Accès : <b>fermé</b>`;
-    $("dot").classList.remove("ok");
-    $("dot").classList.add("bad");
-    $("statusLine").textContent = title || "Accès protégé";
-    $("expiryLine").textContent = "Session requise";
-    $("lockBox").classList.add("show");
-    $("workspace").classList.add("hidden");
-  }
+  function bindQuickBuildNote(){
+    const input = $("quickBuildInput");
+    const prepare = $("btnQuickBuildPrepare");
+    const confirmBtn = $("btnQuickBuildConfirm");
+    const clear = $("btnQuickBuildClear");
 
-  function setLiveView(){
-    $("lockBox").classList.remove("show");
-    $("workspace").classList.remove("hidden");
-    $("pillStatus").innerHTML = `Accès : <b>actif</b>`;
-    $("dot").classList.remove("bad");
-    $("dot").classList.add("ok");
-  }
-
-  async function sbRpc(name, payload){
-    const url = `${SUPABASE_URL}/rest/v1/rpc/${name}`;
-    const r = await fetch(url, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        apikey: SUPABASE_ANON,
-        authorization: `Bearer ${SUPABASE_ANON}`,
-        accept: "application/json"
-      },
-      body: JSON.stringify(payload || {})
-    });
-
-    if(!r.ok){
-      const t = await r.text().catch(() => "");
-      throw new Error(`RPC ${name} failed: ${t || r.status}`);
-    }
-
-    return r.json();
-  }
-
-  async function getSubscriptionStatus(phone){
-    try{
-      return await sbRpc("digiy_get_subscription_status", {
-        p_phone: phone,
-        p_module: MODULE_CODE
-      });
-    }catch(_){
-      return null;
-    }
-  }
-
-  async function getDashboardStats(phone){
-    try{
-      return await sbRpc("digiy_get_dashboard_stats", {
-        p_phone: phone,
-        p_module: MODULE_CODE
-      });
-    }catch(_){
-      return { month_xof: null, tx_count: null, today_hint: "Aujourd’hui" };
-    }
-  }
-
-  async function getBoostStatus(phone){
-    try{
-      return await sbRpc("digiy_get_boost_status", { p_phone: phone });
-    }catch(_){
-      return null;
-    }
-  }
-
-  async function buildPayUrl(module, phone, plan){
-    return sbRpc("digiy_build_pay_url", {
-      p_module: module,
-      p_phone: phone,
-      p_plan_code: plan
-    });
-  }
-
-  function parseBuildNote(text){
-    const sentence = String(text || "").trim().replace(/\s+/g, " ");
-    const lower = sentence.toLowerCase();
-    const amountMatch = sentence.match(/(\d[\d\s.,]*)\s*(f|fcfa|xof)?/i);
-    const amount = amountMatch ? Number(String(amountMatch[1]).replace(/[^\d]/g, "")) || 0 : 0;
-
-    let channel = "other";
-    if (/\bwave\b/.test(lower)) channel = "wave";
-    else if (/\b(cash|espèces|especes|liquide)\b/.test(lower)) channel = "cash";
-    else if (/\b(orange money|om)\b/.test(lower)) channel = "orange_money";
-    else if (/\b(banque|virement)\b/.test(lower)) channel = "bank";
-
-    let direction = "out";
-    let kind = "expense";
-    let category = "materials";
-    let label = "Dépense chantier";
-
-    if (/\b(acompte|avance|main d.?œuvre|main d.?oeuvre|chantier payé|client payé|prestation|réparation|reparation)\b/.test(lower)){
-      direction = "in";
-      kind = "sale";
-      category = "service_income";
-      label = "Recette service";
-    }
-
-    if (/\b(client)\b.*\b(doit|reste)\b|\b(doit|reste)\b/.test(lower)){
-      direction = "out";
-      kind = "other";
-      category = "client_debt";
-      label = "Client doit";
-    } else if (/\b(ciment|matériel|materiel|peinture|pièce|piece|outil|stock)\b/.test(lower)){
-      direction = "out";
-      kind = "expense";
-      category = "materials";
-      label = "Achat matériel";
-    } else if (/\b(transport|taxi|carburant|livraison)\b/.test(lower)){
-      direction = "out";
-      kind = "expense";
-      category = "transport";
-      label = "Transport matériel";
-    } else if (/\b(main d.?œuvre|main d.?oeuvre|ouvrier|manœuvre|manoeuvre)\b/.test(lower)){
-      direction = "out";
-      kind = "expense";
-      category = "labor";
-      label = "Main d’œuvre";
-    } else if (/\b(acompte|avance)\b/.test(lower)){
-      direction = "in";
-      kind = "sale";
-      category = "advance";
-      label = "Acompte chantier";
-    }
-
-    return { sentence, amount_xof: amount, channel, direction, kind, category, label };
-  }
-
-  function buildBuildPayDraftUrl(draft){
-    const d = draft || parseBuildNote(($("buildQuickNote") || {}).value || "");
-    const u = new URL("https://pro-pay.digiylyfe.com/admin.html");
-
-    u.searchParams.set("fromDraft", "1");
-    u.searchParams.set("intent", "quick_note");
-    u.searchParams.set("source_module", "BUILD");
-    u.searchParams.set("source_id", "build-note-" + Date.now());
-
-    if (d.amount_xof){
-      u.searchParams.set("amount", String(d.amount_xof));
-      u.searchParams.set("amount_xof", String(d.amount_xof));
-    }
-
-    u.searchParams.set("channel", d.channel || "other");
-    u.searchParams.set("scope", "pro");
-    u.searchParams.set("movement_date", new Date().toISOString().slice(0,10));
-    u.searchParams.set("direction", d.direction || "out");
-    u.searchParams.set("kind", d.kind || "expense");
-    u.searchParams.set("category", d.category || "materials");
-    u.searchParams.set("label", d.label || "Note service");
-    u.searchParams.set("note", d.sentence || "");
-
-    return u.toString();
-  }
-
-  function bindStaticUi(){
-    $("btnCockpit").onclick = () => { location.href = cockpitUrl(); };
-    $("btnPrimaryAction").onclick = () => { location.href = cockpitUrl(); };
-    $("btnSettings").onclick = () => { location.href = profileUrl(); };
-
-    $("btnManageSub").onclick = () => {
-      location.href = manageSubUrl();
-    };
-
-    $("btnExportBackup").onclick = () => {
-      const count = exportLocalQuotes();
-      alert(
-        count > 0
-          ? `Export terminé. ${count} devis exporté(s).`
-          : "Export terminé. Aucun devis local trouvé pour le moment."
-      );
-    };
-
-    $("btnDriveGuide").onclick = () => {
-      alert(
-        "Conseil pro : après un gros chantier ou en fin de journée, exporte tes devis puis envoie le fichier sur ton Drive pour garder une sauvegarde simple."
-      );
-    };
-
-    $("btnBoostInfo").onclick = () => {
-      alert("Visibilité service : +50% d’apparition pendant 7 jours. Paiement direct.");
-    };
-
-    $("linkSupport").onclick = (ev) => {
-      ev.preventDefault();
-      location.href = supportUrl();
-    };
-
-    $("linkPayments").onclick = (ev) => {
-      ev.preventDefault();
-      location.href = manageSubUrl();
-    };
-
-    $("btnLogout").onclick = () => {
-      try{
-        if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.logout === "function") {
-          window.DIGIY_GUARD.logout();
-          return;
-        }
-      }catch(_){}
-      location.href = pinUrl();
-    };
-
-    document.querySelectorAll(".noteChip").forEach((btn) => {
+    $("quickBuildExamples")?.querySelectorAll("button").forEach(btn => {
       btn.addEventListener("click", () => {
-        const input = $("buildQuickNote");
-        if (input) input.value = btn.textContent.trim();
-        const draftBox = $("buildNoteDraft");
-        if (draftBox) draftBox.style.display = "none";
+        if(!input) return;
+        input.value = btn.textContent.trim();
+        input.focus();
       });
     });
 
-    $("btnPrepareBuildNote").onclick = () => {
-      const input = $("buildQuickNote");
-      const draftBox = $("buildNoteDraft");
-      if (!input || !draftBox) return;
-
-      const draft = parseBuildNote(input.value);
-      if (!draft.sentence){
-        draftBox.style.display = "block";
-        draftBox.textContent = "Écris une phrase simple : matériel, acompte, main d’œuvre, transport ou client qui doit.";
+    prepare?.addEventListener("click", () => {
+      const sentence = String(input?.value || "").trim();
+      if(!sentence){
+        alert("Écris une note chantier avant de préparer.");
         return;
       }
 
-      draftBox.style.display = "block";
-      draftBox.innerHTML =
-        "<b>" + draft.label + "</b><br>" +
-        draft.direction + " · " + draft.kind + " · " + draft.channel + " · " + draft.category + "<br>" +
-        (draft.amount_xof ? draft.amount_xof.toLocaleString("fr-FR") + " FCFA" : "Montant à préciser") + "<br>" +
-        draft.sentence;
+      const draft = quickBuildDraftFromText(sentence);
+      saveQuickBuildDraft(draft, false);
+      renderQuickBuildDraft(draft);
+    });
 
-      const sendPay = $("btnSendBuildPay");
-      if (sendPay) sendPay.href = buildBuildPayDraftUrl(draft);
-    };
+    confirmBtn?.addEventListener("click", () => {
+      const draft = quickBuildDraftFromText(String(input?.value || "").trim());
+      if(!draft.sentence){
+        alert("Prépare d’abord une note chantier.");
+        return;
+      }
+
+      saveQuickBuildDraft(draft, true);
+      addQuickBuildMemory(draft);
+      renderQuickBuildDraft({...draft, status:"confirmed_local"});
+      if(confirmBtn) confirmBtn.style.display = "none";
+    });
+
+    clear?.addEventListener("click", () => {
+      if(input) input.value = "";
+      renderQuickBuildDraft(null);
+    });
+
+    $("btnQuickBuildMemoryClear")?.addEventListener("click", clearQuickBuildMemory);
+    renderQuickBuildMemory();
   }
 
-  async function init(){
-    cleanVisibleUrl();
-    bindStaticUi();
+
+  function bindUi() {
+    bindQuickBuildNote();
+
+    $("btnDashboard").onclick = () => { location.href = dashboardUrl(); };
+    $("btnGoDashboard").onclick = () => { location.href = dashboardUrl(); };
+    $("btnProfile").onclick = () => { location.href = profileUrl(); };
+    $("btnHelp").onclick = () => { location.href = supportUrl(); };
+    $("btnSupportInline").onclick = () => { location.href = supportUrl(); };
+
+    $("btnLogout").onclick = () => {
+      try {
+        if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.logout === "function") {
+          window.DIGIY_GUARD.logout();
+        }
+      } catch (_) {}
+      location.href = pinUrl();
+    };
+
+    $("btnNew").onclick = () => openModal();
+    $("fastNewQuote").onclick = () => openModal();
+    $("btnJobs").onclick = () => {
+      $("filter").value = "all";
+      renderList();
+      location.hash = "#demandes";
+    };
+
+    $("btnExport").onclick = () => {
+      const count = exportRows();
+      alert(
+        count > 0
+          ? `Sauvegarde terminée. ${count} entrée(s) exportée(s).`
+          : "Sauvegarde terminée. Aucune entrée locale pour le moment."
+      );
+    };
+
+    $("btnReset").onclick = () => {
+      if (!confirm("Effacer les copies gardées sur cet appareil pour cette activité ?")) return;
+      localStorage.removeItem(storageKey());
+      renderList();
+    };
+
+    $("btnPrint").onclick = () => { window.print(); };
+
+    $("btnWhatsApp").onclick = () => {
+      const rows = loadRows();
+      const firstWithPhone = rows.find(r => normPhone(r.phone));
+      if (!firstWithPhone) {
+        alert("Aucun client avec téléphone détecté pour le moment.");
+        return;
+      }
+      const wa = normPhone(firstWithPhone.phone);
+      const txt = encodeURIComponent(
+        "Bonjour " + (firstWithPhone.client || "") + ",\n" +
+        "Je te recontacte pour ton devis ou ton chantier.\n" +
+        "Service : " + (firstWithPhone.type || "—") + "\n" +
+        "Montant : " + money(firstWithPhone.amount) + "\n" +
+        "Date : " + (firstWithPhone.date || "—")
+      );
+      location.href = "https://wa.me/" + wa + "?text=" + txt;
+    };
+
+    $("save").onclick = upsertRowFromForm;
+    $("cancel").onclick = closeModal;
+    $("close").onclick = closeModal;
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    $("q").oninput = renderList;
+    $("filter").onchange = renderList;
+
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-act]");
+      if (!b || !ACCESS.live) return;
+
+      const id = b.getAttribute("data-id");
+      const act = b.getAttribute("data-act");
+
+      if (act === "edit") {
+        const row = findRow(id);
+        if (row) openModal(row);
+        return;
+      }
+      if (act === "sent") return updateRowStatus(id, { status: "sent" });
+      if (act === "accept") return updateRowStatus(id, { status: "accepted" });
+      if (act === "run") return updateRowStatus(id, { status: "running" });
+      if (act === "done") return updateRowStatus(id, { status: "done" });
+      if (act === "cancel") return updateRowStatus(id, { status: "cancelled" });
+      if (act === "del") {
+        if (confirm("Supprimer cette entrée ?")) deleteRow(id);
+      }
+    });
+  }
+
+  async function init() {
+    const hintedSlug =
+      new URLSearchParams(location.search).get("slug") ||
+      sessionStorage.getItem("digiy_build_slug") ||
+      sessionStorage.getItem("digiy_build_last_slug") ||
+      localStorage.getItem("digiy_build_last_slug") ||
+      "";
+
+    bindUi();
 
     if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
-      CURRENT.slug = "";
-      CURRENT.phone = "";
-      CURRENT.live = false;
-      setHeader();
-      setLockedView(
-        "Session absente",
-        "Cette page a besoin d’une vraie session ouverte. Rentre par le code d’accès pour reprendre ta circulation normale."
-      );
+      ACCESS.live = false;
+      ACCESS.slug = normSlug(hintedSlug);
+      ACCESS.phone = "";
+      setTopState();
+      setLockedView();
       return;
     }
 
-    await window.DIGIY_GUARD.ready();
+    await window.DIGIY_GUARD.ready;
 
-    const st = window.DIGIY_GUARD.getSession
-      ? window.DIGIY_GUARD.getSession()
-      : (window.DIGIY_GUARD.state || {});
+    const st = window.DIGIY_GUARD.state || {};
+    ACCESS.slug = normSlug(st.slug || hintedSlug);
+    ACCESS.phone = normPhone(st.phone || "");
+    ACCESS.live = !!(st.access_ok && ACCESS.slug);
 
-    CURRENT.slug = normSlug(st.slug || "");
-    CURRENT.phone = normPhone(st.phone || "");
-    CURRENT.live = !!(st.access_ok && CURRENT.slug && CURRENT.phone);
+    if (ACCESS.slug) {
+      try {
+        sessionStorage.setItem("digiy_build_slug", ACCESS.slug);
+        sessionStorage.setItem("digiy_build_last_slug", ACCESS.slug);
+        localStorage.setItem("digiy_build_last_slug", ACCESS.slug);
+      } catch (_) {}
+    }
 
-    setHeader();
+    setTopState();
 
-    if (!CURRENT.live) {
-      setLockedView(
-        "Session interne requise",
-        "Cette page ne s’ouvre pas en mode libre. Le code d’accès sert d’entrée ou de secours, puis la circulation interne reprend normalement."
-      );
+    if (!ACCESS.live) {
+      setLockedView();
       return;
     }
 
     setLiveView();
-    refreshBackupCard();
-
-    $("statusLine").textContent = "Session active";
-    $("expiryLine").textContent = "Lecture de l’abonnement…";
-    $("metaLine").innerHTML = `<span>Formule : —</span><span>•</span><span>Paiement : —</span>`;
-    $("moneyMonth").textContent = "— FCFA";
-    $("txCount").textContent = "— opérations";
-    $("todayHint").textContent = "Aujourd’hui";
-    $("boostStatus").textContent = "Statut : vérification…";
-
-    const [status, stats, boost] = await Promise.all([
-      getSubscriptionStatus(CURRENT.phone),
-      getDashboardStats(CURRENT.phone),
-      getBoostStatus(CURRENT.phone)
-    ]);
-
-    const expiresAt = status?.expires_at || status?.current_period_end || null;
-    const plan = status?.plan || status?.plan_code || "";
-    const pay = status?.payment_ref ? "validé" : "ok";
-
-    $("statusLine").textContent = "Session active";
-    $("expiryLine").textContent = expiresAt ? `Expire le ${fmtDateFR(expiresAt)}` : "Expiration : —";
-    $("metaLine").innerHTML = plan
-      ? `<span>Formule active : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`
-      : `<span>Abonnement actif</span><span>•</span><span>Paiement : ${pay}</span>`;
-
-    const month = stats?.month_xof ?? null;
-    const tx = stats?.tx_count ?? null;
-
-    $("moneyMonth").textContent = month ? `${Number(month).toLocaleString("fr-FR")} FCFA` : "— FCFA";
-    $("txCount").textContent = tx ? `${tx} opérations` : "— opérations";
-    $("todayHint").textContent = stats?.today_hint || "Aujourd’hui";
-
-    const localCount = getLocalQuotes().length;
-    const notifs = [];
-
-    notifs.push({
-      level: "ok",
-      tag: "CODE",
-      title: "Session ouverte",
-      text: "Ton accès est actif. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le code d’accès."
-    });
-
-    if (expiresAt) {
-      const d = daysBetween(new Date().toISOString(), expiresAt);
-      if (d !== null && d <= 3) {
-        notifs.push({
-          level: "warn",
-          tag: "J-3",
-          title: "Abonnement bientôt expiré",
-          text: `Expire dans ${d} jour(s). Renouvelle pour éviter une coupure.`
-        });
-      } else {
-        notifs.push({
-          level: "ok",
-          tag: "OK",
-          title: "Abonnement actif",
-          text: "Ton accès BUILD est bien actif."
-        });
-      }
-    }
-
-    if (localCount > 0) {
-      notifs.push({
-        level: "info",
-        tag: "BACKUP",
-        title: "Sauvegarde conseillée",
-        text: `${localCount} devis local(aux) détecté(s). Pense à exporter une copie sur ton Drive.`
-      });
-    } else {
-      notifs.push({
-        level: "info",
-        tag: "LOCAL",
-        title: "Stockage local prêt",
-        text: "Tes futurs devis resteront attachés à cette activité sur cet appareil."
-      });
-    }
-
-    if (boost?.active) {
-      $("boostStatus").textContent =
-        `Statut : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
-      $("btnBoost").textContent = "Actif";
-      $("btnBoost").disabled = true;
-
-      notifs.push({
-        level: "info",
-        tag: "BOOST",
-        title: "Coup de pouce actif",
-        text: "Ta visibilité est actuellement augmentée."
-      });
-    } else {
-      $("boostStatus").textContent = "Statut : inactif";
-      $("btnBoost").textContent = "Activer";
-      $("btnBoost").disabled = false;
-
-      notifs.push({
-        level: "info",
-        tag: "OPTION",
-        title: "Coup de pouce disponible",
-        text: "Active cette option si tu veux pousser ta visibilité."
-      });
-    }
-
-    setNotifs(notifs);
-
-    $("btnBoost").onclick = async () => {
-      try{
-        $("btnBoost").disabled = true;
-        $("btnBoost").textContent = "…";
-
-        const payRes = await buildPayUrl(BOOST.module, CURRENT.phone, BOOST.plan);
-        const url = typeof payRes === "string"
-          ? payRes
-          : (payRes?.url || payRes?.pay_url || null);
-
-        if (!url) throw new Error("URL paiement BOOST manquante");
-        location.href = url;
-      } catch (e) {
-        console.error(e);
-        alert("Impossible d’activer le coup de pouce pour le moment.");
-        $("btnBoost").disabled = false;
-        $("btnBoost").textContent = "Activer";
-      }
-    };
+    renderList();
   }
 
   init().catch((err) => {
-    console.error("BUILD dashboard init error", err);
-    CURRENT.slug = "";
-    CURRENT.phone = "";
-    CURRENT.live = false;
-    setHeader();
-    setLockedView(
-      "Erreur de chargement",
-      "Cette page n’a pas pu se charger proprement. Rentre par le code d’accès pour reconstruire ta session."
-    );
+    console.error("BUILD cockpit init error", err);
+    ACCESS.live = false;
+    ACCESS.slug = "";
+    ACCESS.phone = "";
+    setTopState();
+    setLockedView();
   });
 })();
 </script>
