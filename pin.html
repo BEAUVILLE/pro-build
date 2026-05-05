@@ -379,9 +379,9 @@
           Entre ton <strong>téléphone</strong> et ton <strong>code d’accès</strong>.
           Si cet appareil connaît déjà ton espace, ton code suffit pour rouvrir la session.
         </p>
-        <div class="field">
+        <div class="field" id="phoneField">
           <label for="phone">Téléphone</label>
-          <input id="phone" type="tel" inputmode="numeric" placeholder="Ex : 221771234567" autocomplete="tel"/>
+          <input id="phone" type="tel" inputmode="numeric" placeholder="Ex : 221771234567" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-form-type="other"/>
         </div>
 
         <div class="field">
@@ -477,6 +477,7 @@
 
       const el = {
         phone: document.getElementById("phone"),
+        phoneField: document.getElementById("phoneField"),
         pin: document.getElementById("pin"),
         togglePin: document.getElementById("togglePin"),
         btnOpen: document.getElementById("btnOpen"),
@@ -510,6 +511,13 @@
       function setStatus(message, type = ""){
         el.status.className = `status${type ? " " + type : ""}`;
         el.status.textContent = message;
+      }
+
+      function clearVisiblePhoneField(){
+        try{
+          el.phone.value = "";
+          el.phone.setAttribute("autocomplete","off");
+        }catch(_){}
       }
 
       function cleanVisibleUrl(){
@@ -660,11 +668,15 @@
       function hydrateSessionState(){
         cleanVisibleUrl();
         applyCleanLinks();
+        clearVisiblePhoneField();
+        setTimeout(clearVisiblePhoneField, 80);
+        setTimeout(clearVisiblePhoneField, 350);
 
         const s = loadSession();
 
         if (s && sessionStillValid(s)){
           el.sessionInfo.textContent = "Active";
+          if(el.phoneField) el.phoneField.classList.add("hidden");
           setOpenLink();
           setStatus("Session déjà active. Tu peux ouvrir directement l’accueil.", "ok");
           return;
@@ -674,8 +686,10 @@
         el.sessionInfo.textContent = rememberedPhone ? "Appareil connu" : "Aucun";
 
         if (rememberedPhone){
+          if(el.phoneField) el.phoneField.classList.add("hidden");
           setStatus("Appareil reconnu. Entre ton code pour rouvrir ton espace.", "");
         }else{
+          if(el.phoneField) el.phoneField.classList.remove("hidden");
           setStatus("Prêt. Entre ton téléphone et ton code.", "");
         }
       }
@@ -877,7 +891,7 @@
             reason: "pin_ok"
           });
 
-          el.phone.value = "";
+          clearVisiblePhoneField();
           el.pin.value = "";
           el.sessionInfo.textContent = "Active";
           setOpenLink();
