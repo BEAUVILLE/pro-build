@@ -1,18 +1,16 @@
-/* guard-master.js — DIGIY MASTER GUARD
+from pathlib import Path
+
+guard = r'''/* guard.js — DIGIY BUILD GUARD
    Doctrine :
-   - un guard par module
-   - PIN une seule fois -> session locale fraîche -> navigation interne directe
-   - rail d'accès/session = slug + phone
-   - rail métier = owner_id / id métier
-   - session valide = pas d'aller-retour backend inutile
-   - fallback backend dispo si phone ou slug doit être résolu
+   - URL visible propre : jamais de phone, tel, slug sensible ou return sale
+   - session locale personnelle 8h
+   - téléphone + slug restent dans le coffre local, pas dans la barre d’adresse
+   - si session valide : navigation interne directe
+   - si session absente/expirée : retour pin.html propre
 */
 (() => {
   "use strict";
 
-  /* =========================================================
-     1) CONFIG MODULE — À ADAPTER PAR MODULE
-  ========================================================== */
   const CFG = {
     SUPABASE_URL:
       window.DIGIY_SUPABASE_URL ||
@@ -26,23 +24,12 @@
     MODULE_CODE: String(window.DIGIY_MODULE || "BUILD").trim().toUpperCase(),
     MODULE_CODE_LOWER: String(window.DIGIY_MODULE || "BUILD").trim().toLowerCase(),
 
-    SESSION_MAX_AGE_MS: 8 * 60 * 60 * 1000, // 8h
+    SESSION_MAX_AGE_MS: 8 * 60 * 60 * 1000,
 
     PIN_PATH: window.DIGIY_LOGIN_URL || "./pin.html",
     PAY_URL: window.DIGIY_PAY_URL || "https://commencer-a-payer.digiylyfe.com/",
 
     ALLOW_PREVIEW_WITHOUT_IDENTITY: false,
-
-    STORAGE: {
-      SESSION_KEYS: [
-        "DIGIY_MASTER_PIN_SESSION",
-        "DIGIY_PIN_SESSION",
-        "DIGIY_ACCESS"
-      ],
-      SLUG_KEY: "digiy_master_slug",
-      PHONE_KEY: "digiy_master_phone",
-      LAST_SLUG_KEY: "digiy_master_last_slug"
-    },
 
     RPC: {
       VERIFY_PIN: "digiy_verify_pin",
@@ -51,16 +38,9 @@
 
     TABLES: {
       SUBSCRIPTIONS_PUBLIC: "digiy_subscriptions_public"
-    },
-
-    URL: {
-      KEEP_PHONE_IN_URL: true
     }
   };
 
-  /* =========================================================
-     2) DÉRIVÉS MODULE
-  ========================================================== */
   const MODULE = CFG.MODULE_CODE;
   const MODULE_LOWER = CFG.MODULE_CODE_LOWER;
   const MODULE_PREFIX = `digiy_${MODULE_LOWER}`;
@@ -70,7 +50,9 @@
       `DIGIY_${MODULE}_PIN_SESSION`,
       `DIGIY_${MODULE}_SESSION`,
       `DIGIY_${MODULE}_ACCESS`,
-      ...CFG.STORAGE.SESSION_KEYS,
+      "DIGIY_MASTER_PIN_SESSION",
+      "DIGIY_PIN_SESSION",
+      "DIGIY_ACCESS",
       `${MODULE_PREFIX}_session`
     ],
     SLUG_KEY: `${MODULE_PREFIX}_slug`,
@@ -78,13 +60,16 @@
     LAST_SLUG_KEY: `${MODULE_PREFIX}_last_slug`
   };
 
-  const qs = new URLSearchParams(location.search);
-  const slugQ = qs.get("slug") || "";
-  const phoneQ = qs.get("phone") || "";
+  const CLEAN_QUERY_KEYS = [
+    "slug",
+    "phone",
+    "tel",
+    "build_tel",
+    "module",
+    "from",
+    "return"
+  ];
 
-  /* =========================================================
-     3) UTILS
-  ========================================================== */
   function safeJsonParse(raw) {
     try { return JSON.parse(raw); } catch (_) { return null; }
   }
@@ -104,7 +89,7 @@
     const cleaned = raw.replace(/[^\d+]/g, "");
     const digits = cleaned.replace(/[^\d]/g, "");
     if (!digits) return "";
-    return cleaned.startsWith("+") ? `+${digits}` : digits;
+    return cleaned.startsWith("+") ? digits : digits;
   }
 
   function normPin(value) {
@@ -174,12 +159,57 @@
     return { ok: res.ok, status: res.status, data };
   }
 
-  /* =========================================================
-     4) STORAGE
-  ========================================================== */
+  function cleanVisibleUrl() {
+    try {
+      const url = new URL(location.href);
+
+      const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+      const incomingPhone = normPhone(
+        url.searchParams.get("phone") ||
+        url.searchParams.get("tel") ||
+        url.searchParams.get("build_tel") ||
+        ""
+      );
+
+      if (incomingSlug) saveSlugOnly(incomingSlug);
+      if (incomingPhone) savePhoneOnly(incomingPhone);
+
+      let changed = false;
+      CLEAN_QUERY_KEYS.forEach((key) => {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    } catch (_) {}
+  }
+
+  function cleanInternalUrl(raw, fallback = "./dashboard-pro.html") {
+    const input = String(raw || "").trim() || fallback;
+
+    try {
+      const url = new URL(input, location.href);
+      CLEAN_QUERY_KEYS.forEach((key) => url.searchParams.delete(key));
+
+      if (url.origin === location.origin) {
+        const file = url.pathname.split("/").pop() || "dashboard-pro.html";
+        return `./${file}${url.search || ""}${url.hash || ""}`;
+      }
+
+      return url.toString();
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   function saveSlugOnly(slug) {
     const clean = normSlug(slug);
     if (!clean) return;
+
     try {
       localStorage.setItem(STORAGE.SLUG_KEY, clean);
       localStorage.setItem(STORAGE.LAST_SLUG_KEY, clean);
@@ -191,6 +221,7 @@
   function savePhoneOnly(phone) {
     const clean = normPhone(phone);
     if (!clean) return;
+
     try {
       localStorage.setItem(STORAGE.PHONE_KEY, clean);
       sessionStorage.setItem(STORAGE.PHONE_KEY, clean);
@@ -200,7 +231,6 @@
   function readSavedSlug() {
     try {
       return normSlug(
-        qs.get("slug") ||
         sessionStorage.getItem(STORAGE.SLUG_KEY) ||
         sessionStorage.getItem(STORAGE.LAST_SLUG_KEY) ||
         localStorage.getItem(STORAGE.SLUG_KEY) ||
@@ -208,20 +238,19 @@
         ""
       );
     } catch (_) {
-      return normSlug(qs.get("slug") || "");
+      return "";
     }
   }
 
   function readSavedPhone() {
     try {
       return normPhone(
-        qs.get("phone") ||
         sessionStorage.getItem(STORAGE.PHONE_KEY) ||
         localStorage.getItem(STORAGE.PHONE_KEY) ||
         ""
       );
     } catch (_) {
-      return normPhone(qs.get("phone") || "");
+      return "";
     }
   }
 
@@ -243,9 +272,7 @@
   }
 
   function readStoredSession() {
-    const keys = STORAGE.SESSION_KEYS;
-
-    for (const key of keys) {
+    for (const key of STORAGE.SESSION_KEYS) {
       let parsed = null;
 
       try {
@@ -267,12 +294,7 @@
         !!parsed.has_access;
 
       const verifiedAt =
-        Number(
-          parsed.verified_at ||
-          parsed.validated_at_ms ||
-          parsed.ts ||
-          0
-        ) || 0;
+        Number(parsed.verified_at || parsed.validated_at_ms || parsed.ts || 0) || 0;
 
       const validatedAtIso = parsed.validated_at || null;
 
@@ -316,8 +338,10 @@
       module: MODULE,
       access: !!payload.access,
       access_ok: !!payload.access,
+      ok: !!payload.access,
       verified_at: verifiedAtMs,
       validated_at: validatedAtIso,
+      expires_at: new Date(verifiedAtMs + CFG.SESSION_MAX_AGE_MS).toISOString(),
       ts: nowMs()
     };
 
@@ -336,92 +360,32 @@
     return session;
   }
 
-  /* =========================================================
-     5) URL HELPERS
-  ========================================================== */
-  function buildPinUrl(input = {}) {
-    const url = new URL(CFG.PIN_PATH, location.href);
-    const slug = normSlug(input.slug || state.slug || "");
-    const phone = normPhone(input.phone || state.phone || "");
-
-    if (slug) url.searchParams.set("slug", slug);
-    if (phone && CFG.URL.KEEP_PHONE_IN_URL) url.searchParams.set("phone", phone);
-    url.searchParams.set("return", location.href);
-
-    return url.toString();
+  function buildPinUrl() {
+    return cleanInternalUrl(CFG.PIN_PATH, "./pin.html");
   }
 
-  function goPin(input = {}) {
-    location.replace(buildPinUrl(input));
+  function goPin() {
+    location.replace(buildPinUrl());
   }
 
-  function buildPayUrl(input = {}) {
+  function buildPayUrl() {
     const url = new URL(CFG.PAY_URL);
-    const slug = normSlug(input.slug || state.slug || "");
-    const phone = normPhone(input.phone || state.phone || "");
-
     url.searchParams.set("module", MODULE);
-    if (slug) url.searchParams.set("slug", slug);
-    if (phone) url.searchParams.set("phone", phone);
-    url.searchParams.set("return", location.href);
-
     return url.toString();
   }
 
-  function goPay(input = {}) {
-    location.replace(buildPayUrl(input));
+  function goPay() {
+    location.replace(buildPayUrl());
   }
 
-  function ensureUrlIdentity(slug, phone) {
-    try {
-      const s = normSlug(slug);
-      const p = normPhone(phone);
-      const url = new URL(location.href);
-
-      const currentSlug = normSlug(url.searchParams.get("slug") || "");
-      const currentPhone = normPhone(url.searchParams.get("phone") || "");
-
-      let changed = false;
-
-      if (s && currentSlug !== s) {
-        url.searchParams.set("slug", s);
-        changed = true;
-      }
-
-      if (CFG.URL.KEEP_PHONE_IN_URL && p && currentPhone !== p) {
-        url.searchParams.set("phone", p);
-        changed = true;
-      }
-
-      if (changed) history.replaceState({}, "", url.toString());
-    } catch (_) {}
-  }
-
-  /* =========================================================
-     6) BACKEND HELPERS
-  ========================================================== */
   async function resolveSubBySlug(slug) {
     const s = normSlug(slug);
     if (!s) return null;
 
     const tries = [
-      {
-        select: "phone,slug,module",
-        slug: `eq.${s}`,
-        module: `eq.${MODULE}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        slug: `eq.${s}`,
-        module: `eq.${MODULE_LOWER}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        slug: `eq.${s}`,
-        limit: "1"
-      }
+      { select: "phone,slug,module", slug: `eq.${s}`, module: `eq.${MODULE}`, limit: "1" },
+      { select: "phone,slug,module", slug: `eq.${s}`, module: `eq.${MODULE_LOWER}`, limit: "1" },
+      { select: "phone,slug,module", slug: `eq.${s}`, limit: "1" }
     ];
 
     for (const params of tries) {
@@ -443,23 +407,9 @@
     if (!p) return null;
 
     const tries = [
-      {
-        select: "phone,slug,module",
-        phone: `eq.${p}`,
-        module: `eq.${MODULE}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        phone: `eq.${p}`,
-        module: `eq.${MODULE_LOWER}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        phone: `eq.${p}`,
-        limit: "1"
-      }
+      { select: "phone,slug,module", phone: `eq.${p}`, module: `eq.${MODULE}`, limit: "1" },
+      { select: "phone,slug,module", phone: `eq.${p}`, module: `eq.${MODULE_LOWER}`, limit: "1" },
+      { select: "phone,slug,module", phone: `eq.${p}`, limit: "1" }
     ];
 
     for (const params of tries) {
@@ -510,7 +460,8 @@
           ok: true,
           phone: normPhone(raw.phone || raw.p_phone || fallbackPhone || ""),
           module: upper(raw.module || raw.p_module || MODULE),
-          owner_id: raw.owner_id || null
+          owner_id: raw.owner_id || null,
+          slug: normSlug(raw.slug || "")
         };
       }
 
@@ -527,7 +478,8 @@
             ok: true,
             module: upper(vals[1] || MODULE),
             phone: normPhone(vals[2] || fallbackPhone || ""),
-            owner_id: vals[4] || null
+            owner_id: vals[4] || null,
+            slug: ""
           };
         }
       }
@@ -542,17 +494,15 @@
           const modToken = String(tupleHead[2] || "").trim().replace(/^"|"$/g, "");
           const phoneToken = String(tupleHead[3] || "").trim().replace(/^"|"$/g, "");
 
-          const okLike =
-            okToken === "t" ||
-            okToken === "true" ||
-            okToken === "1";
+          const okLike = okToken === "t" || okToken === "true" || okToken === "1";
 
           if (okLike) {
             return {
               ok: true,
               module: upper(modToken || MODULE),
               phone: normPhone(phoneToken || fallbackPhone || ""),
-              owner_id: null
+              owner_id: null,
+              slug: ""
             };
           }
         }
@@ -562,12 +512,11 @@
     return null;
   }
 
-  async function attemptPinLoginRPCs(slug, pin, phone) {
-    const s = normSlug(slug);
-    const p = normPin(pin);
+  async function attemptPinLoginRPCs(phone, pin) {
     const ph = normPhone(phone);
+    const p = normPin(pin);
 
-    if (!s || !p || !ph) return null;
+    if (!p || !ph) return null;
 
     const tries = [
       { p_phone: ph, p_module: MODULE, p_pin: p },
@@ -583,7 +532,7 @@
 
       return {
         ok: true,
-        slug: s,
+        slug: normSlug(parsed.slug || ""),
         phone: normPhone(parsed.phone || ph),
         owner_id: parsed.owner_id || null
       };
@@ -592,79 +541,74 @@
     return null;
   }
 
-  /* =========================================================
-     7) STATE
-  ========================================================== */
+  cleanVisibleUrl();
+
   const stored = readStoredSession();
   const savedSlug = readSavedSlug();
   const savedPhone = readSavedPhone();
 
   const state = {
     module: MODULE,
-    slug: normSlug(slugQ || stored?.slug || savedSlug || ""),
-    phone: normPhone(phoneQ || stored?.phone || savedPhone || ""),
+    slug: normSlug(stored?.slug || savedSlug || ""),
+    phone: normPhone(stored?.phone || savedPhone || ""),
     owner_id: stored?.owner_id || null,
-
     access: false,
     access_ok: false,
     preview: true,
     ready_flag: false,
     error: null,
-
-    source: stored
-      ? "session"
-      : (slugQ || phoneQ)
-        ? "query"
-        : (savedSlug || savedPhone)
-          ? "storage"
-          : "none",
-
+    source: stored ? "session" : (savedSlug || savedPhone) ? "storage" : "none",
     verified_at: stored?.verified_at || null,
     validated_at: stored?.validated_at || null,
-    pin_url: "",
-    pay_url: ""
+    pin_url: buildPinUrl(),
+    pay_url: buildPayUrl()
   };
 
   let pendingPromise = null;
 
-  /* =========================================================
-     8) LOGIN / LOGOUT
-  ========================================================== */
-  async function loginWithPin(slug, pin) {
-    const s = normSlug(slug);
+  async function loginWithPin(phoneOrSlug, pin) {
     const p = normPin(pin);
+    let phone = normPhone(phoneOrSlug || state.phone || readSavedPhone() || "");
+    let slug = normSlug(state.slug || readSavedSlug() || "");
 
-    if (!s) return { ok: false, error: "Slug manquant." };
-    if (!p) return { ok: false, error: "PIN manquant." };
+    if (!p) return { ok: false, error: "Code manquant." };
 
-    let phone = normPhone(state.phone || readSavedPhone() || "");
+    if (!phone && phoneOrSlug) {
+      const maybeSlug = normSlug(phoneOrSlug);
+      if (maybeSlug) {
+        const sub = await resolveSubBySlug(maybeSlug);
+        phone = normPhone(sub?.phone || "");
+        slug = normSlug(sub?.slug || maybeSlug || slug || "");
+      }
+    }
 
-    if (!phone) {
-      const sub = await resolveSubBySlug(s);
+    if (!phone && slug) {
+      const sub = await resolveSubBySlug(slug);
       phone = normPhone(sub?.phone || "");
     }
 
-    if (!phone) {
-      return { ok: false, error: "Slug inconnu (phone non résolu)." };
-    }
+    if (!phone) return { ok: false, error: "Téléphone manquant." };
 
-    const auth = await attemptPinLoginRPCs(s, p, phone);
-    if (!auth?.ok) {
-      return { ok: false, error: "PIN invalide." };
-    }
+    const auth = await attemptPinLoginRPCs(phone, p);
+    if (!auth?.ok) return { ok: false, error: "Accès non reconnu." };
 
     const finalPhone = normPhone(auth.phone || phone);
-    const finalOwnerId = auth.owner_id || null;
+    let finalSlug = normSlug(auth.slug || slug || "");
 
-    const accessOk = await checkAccess(finalPhone);
-    if (!accessOk) {
-      return { ok: false, error: "Abonnement inactif." };
+    if (!finalSlug && finalPhone) {
+      const sub = await resolveSubByPhone(finalPhone);
+      finalSlug = normSlug(sub?.slug || "");
     }
 
+    if (!finalSlug && finalPhone) finalSlug = `${MODULE_LOWER}-${finalPhone}`;
+
+    const accessOk = await checkAccess(finalPhone);
+    if (!accessOk) return { ok: false, error: "Accès inactif." };
+
     const saved = saveSession({
-      slug: s,
+      slug: finalSlug,
       phone: finalPhone,
-      owner_id: finalOwnerId,
+      owner_id: auth.owner_id || null,
       access: true,
       verified_at: nowMs(),
       validated_at: nowIso()
@@ -680,10 +624,9 @@
     state.error = null;
     state.verified_at = saved.verified_at;
     state.validated_at = saved.validated_at;
-    state.pin_url = buildPinUrl(saved);
-    state.pay_url = buildPayUrl(saved);
+    state.pin_url = buildPinUrl();
+    state.pay_url = buildPayUrl();
 
-    ensureUrlIdentity(saved.slug, saved.phone);
     showPage();
 
     return {
@@ -707,34 +650,30 @@
     state.error = null;
     state.verified_at = null;
     state.validated_at = null;
+    state.pin_url = buildPinUrl();
+    state.pay_url = buildPayUrl();
 
     showPage();
-    goPin({});
+    goPin();
   }
 
-  /* =========================================================
-     9) BOOT
-  ========================================================== */
   async function check() {
-    const storedSession = readStoredSession();
-    const persistedSlug = readSavedSlug();
-    const persistedPhone = readSavedPhone();
+    cleanVisibleUrl();
 
-    let slug = normSlug(slugQ || storedSession?.slug || state.slug || persistedSlug || "");
-    let phone = normPhone(phoneQ || storedSession?.phone || state.phone || persistedPhone || "");
+    const storedSession = readStoredSession();
+    let slug = normSlug(storedSession?.slug || state.slug || readSavedSlug() || "");
+    let phone = normPhone(storedSession?.phone || state.phone || readSavedPhone() || "");
     let owner_id = storedSession?.owner_id || state.owner_id || null;
-    let verifiedAt =
-      Number(storedSession?.verified_at || state.verified_at || 0) || 0;
-    let validatedAt =
-      storedSession?.validated_at || state.validated_at || null;
+    let verifiedAt = Number(storedSession?.verified_at || state.verified_at || 0) || 0;
+    let validatedAt = storedSession?.validated_at || state.validated_at || null;
 
     state.slug = slug;
     state.phone = phone;
     state.owner_id = owner_id;
     state.verified_at = verifiedAt;
     state.validated_at = validatedAt;
-    state.pin_url = buildPinUrl({ slug, phone });
-    state.pay_url = buildPayUrl({ slug, phone });
+    state.pin_url = buildPinUrl();
+    state.pay_url = buildPayUrl();
     state.error = null;
 
     if (slug) saveSlugOnly(slug);
@@ -758,46 +697,7 @@
       }
     }
 
-    state.pin_url = buildPinUrl({ slug, phone });
-    state.pay_url = buildPayUrl({ slug, phone });
-
-    if (!slug && !phone) {
-      if (CFG.ALLOW_PREVIEW_WITHOUT_IDENTITY) {
-        state.access = false;
-        state.access_ok = false;
-        state.preview = true;
-        state.ready_flag = true;
-        state.error = "Identité absente.";
-        showPage();
-        return { ...state };
-      }
-
-      clearSessionsOnly();
-      state.access = false;
-      state.access_ok = false;
-      state.preview = true;
-      state.ready_flag = true;
-      state.error = "Identité absente.";
-      showPage();
-      goPin({ slug, phone });
-      return { ...state };
-    }
-
-    if (!slug) {
-      clearSessionsOnly();
-      state.access = false;
-      state.access_ok = false;
-      state.preview = true;
-      state.ready_flag = true;
-      state.error = "Slug absent.";
-      showPage();
-      goPin({ slug, phone });
-      return { ...state };
-    }
-
-    const freshSession =
-      !!verifiedAt &&
-      isRecent(verifiedAt);
+    const freshSession = !!verifiedAt && isRecent(verifiedAt);
 
     if (!freshSession) {
       clearSessionsOnly();
@@ -808,9 +708,12 @@
       state.access_ok = false;
       state.preview = true;
       state.ready_flag = true;
-      state.error = "Session PIN absente ou expirée.";
+      state.error = "Session absente ou expirée.";
+      state.pin_url = buildPinUrl();
+      state.pay_url = buildPayUrl();
+
       showPage();
-      goPin({ slug, phone });
+      goPin();
       return { ...state };
     }
 
@@ -834,10 +737,9 @@
     state.owner_id = saved.owner_id;
     state.verified_at = saved.verified_at;
     state.validated_at = saved.validated_at;
-    state.pin_url = buildPinUrl(saved);
-    state.pay_url = buildPayUrl(saved);
+    state.pin_url = buildPinUrl();
+    state.pay_url = buildPayUrl();
 
-    ensureUrlIdentity(saved.slug, saved.phone);
     showPage();
 
     return { ...state };
@@ -856,15 +758,12 @@
         pendingPromise = null;
       });
     }
+
     return pendingPromise;
   }
 
-  /* =========================================================
-     10) API PUBLIQUE
-  ========================================================== */
   window.DIGIY_GUARD = {
     state,
-
     ready,
 
     async refresh() {
@@ -910,8 +809,8 @@
       state.validated_at = saved.validated_at;
       state.ready_flag = true;
       state.error = null;
-      state.pin_url = buildPinUrl(saved);
-      state.pay_url = buildPayUrl(saved);
+      state.pin_url = buildPinUrl();
+      state.pay_url = buildPayUrl();
       return saved;
     },
 
@@ -941,20 +840,25 @@
     loginWithPin,
     logout,
 
-    buildPinUrl(input = {}) {
-      return buildPinUrl({ ...state, ...input });
+    buildPinUrl() {
+      return buildPinUrl();
     },
 
-    goPin(input = {}) {
-      goPin({ ...state, ...input });
+    goPin() {
+      goPin();
     },
 
-    buildPayUrl(input = {}) {
-      return buildPayUrl({ ...state, ...input });
+    buildPayUrl() {
+      return buildPayUrl();
     },
 
-    goPay(input = {}) {
-      goPay({ ...state, ...input });
+    goPay() {
+      goPay();
+    },
+
+    cleanUrl() {
+      cleanVisibleUrl();
+      return true;
     },
 
     async resolveSubBySlug(slug) {
@@ -972,3 +876,17 @@
 
   ready();
 })();
+'''
+out = Path("/mnt/data/guard_build_secure_session8_cleanurl.js")
+out.write_text(guard, encoding="utf-8")
+
+checks = {
+    "phone_equals": "phone=" in guard,
+    "slug_equals": "slug=" in guard,
+    "return_equals": "return=" in guard,
+    "KEEP_PHONE_IN_URL": "KEEP_PHONE_IN_URL" in guard,
+    "ensureUrlIdentity": "ensureUrlIdentity" in guard
+}
+print("Fichier créé :", out)
+print("Contrôle :", checks)
+
