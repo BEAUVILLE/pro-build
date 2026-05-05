@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
-  <script src="./guard.js?v=build-guard-v10"></script>
+  <script src="./guard.js"></script>
 
   <style>
     :root{
@@ -536,7 +536,7 @@
           <h1>JE PROPOSE MES SERVICES — Accueil</h1>
           <div class="sub">
             Demandes, service, notes, argent et sauvegardes.<br>
-            Identifiant : <b id="slugText">—</b> • Téléphone : <b id="phoneText">—</b>
+            Session personnelle gardée ici pendant 8 heures.
           </div>
         </div>
       </div>
@@ -719,7 +719,6 @@
 
   const MODULE_CODE = "BUILD";
   const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
-  const SUPPORT_PHONE = "221771342889";
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
   const SUPABASE_ANON = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
   const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
@@ -767,72 +766,35 @@
     return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
   }
 
-  function buildSafeUrl(path, params = {}){
+  function cleanVisibleUrl(){
     try{
-      const url = new URL(path, window.location.href);
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && String(value).trim() !== "") {
-          url.searchParams.set(key, String(value));
-        }
-      });
-      return url.pathname + url.search + url.hash;
-    }catch(_){
-      return path || "#";
-    }
+      const url = new URL(location.href);
+      ["slug","phone","tel","build_tel","module","from","return"].forEach((key) => url.searchParams.delete(key));
+      history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+    }catch(_){}
   }
 
-  function getHintedSlug(){
-    const params = new URLSearchParams(location.search);
-    return normSlug(
-      params.get("slug") ||
-      sessionStorage.getItem("digiy_build_slug") ||
-      sessionStorage.getItem("digiy_build_last_slug") ||
-      localStorage.getItem("digiy_build_last_slug") ||
-      ""
-    );
-  }
-
-  function cockpitUrl(){
-    return buildSafeUrl("./cockpit.html", {
-      slug: CURRENT.slug,
-      phone: CURRENT.phone
-    });
-  }
-
-  function profileUrl(){
-    return buildSafeUrl("./profile.html", {
-      slug: CURRENT.slug,
-      phone: CURRENT.phone
-    });
-  }
-
-  function pinUrl(){
-    return buildSafeUrl("./pin.html", {
-      slug: CURRENT.slug,
-      phone: CURRENT.phone
-    });
-  }
+  function homeUrl(){ return "./dashboard-pro.html"; }
+  function cockpitUrl(){ return "./cockpit.html"; }
+  function demandesUrl(){ return "./cockpit.html#demandes"; }
+  function profileUrl(){ return "./profile.html"; }
+  function pinUrl(){ return "./pin.html"; }
 
   function manageSubUrl(){
     const url = new URL(ABOS_URL);
     url.searchParams.set("module", MODULE_CODE);
-    if (CURRENT.phone) url.searchParams.set("phone", CURRENT.phone);
-    if (CURRENT.slug) url.searchParams.set("slug", CURRENT.slug);
-    url.searchParams.set("return", cockpitUrl());
     return url.toString();
   }
 
   function supportUrl(){
-    const msg = encodeURIComponent(
-      "Bonjour support " + MODULE_LABEL + ".\n" +
-      "Identifiant : " + (CURRENT.slug || "") + "\n" +
-      "Téléphone : " + (CURRENT.phone || "")
-    );
-    return "https://wa.me/" + SUPPORT_PHONE + "?text=" + msg;
+    const url = new URL(ABOS_URL);
+    url.searchParams.set("module", MODULE_CODE);
+    url.searchParams.set("support", "1");
+    return url.toString();
   }
 
   function quotesStorageKey(){
-    return "DIGIY_BUILD_QUOTES::" + (CURRENT.slug || "noslug");
+    return "DIGIY_BUILD_QUOTES::" + (CURRENT.slug || "build");
   }
 
   function getLocalQuotes(){
@@ -849,7 +811,7 @@
     const a = document.createElement("a");
     const objectUrl = URL.createObjectURL(blob);
     a.href = objectUrl;
-    a.download = "build-backup-" + (CURRENT.slug || "noslug") + ".json";
+    a.download = "build-backup.json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     return rows.length;
@@ -864,8 +826,8 @@
 
     $("backupCount").textContent =
       count > 0
-        ? count + " devis trouvé(s) sur cet appareil pour " + (CURRENT.slug || "cette activité") + "."
-        : "Aucun devis local trouvé pour " + (CURRENT.slug || "cette activité") + " pour le moment.";
+        ? count + " devis trouvé(s) sur cet appareil."
+        : "Aucun devis local trouvé pour cette activité pour le moment.";
   }
 
   function setNotifs(items){
@@ -901,17 +863,15 @@
   }
 
   function setHeader(){
-    $("slugText").textContent = CURRENT.slug || "—";
-    $("phoneText").textContent = CURRENT.phone || "—";
     $("btnPinEntry").href = pinUrl();
     $("btnManageSubLocked").href = manageSubUrl();
 
     const links = {
       quickService: cockpitUrl(),
-      quickDemandes: cockpitUrl() + "#demandes",
+      quickDemandes: demandesUrl(),
       quickPlus: profileUrl(),
-      bottomHome: buildSafeUrl("./dashboard-pro.html", { slug: CURRENT.slug, phone: CURRENT.phone }),
-      bottomDemandes: cockpitUrl() + "#demandes",
+      bottomHome: homeUrl(),
+      bottomDemandes: demandesUrl(),
       bottomService: cockpitUrl(),
       bottomMore: profileUrl()
     };
@@ -1064,18 +1024,11 @@
 
   function buildBuildPayDraftUrl(draft){
     const d = draft || parseBuildNote(($("buildQuickNote") || {}).value || "");
-    const ownerPhone = normPhone(CURRENT.phone || "");
     const u = new URL("https://pro-pay.digiylyfe.com/admin.html");
-
-    if (ownerPhone){
-      u.searchParams.set("slug", "pay-" + ownerPhone);
-      u.searchParams.set("phone", ownerPhone);
-    }
 
     u.searchParams.set("fromDraft", "1");
     u.searchParams.set("intent", "quick_note");
     u.searchParams.set("source_module", "BUILD");
-    if (CURRENT.slug) u.searchParams.set("source_slug", CURRENT.slug);
     u.searchParams.set("source_id", "build-note-" + Date.now());
 
     if (d.amount_xof){
@@ -1137,6 +1090,7 @@
       try{
         if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.logout === "function") {
           window.DIGIY_GUARD.logout();
+          return;
         }
       }catch(_){}
       location.href = pinUrl();
@@ -1176,12 +1130,11 @@
   }
 
   async function init(){
+    cleanVisibleUrl();
     bindStaticUi();
 
-    const hintedSlug = getHintedSlug();
-
     if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
-      CURRENT.slug = hintedSlug;
+      CURRENT.slug = "";
       CURRENT.phone = "";
       CURRENT.live = false;
       setHeader();
@@ -1192,30 +1145,17 @@
       return;
     }
 
-    await window.DIGIY_GUARD.ready;
+    await window.DIGIY_GUARD.ready();
 
-    const st = window.DIGIY_GUARD.state || {};
-    CURRENT.slug = normSlug(st.slug || hintedSlug);
+    const st = window.DIGIY_GUARD.getSession
+      ? window.DIGIY_GUARD.getSession()
+      : (window.DIGIY_GUARD.state || {});
+
+    CURRENT.slug = normSlug(st.slug || "");
     CURRENT.phone = normPhone(st.phone || "");
     CURRENT.live = !!(st.access_ok && CURRENT.slug && CURRENT.phone);
 
-    if (CURRENT.slug) {
-      try{
-        sessionStorage.setItem("digiy_build_slug", CURRENT.slug);
-        sessionStorage.setItem("digiy_build_last_slug", CURRENT.slug);
-        localStorage.setItem("digiy_build_last_slug", CURRENT.slug);
-      }catch(_){}
-    }
-
     setHeader();
-
-    if (!CURRENT.slug) {
-      setLockedView(
-        "Identifiant manquant",
-        "Repasse par le code d’accès pour reconstruire ton accès proprement."
-      );
-      return;
-    }
 
     if (!CURRENT.live) {
       setLockedView(
@@ -1354,7 +1294,7 @@
 
   init().catch((err) => {
     console.error("BUILD dashboard init error", err);
-    CURRENT.slug = getHintedSlug();
+    CURRENT.slug = "";
     CURRENT.phone = "";
     CURRENT.live = false;
     setHeader();
