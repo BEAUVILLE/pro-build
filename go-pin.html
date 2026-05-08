@@ -55,6 +55,37 @@
       padding:24px;
     }
 
+    .routeNav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:0 0 14px;
+    }
+
+    .routeNav a{
+      flex:1;
+      min-width:120px;
+      min-height:40px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:9px 10px;
+      font-size:13px;
+      font-weight:1000;
+      text-align:center;
+    }
+
+    .routeNav a:hover{
+      border-color:rgba(250,204,21,.44);
+      background:rgba(250,204,21,.08);
+    }
+
     .top{
       display:flex;
       align-items:center;
@@ -228,11 +259,24 @@
       border-color:rgba(250,204,21,.28);
       box-shadow:0 12px 26px rgba(34,197,94,.18);
     }
+
+    @media(max-width:560px){
+      .routeNav a{
+        min-width:calc(50% - 6px);
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="box">
+    <nav class="routeNav" aria-label="Navigation DIGIY">
+      <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
+      <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
+      <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
+      <a href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
+    </nav>
+
     <div class="top">
       <img
         class="logo"
@@ -304,7 +348,8 @@
         "build_tel",
         "module",
         "from",
-        "return"
+        "return",
+        "v"
       ];
 
       function normSlug(v){
