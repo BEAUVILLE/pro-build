@@ -73,8 +73,39 @@
       backdrop-filter:blur(12px);
     }
 
+    .routeNav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      padding:14px 14px 0;
+    }
+
+    .routeNav a{
+      flex:1;
+      min-width:120px;
+      min-height:40px;
+      border-radius:999px;
+      border:1px solid rgba(212,175,55,.22);
+      background:rgba(255,255,255,.045);
+      color:var(--text);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:9px 10px;
+      font-size:.82rem;
+      font-weight:1000;
+      text-align:center;
+    }
+
+    .routeNav a:hover{
+      border-color:rgba(250,204,21,.44);
+      background:rgba(250,204,21,.08);
+    }
+
     .hero{
-      padding:22px 22px 10px;
+      padding:18px 22px 10px;
       border-bottom:1px solid rgba(255,255,255,.06);
       background:
         radial-gradient(circle at top right, rgba(212,175,55,.18), transparent 34%);
@@ -300,6 +331,7 @@
       backdrop-filter:blur(16px);
       -webkit-backdrop-filter:blur(16px);
     }
+
     .bottomNavInner{
       width:min(100%,760px);
       margin:0 auto;
@@ -307,6 +339,7 @@
       grid-template-columns:repeat(5,1fr);
       gap:6px;
     }
+
     .bottomNav a{
       min-height:58px;
       border-radius:16px;
@@ -321,7 +354,9 @@
       border:1px solid transparent;
       text-decoration:none;
     }
+
     .bottomNav .ico{font-size:18px;line-height:1}
+
     .bottomNav a.active{
       color:#111827;
       background:linear-gradient(135deg,var(--gold),var(--gold2));
@@ -351,15 +386,27 @@
       padding:9px 10px;
     }
 
+    @media(max-width:560px){
+      .routeNav a{
+        min-width:calc(50% - 6px);
+      }
+    }
+
     @media(max-width:520px){
       .fastLinks{grid-template-columns:1fr 1fr}
     }
-
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="card">
+      <nav class="routeNav" aria-label="Navigation DIGIY">
+        <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
+        <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
+        <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
+        <a href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
+      </nav>
+
       <div class="hero">
         <div class="brand">
           <img
@@ -369,18 +416,19 @@
           />
           <div>
             <h1>JE PROPOSE MES SERVICES</h1>
-            <p>Accès simple avec ton téléphone et ton code</p>
+            <p>Accès simple avec ton code</p>
           </div>
         </div>
       </div>
 
       <div class="body">
         <p class="intro">
-          Entre ton <strong>téléphone</strong> et ton <strong>code d’accès</strong>.
-          Si cet appareil connaît déjà ton espace, ton code suffit pour rouvrir la session.
+          Entre ton <strong>code d’accès</strong>. Si cet appareil connaît déjà ton espace, ton code suffit.
+          Sinon, ajoute aussi le téléphone de l’abonnement pour ouvrir la première session.
         </p>
+
         <div class="field" id="phoneField">
-          <label for="phone">Téléphone</label>
+          <label for="phone">Téléphone de l’abonnement</label>
           <input id="phone" type="tel" inputmode="numeric" placeholder="Ex : 221771234567" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-form-type="other"/>
         </div>
 
@@ -393,8 +441,8 @@
         </div>
 
         <div class="actions">
-          <button id="btnOpen" class="primary" type="button">🔓 Entrer dans mes services</button>
-          <a id="btnCockpit" class="btn secondary hidden" href="./cockpit.html">🏠 Aller à l’accueil</a>
+          <button id="btnOpen" class="primary" type="button">🔓 Ouvrir mes services</button>
+          <a id="btnCockpit" class="btn secondary hidden" href="./dashboard-pro.html">🏠 Aller à l’accueil</a>
           <a id="btnAbos" class="btn pay" href="https://commencer-a-payer.digiylyfe.com/?module=BUILD" target="_blank" rel="noopener">💳 Gérer mon abonnement</a>
         </div>
 
@@ -424,11 +472,10 @@
       </div>
 
       <div class="foot">
-        DIGIYLYFE • entrée normale • accès gardé ici pendant 8 heures
+        DIGIYLYFE • accès privé • session gardée ici pendant 8 heures
       </div>
     </section>
   </div>
-
 
   <nav class="bottomNav" aria-label="Navigation BUILD">
     <div class="bottomNavInner">
@@ -439,6 +486,7 @@
       <a class="active" id="bottomMore" href="./pin.html"><span class="ico">🔐</span><span>Accès</span></a>
     </div>
   </nav>
+
   <script>
     (() => {
       "use strict";
@@ -524,7 +572,12 @@
         try{
           const url = new URL(window.location.href);
           const incomingSlug = normSlug(url.searchParams.get("slug") || "");
-          const incomingPhone = normPhone(url.searchParams.get("phone") || url.searchParams.get("tel") || "");
+          const incomingPhone = normPhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("build_tel") ||
+            ""
+          );
 
           if (incomingSlug){
             try { sessionStorage.setItem(STORAGE_KEYS.slug, incomingSlug); } catch(_) {}
@@ -538,7 +591,7 @@
             try { localStorage.setItem(STORAGE_KEYS.phone, incomingPhone); } catch(_) {}
           }
 
-          ["slug","phone","tel","build_tel","module","from","return"].forEach((key) => url.searchParams.delete(key));
+          ["slug","phone","tel","build_tel","module","from","return","v"].forEach((key) => url.searchParams.delete(key));
           window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
         }catch(_){}
       }
@@ -683,14 +736,16 @@
         }
 
         const rememberedPhone = readSavedPhone();
-        el.sessionInfo.textContent = rememberedPhone ? "Appareil connu" : "Aucun";
+        const rememberedSlug = readSavedSlug();
 
-        if (rememberedPhone){
+        el.sessionInfo.textContent = rememberedPhone || rememberedSlug ? "Appareil connu" : "Aucun";
+
+        if (rememberedPhone || rememberedSlug){
           if(el.phoneField) el.phoneField.classList.add("hidden");
           setStatus("Appareil reconnu. Entre ton code pour rouvrir ton espace.", "");
         }else{
           if(el.phoneField) el.phoneField.classList.remove("hidden");
-          setStatus("Prêt. Entre ton téléphone et ton code.", "");
+          setStatus("Prêt. Entre ton téléphone d’abonnement et ton code.", "");
         }
       }
 
@@ -854,7 +909,7 @@
           }
 
           if (!phone){
-            setStatus("Entre ton téléphone et ton code.", "err");
+            setStatus("Entre le téléphone de l’abonnement et le code.", "err");
             return;
           }
 
