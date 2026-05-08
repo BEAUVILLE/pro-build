@@ -345,13 +345,13 @@
       />
       <div>
         <h1>MES SERVICES</h1>
-        <div class="sub">Entrée vers ton activité de service.</div>
+        <div class="sub">Entrée sécurisée vers ton espace Mes services.</div>
       </div>
     </div>
 
     <div class="hero">
-      Cette page ouvre ton espace de travail : demandes clients, devis, suivi terrain, notes rapides et retour vers Mon argent.
-      Si ta session est déjà ouverte, tu reprends directement. Sinon, ton code d’accès suffit.
+      Cette page ouvre la bonne porte : ton espace Mes services, ta fiche publique, ton code d’accès et le retour vers Mon Espace pro.
+      Si ta session est déjà ouverte, tu vas directement au cockpit. Sinon, tu ouvres ta session avec ton code.
     </div>
 
     <div class="audioBox" aria-label="Explication audio DIGIY Mes services">
@@ -379,13 +379,14 @@
 
     <div class="actions">
       <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code d’accès</a>
-      <a class="btn" id="btnHelp" href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 Besoin d’aide</a>
+      <a class="btn" id="btnCockpit" href="./cockpit.html">🧰 Mon espace</a>
+      <a class="btn" id="btnPublicProfile" href="./profile.html">🌍 Ma fiche publique</a>
       <a class="btn" id="btnProSpace" href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
     </div>
 
     <div class="mini">
-      <b>Conseil :</b> une demande client doit arriver claire : besoin, lieu, urgence et prochaine action.
-      DIGIY garde le chemin simple, sans exposer tes informations privées en façade.
+      <b>Conseil :</b> ton espace privé sert à gérer les demandes, devis, suivi terrain et notes rapides.
+      Ta fiche publique sert à montrer ton service au client. DIGIY garde le chemin simple, sans exposer tes informations privées en façade.
     </div>
   </main>
 
@@ -534,6 +535,19 @@
         return age >= 0 && age < SESSION_HOURS * 60 * 60 * 1000;
       }
 
+
+      function syncStaticLinks(){
+        const btnCockpit = document.getElementById("btnCockpit");
+        const btnPublicProfile = document.getElementById("btnPublicProfile");
+        const btnProSpace = document.getElementById("btnProSpace");
+        const btnHubTop = document.getElementById("btnHubTop");
+
+        if(btnCockpit) btnCockpit.href = "./cockpit.html";
+        if(btnPublicProfile) btnPublicProfile.href = "./profile.html";
+        if(btnProSpace) btnProSpace.href = "https://pro-espace.digiylyfe.com/";
+        if(btnHubTop) btnHubTop.href = "https://digiy-hub.digiylyfe.com/";
+      }
+
       function setAccessState(){
         const accessState = document.getElementById("accessState");
         const accessMeta = document.getElementById("accessMeta");
@@ -547,8 +561,8 @@
           accessState.textContent = "Session active sur cet appareil.";
           accessState.className = "stateValue ok";
           accessMeta.textContent = "Tu peux revenir à ton accueil sans repasser par le code.";
-          btnEnter.href = "./dashboard-pro.html";
-          btnEnter.textContent = "🏠 Ouvrir mon accueil";
+          btnEnter.href = "./cockpit.html";
+          btnEnter.textContent = "🧰 Ouvrir mon espace";
           return;
         }
 
@@ -655,6 +669,7 @@
       }
 
       cleanVisibleUrl();
+      syncStaticLinks();
       setAccessState();
 
       document.getElementById("btnBuildAudio")?.addEventListener("click", playBuildAudio);
