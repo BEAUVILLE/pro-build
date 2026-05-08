@@ -350,8 +350,8 @@
     </div>
 
     <div class="hero">
-      Cette page ouvre la bonne porte : ton espace Mes services, ta fiche publique, ton code d’accès et le retour vers Mon Espace pro.
-      Si ta session est déjà ouverte, tu vas directement au cockpit. Sinon, tu ouvres ta session avec ton code.
+      Cette page ouvre la bonne porte : ton accueil Mes services, ta fiche publique, ton code d’accès et le retour vers Mon Espace pro.
+      Si ta session est déjà ouverte, tu vas directement à ton accueil. Sinon, tu ouvres ta session avec ton code.
     </div>
 
     <div class="audioBox" aria-label="Explication audio DIGIY Mes services">
@@ -379,7 +379,7 @@
 
     <div class="actions">
       <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code d’accès</a>
-      <a class="btn" id="btnCockpit" href="./cockpit.html">🧰 Mon espace</a>
+      <a class="btn" id="btnCockpit" href="./dashboard-pro.html">🏠 Mon accueil</a>
       <a class="btn" id="btnPublicProfile" href="./profile.html">🌍 Ma fiche publique</a>
       <a class="btn" id="btnProSpace" href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
     </div>
@@ -397,7 +397,6 @@
       const MODULE = "BUILD";
       const SESSION_HOURS = 8;
       const CLEAN_QUERY_KEYS = ["slug","phone","tel","build_tel","module","from","return","v"];
-      const qs = new URLSearchParams(location.search);
 
       const STORAGE_KEYS = {
         slug: "digiy_build_slug",
@@ -535,14 +534,13 @@
         return age >= 0 && age < SESSION_HOURS * 60 * 60 * 1000;
       }
 
-
       function syncStaticLinks(){
         const btnCockpit = document.getElementById("btnCockpit");
         const btnPublicProfile = document.getElementById("btnPublicProfile");
         const btnProSpace = document.getElementById("btnProSpace");
         const btnHubTop = document.getElementById("btnHubTop");
 
-        if(btnCockpit) btnCockpit.href = "./cockpit.html";
+        if(btnCockpit) btnCockpit.href = "./dashboard-pro.html";
         if(btnPublicProfile) btnPublicProfile.href = "./profile.html";
         if(btnProSpace) btnProSpace.href = "https://pro-espace.digiylyfe.com/";
         if(btnHubTop) btnHubTop.href = "https://digiy-hub.digiylyfe.com/";
@@ -561,8 +559,8 @@
           accessState.textContent = "Session active sur cet appareil.";
           accessState.className = "stateValue ok";
           accessMeta.textContent = "Tu peux revenir à ton accueil sans repasser par le code.";
-          btnEnter.href = "./cockpit.html";
-          btnEnter.textContent = "🧰 Ouvrir mon espace";
+          btnEnter.href = "./dashboard-pro.html";
+          btnEnter.textContent = "🏠 Ouvrir mon accueil";
           return;
         }
 
