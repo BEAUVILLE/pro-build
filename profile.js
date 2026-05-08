@@ -7,6 +7,17 @@
   const DRAFT_PREFIX = "DIGIY_BUILD_PROFILE_DRAFT::";
   const CACHE_PREFIX = "DIGIY_BUILD_PROFILE_CACHE::";
 
+  const CLEAN_KEYS = [
+    "phone",
+    "tel",
+    "build_tel",
+    "slug",
+    "module",
+    "from",
+    "return",
+    "v"
+  ];
+
   const state = {
     slug: "",
     phone: "",
@@ -47,6 +58,7 @@
     IDS.forEach((id) => {
       els[id] = $(id);
     });
+
     els.guard = $("guard_status");
     els.msg = $("msg");
     els.btnSave = $("btnSave");
@@ -115,26 +127,23 @@
       try {
         const arr = JSON.parse(source);
         if (Array.isArray(arr)) {
-          return arr
-            .map((v) => text(v))
-            .filter(Boolean);
+          return arr.map((v) => text(v)).filter(Boolean);
         }
       } catch (_) {}
     }
 
-    return source
-      .split(",")
-      .map((v) => text(v))
-      .filter(Boolean);
+    return source.split(",").map((v) => text(v)).filter(Boolean);
   }
 
   function formatTags(value) {
     if (Array.isArray(value)) {
       return value.map((v) => text(v)).filter(Boolean).join(",");
     }
+
     if (typeof value === "string") {
       const raw = value.trim();
       if (!raw) return "";
+
       if (raw.startsWith("[") && raw.endsWith("]")) {
         try {
           const arr = JSON.parse(raw);
@@ -143,8 +152,10 @@
           }
         } catch (_) {}
       }
+
       return raw;
     }
+
     return "";
   }
 
@@ -152,22 +163,72 @@
     for (const key of keys) {
       if (!obj || !(key in obj)) continue;
       const value = obj[key];
+
       if (value === null || value === undefined) continue;
+
       if (typeof value === "string") {
         if (value.trim() === "") continue;
         return value;
       }
+
       return value;
     }
+
     return fallback;
   }
 
-  function cleanRouteUrl(path, fallback = "./dashboard-pro.html") {
-    const blocked = new Set(["phone", "tel", "build_tel", "slug", "return", "from"]);
+  function cleanCurrentUrl() {
+    try {
+      const url = new URL(window.location.href);
+      let changed = false;
 
+      CLEAN_KEYS.forEach((key) => {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    } catch (_) {}
+  }
+
+  function readIncomingIdentityBeforeClean() {
+    try {
+      const url = new URL(window.location.href);
+
+      const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+      const incomingPhone = normPhone(
+        url.searchParams.get("phone") ||
+        url.searchParams.get("tel") ||
+        url.searchParams.get("build_tel") ||
+        ""
+      );
+
+      if (incomingSlug) {
+        try {
+          sessionStorage.setItem("digiy_build_slug", incomingSlug);
+          sessionStorage.setItem("digiy_build_last_slug", incomingSlug);
+          localStorage.setItem("digiy_build_last_slug", incomingSlug);
+        } catch (_) {}
+      }
+
+      if (incomingPhone) {
+        try {
+          sessionStorage.setItem("digiy_build_phone", incomingPhone);
+          localStorage.setItem("digiy_build_phone", incomingPhone);
+        } catch (_) {}
+      }
+    } catch (_) {}
+  }
+
+  function cleanRouteUrl(path, fallback = "./dashboard-pro.html") {
     try {
       const url = new URL(String(path || fallback), window.location.href);
-      blocked.forEach((key) => url.searchParams.delete(key));
+
+      CLEAN_KEYS.forEach((key) => url.searchParams.delete(key));
 
       if (url.origin === window.location.origin) {
         return url.pathname + url.search + url.hash;
@@ -182,7 +243,7 @@
   function buildSafeUrl(path, params = {}) {
     try {
       const url = new URL(path, window.location.href);
-      const blocked = new Set(["phone", "tel", "build_tel", "slug", "return", "from"]);
+      const blocked = new Set(CLEAN_KEYS);
 
       Object.entries(params).forEach(([key, value]) => {
         if (blocked.has(key)) return;
@@ -191,7 +252,8 @@
         }
       });
 
-      blocked.forEach((key) => url.searchParams.delete(key));
+      CLEAN_KEYS.forEach((key) => url.searchParams.delete(key));
+
       return url.pathname + url.search + url.hash;
     } catch (_) {
       return path || "#";
@@ -204,6 +266,10 @@
 
   function serviceUrl() {
     return cleanRouteUrl("./cockpit.html");
+  }
+
+  function pinUrl() {
+    return cleanRouteUrl("./pin.html");
   }
 
   function publicOrigin() {
@@ -224,9 +290,11 @@
 
     try {
       const url = new URL(explicit);
-      ["phone", "tel", "build_tel", "slug", "return", "from"].forEach((key) => {
+
+      CLEAN_KEYS.forEach((key) => {
         url.searchParams.delete(key);
       });
+
       return url.toString();
     } catch (_) {
       return "";
@@ -238,8 +306,12 @@
     if (explicit) return explicit;
 
     const rowUrl = cleanPublicUrl(
-      state.row?.profile_url || state.row?.public_url || state.row?.url || ""
+      state.row?.profile_url ||
+      state.row?.public_url ||
+      state.row?.url ||
+      ""
     );
+
     if (rowUrl) return rowUrl;
 
     return "";
@@ -281,15 +353,36 @@
     } catch (_) {}
   }
 
+  function readSavedSlug() {
+    return normSlug(
+      sessionStorage.getItem("digiy_build_slug") ||
+      sessionStorage.getItem("digiy_build_last_slug") ||
+      localStorage.getItem("digiy_build_slug") ||
+      localStorage.getItem("digiy_build_last_slug") ||
+      ""
+    );
+  }
+
+  function readSavedPhone() {
+    return normPhone(
+      sessionStorage.getItem("digiy_build_phone") ||
+      localStorage.getItem("digiy_build_phone") ||
+      ""
+    );
+  }
+
   function setGuardStatus(message) {
     if (els.guard) els.guard.textContent = message;
   }
 
   function setMsg(message, kind = "neutral") {
     if (!els.msg) return;
+
     els.msg.classList.remove("ok", "bad");
+
     if (kind === "ok") els.msg.classList.add("ok");
     if (kind === "bad") els.msg.classList.add("bad");
+
     els.msg.innerHTML = message;
   }
 
@@ -323,7 +416,7 @@
       url.searchParams.set("besoin", "support-fiche-service");
       return url.toString();
     } catch (_) {
-      return "./pin.html";
+      return pinUrl();
     }
   }
 
@@ -346,22 +439,27 @@
 
   function buildFormState() {
     const displayName = text(els.display_name?.value);
-    const slug = normSlug(els.slug?.value || state.slug || slugifyHuman(displayName || els.trade?.value));
-    const phone = normPhone(els.phone?.value || state.phone);
-    const whatsapp = normPhone(els.whatsapp?.value || phone);
+    const slug = normSlug(
+      els.slug?.value ||
+      state.slug ||
+      slugifyHuman(displayName || els.trade?.value)
+    );
+
+    const publicPhone = normPhone(els.phone?.value || "");
+    const publicWhatsapp = normPhone(els.whatsapp?.value || publicPhone);
     const tagsArr = parseTags(els.tags?.value);
     const profileUrl = cleanPublicUrl(els.profile_url?.value) || inferredProfileUrl();
 
     return {
       slug,
-      phone,
+      phone: publicPhone,
       display_name: displayName,
       city: text(els.city?.value),
       trade: text(els.trade?.value),
       region: text(els.region?.value) || "petite-cote",
       sector: text(els.sector?.value) || "multi",
       priority: clampNumber(els.priority?.value, 1, 0, 100),
-      whatsapp,
+      whatsapp: publicWhatsapp,
       bio: text(els.bio?.value),
       photo_url: maybeUrl(els.photo_url?.value),
       profile_url: profileUrl,
@@ -378,13 +476,17 @@
   }
 
   function fillDefaults() {
-    if (!els.slug.value) els.slug.value = state.slug || "";
-    if (!els.phone.value) els.phone.value = state.phone || "";
-    if (!els.whatsapp.value) els.whatsapp.value = state.phone || "";
-    if (!els.region.value) els.region.value = "petite-cote";
-    if (!els.sector.value) els.sector.value = "multi";
-    if (!els.priority.value) els.priority.value = "1";
-    if (!els.profile_url.value) els.profile_url.value = inferredProfileUrl();
+    if (els.slug && !els.slug.value) els.slug.value = state.slug || "";
+    if (els.region && !els.region.value) els.region.value = "petite-cote";
+    if (els.sector && !els.sector.value) els.sector.value = "multi";
+    if (els.priority && !els.priority.value) els.priority.value = "1";
+    if (els.profile_url && !els.profile_url.value) els.profile_url.value = inferredProfileUrl();
+
+    /*
+      Important terrain :
+      On ne remplit pas automatiquement les contacts publics avec le téléphone privé de session.
+      Le pro choisit lui-même ce qu’il veut afficher au client.
+    */
   }
 
   function applyRow(row) {
@@ -396,8 +498,10 @@
     els.region.value = text(firstOf(safe, ["region", "city_zone"], "petite-cote")) || "petite-cote";
     els.sector.value = text(firstOf(safe, ["sector", "category"], "multi")) || "multi";
     els.priority.value = String(clampNumber(firstOf(safe, ["priority", "priority_rank"], 1), 1, 0, 100));
-    els.whatsapp.value = normPhone(firstOf(safe, ["whatsapp", "whatsapp_phone", "phone"], state.phone));
-    els.phone.value = normPhone(firstOf(safe, ["phone", "owner_phone", "contact_phone"], state.phone));
+
+    els.whatsapp.value = normPhone(firstOf(safe, ["whatsapp", "whatsapp_phone"], ""));
+    els.phone.value = normPhone(firstOf(safe, ["contact_phone", "phone"], ""));
+
     els.bio.value = text(firstOf(safe, ["bio", "description", "short_description", "about"]));
     els.photo_url.value = text(firstOf(safe, ["photo_url", "photo", "image_url", "cover_url"]));
     els.profile_url.value = cleanPublicUrl(firstOf(safe, ["profile_url", "public_url", "url"])) || inferredProfileUrl();
@@ -416,11 +520,13 @@
       fillDefaults();
       return;
     }
+
     applyRow(row);
   }
 
   function saveDraft() {
     const payload = buildFormState();
+
     saveLocalObject(draftKey(payload.slug || state.slug), {
       ...payload,
       saved_locally_at: new Date().toISOString()
@@ -428,8 +534,10 @@
   }
 
   let draftTimer = null;
+
   function scheduleDraftSave() {
     if (draftTimer) clearTimeout(draftTimer);
+
     draftTimer = setTimeout(() => {
       try {
         saveDraft();
@@ -453,6 +561,10 @@
         return { ok: true, data: res.data, error: null };
       }
 
+      /*
+        Le téléphone de session reste un secours interne pour retrouver une fiche existante.
+        Il n’est pas affiché ni propagé dans les liens.
+      */
       if (state.phone) {
         res = await client
           .from(TABLE)
@@ -474,6 +586,7 @@
 
   async function upsertPayload(payload) {
     const client = getSupabaseClient();
+
     if (!client) {
       return { ok: false, error: new Error("Supabase indisponible") };
     }
@@ -561,12 +674,23 @@
     let lastError = null;
 
     for (const payload of payloads) {
-      const res = await upsertPayload(payload);
+      const cleanPayload = {};
+
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== undefined) cleanPayload[key] = value;
+      });
+
+      const res = await upsertPayload(cleanPayload);
+
       if (res.ok) return res;
+
       lastError = res.error || lastError;
     }
 
-    return { ok: false, error: lastError || new Error("Échec de sauvegarde distante") };
+    return {
+      ok: false,
+      error: lastError || new Error("Échec de sauvegarde distante")
+    };
   }
 
   async function loadProfile() {
@@ -581,10 +705,13 @@
       state.row = remote.data;
       state.remote_loaded = true;
       state.remote_available = true;
+
       applyRow(remote.data);
+
       setMsg("Fiche chargée depuis le rail principal.", "ok");
       saveLocalObject(cacheKey(state.slug), remote.data);
       removeLocalObject(draftKey(state.slug));
+
       state.loading = false;
       return;
     }
@@ -612,6 +739,7 @@
     if (state.saving) return;
 
     const form = buildFormState();
+
     if (!form.slug) {
       setMsg("Ajoute un repère ou un nom visible pour générer ta fiche.", "bad");
       els.slug.focus();
@@ -625,10 +753,8 @@
     }
 
     state.slug = form.slug;
-    state.phone = form.phone || state.phone;
 
     els.slug.value = form.slug;
-    if (!els.phone.value && state.phone) els.phone.value = state.phone;
     if (!els.profile_url.value) els.profile_url.value = inferredProfileUrl();
 
     saveLocalObject(draftKey(form.slug), {
@@ -649,31 +775,42 @@
       state.row = remote.data || form;
       state.remote_available = true;
       state.remote_loaded = true;
+
       saveLocalObject(cacheKey(form.slug), state.row);
       removeLocalObject(draftKey(form.slug));
-      setMsg("Fiche enregistrée. La page est proprement recousue et ta dernière version est gardée sur cet appareil.", "ok");
+
+      setMsg("Fiche enregistrée. Ta dernière version est gardée proprement sur cet appareil.", "ok");
       return;
     }
 
     saveLocalObject(cacheKey(form.slug), form);
-    const reason = text(remote.error?.message || remote.error?.details || remote.error?.hint || remote.error) || "sauvegarde distante indisponible";
+
+    const reason =
+      text(remote.error?.message || remote.error?.details || remote.error?.hint || remote.error) ||
+      "sauvegarde distante indisponible";
+
     setMsg(`Sauvegarde locale faite. Le push distant n’a pas répondu proprement pour le moment : ${reason}.`, "bad");
   }
 
   function regenerateSlug() {
-    const seed = text(els.display_name.value) || text(els.trade.value) || state.slug || `build-${Date.now()}`;
+    const seed =
+      text(els.display_name.value) ||
+      text(els.trade.value) ||
+      state.slug ||
+      `build-${Date.now()}`;
+
     const newSlug = slugifyHuman(seed);
+
     els.slug.value = newSlug;
     state.slug = newSlug;
-    if (!els.profile_url.value || els.profile_url.value === inferredProfileUrl()) {
-      els.profile_url.value = inferredProfileUrl();
-    }
+
     saveDraft();
     setMsg("Repère régénéré. Vérifie-le avant d’enregistrer.");
   }
 
   async function copyProfileLink() {
     const url = inferredProfileUrl();
+
     if (!url) {
       setMsg("Aucun lien disponible pour le moment.", "bad");
       return;
@@ -695,10 +832,12 @@
 
   function openProfileLink() {
     const url = inferredProfileUrl();
+
     if (!url) {
       setMsg("Ajoute d’abord un lien public de fiche, ou ouvre la vitrine.", "bad");
       return;
     }
+
     window.open(url, "_blank", "noopener");
   }
 
@@ -708,15 +847,17 @@
   }
 
   function bindUi() {
-    els.btnBack.addEventListener("click", () => {
-      window.location.href = serviceUrl();
-    });
+    if (els.btnBack) {
+      els.btnBack.addEventListener("click", () => {
+        window.location.href = serviceUrl();
+      });
+    }
 
-    els.btnSave.addEventListener("click", saveProfile);
-    els.btnReSlug.addEventListener("click", regenerateSlug);
-    els.btnCopyLink.addEventListener("click", copyProfileLink);
-    els.btnOpenLink.addEventListener("click", openProfileLink);
-    els.btnOpenListing.addEventListener("click", openListing);
+    if (els.btnSave) els.btnSave.addEventListener("click", saveProfile);
+    if (els.btnReSlug) els.btnReSlug.addEventListener("click", regenerateSlug);
+    if (els.btnCopyLink) els.btnCopyLink.addEventListener("click", copyProfileLink);
+    if (els.btnOpenLink) els.btnOpenLink.addEventListener("click", openProfileLink);
+    if (els.btnOpenListing) els.btnOpenListing.addEventListener("click", openListing);
 
     IDS.forEach((id) => {
       const el = els[id];
@@ -732,52 +873,112 @@
     });
   }
 
+  async function resolveGuardSession() {
+    const guard = window.DIGIY_GUARD;
+
+    if (!guard) return null;
+
+    try {
+      if (typeof guard.ready === "function") {
+        return await guard.ready();
+      }
+
+      if (guard.ready && typeof guard.ready.then === "function") {
+        await guard.ready;
+        return guard.state || null;
+      }
+
+      if (guard.state) {
+        return guard.state;
+      }
+    } catch (error) {
+      console.error("BUILD profile guard ready error", error);
+      return null;
+    }
+
+    return null;
+  }
+
+  function extractGuardValue(session, methodName, key, fallback = "") {
+    if (session && session[key] !== undefined && session[key] !== null) {
+      return session[key];
+    }
+
+    try {
+      if (
+        window.DIGIY_GUARD &&
+        typeof window.DIGIY_GUARD[methodName] === "function"
+      ) {
+        return window.DIGIY_GUARD[methodName]() || fallback;
+      }
+    } catch (_) {}
+
+    return fallback;
+  }
+
   async function init() {
+    readIncomingIdentityBeforeClean();
+    cleanCurrentUrl();
+
     bindElements();
     bindUi();
     setButtonsDisabled(true);
     setGuardStatus("Vérification…");
 
-    if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-      closeAccess("Guard absent");
-      setMsg(`Le guard BUILD n’est pas chargé. Ouvre ton accès par PIN ou vérifie le fichier guard.js. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
+    const session = await resolveGuardSession();
+
+    if (!session) {
+      closeAccess("Accès fermé");
+      setMsg(`Session absente ou fermée. Reviens par le PIN pour ouvrir ta fiche. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
       return;
     }
 
-    try {
-      const session = await window.DIGIY_GUARD.ready();
+    state.slug = normSlug(
+      extractGuardValue(session, "getSlug", "slug", readSavedSlug())
+    );
 
-      state.slug = normSlug(session?.slug || window.DIGIY_GUARD.getSlug?.() || "");
-      state.phone = normPhone(session?.phone || window.DIGIY_GUARD.getPhone?.() || "");
-      state.owner_id = session?.owner_id || window.DIGIY_GUARD.getOwnerId?.() || null;
-      state.access_ok = !!(session && session.access_ok && state.slug);
+    state.phone = normPhone(
+      extractGuardValue(session, "getPhone", "phone", readSavedPhone())
+    );
 
-      if (!state.access_ok) {
-        closeAccess("Accès fermé");
-        setMsg(`Session absente ou fermée. Reviens par le PIN pour ouvrir ta fiche. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
-        return;
-      }
+    state.owner_id =
+      extractGuardValue(session, "getOwnerId", "owner_id", null) ||
+      session.owner ||
+      session.user_id ||
+      null;
 
-      openAccess();
-      setButtonsDisabled(false);
+    const accessOk =
+      session.access_ok === true ||
+      session.access === true ||
+      session.ok === true ||
+      session.has_access === true ||
+      window.DIGIY_GUARD?.state?.access_ok === true;
 
-      try {
-        sessionStorage.setItem("digiy_build_slug", state.slug);
-        sessionStorage.setItem("digiy_build_last_slug", state.slug);
-        localStorage.setItem("digiy_build_last_slug", state.slug);
-        if (state.phone) {
-          sessionStorage.setItem("digiy_build_phone", state.phone);
-          localStorage.setItem("digiy_build_phone", state.phone);
-        }
-      } catch (_) {}
+    state.access_ok = !!(accessOk && state.slug);
 
-      fillDefaults();
-      await loadProfile();
-    } catch (error) {
-      console.error("BUILD profile init error", error);
-      closeAccess("Erreur d’ouverture");
-      setMsg(`Erreur d’ouverture de la fiche. Vérifie ton guard ou ton profile.js. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
+    if (!state.access_ok) {
+      closeAccess("Accès fermé");
+      setMsg(`Session absente ou fermée. Reviens par le PIN pour ouvrir ta fiche. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
+      return;
     }
+
+    openAccess();
+    setButtonsDisabled(false);
+
+    try {
+      sessionStorage.setItem("digiy_build_slug", state.slug);
+      sessionStorage.setItem("digiy_build_last_slug", state.slug);
+      localStorage.setItem("digiy_build_last_slug", state.slug);
+
+      if (state.phone) {
+        sessionStorage.setItem("digiy_build_phone", state.phone);
+        localStorage.setItem("digiy_build_phone", state.phone);
+      }
+    } catch (_) {}
+
+    fillDefaults();
+    await loadProfile();
+    cleanCurrentUrl();
   }
 
   window.DIGIY_BUILD_PROFILE = {
