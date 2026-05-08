@@ -1,6 +1,4 @@
-from pathlib import Path
-
-guard = r'''/* guard.js — DIGIY BUILD GUARD
+/* guard.js — DIGIY BUILD GUARD
    Doctrine :
    - URL visible propre : jamais de phone, tel, slug sensible ou return sale
    - session locale personnelle 8h
@@ -28,8 +26,6 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     PIN_PATH: window.DIGIY_LOGIN_URL || "./pin.html",
     PAY_URL: window.DIGIY_PAY_URL || "https://commencer-a-payer.digiylyfe.com/",
-
-    ALLOW_PREVIEW_WITHOUT_IDENTITY: false,
 
     RPC: {
       VERIFY_PIN: "digiy_verify_pin",
@@ -67,7 +63,8 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
     "build_tel",
     "module",
     "from",
-    "return"
+    "return",
+    "v"
   ];
 
   function safeJsonParse(raw) {
@@ -89,7 +86,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
     const cleaned = raw.replace(/[^\d+]/g, "");
     const digits = cleaned.replace(/[^\d]/g, "");
     if (!digits) return "";
-    return cleaned.startsWith("+") ? digits : digits;
+    return digits;
   }
 
   function normPin(value) {
@@ -111,7 +108,8 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
   function isRecent(ts) {
     const n = Number(ts || 0);
     if (!n) return false;
-    return (nowMs() - n) <= CFG.SESSION_MAX_AGE_MS;
+    const age = nowMs() - n;
+    return age >= 0 && age <= CFG.SESSION_MAX_AGE_MS;
   }
 
   function hidePage() {
@@ -145,6 +143,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       headers: jsonHeaders(),
       body: JSON.stringify(body || {})
     });
+
     const data = await res.json().catch(() => null);
     return { ok: res.ok, status: res.status, data };
   }
@@ -155,55 +154,9 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       method: "GET",
       headers: getHeaders()
     });
+
     const data = await res.json().catch(() => null);
     return { ok: res.ok, status: res.status, data };
-  }
-
-  function cleanVisibleUrl() {
-    try {
-      const url = new URL(location.href);
-
-      const incomingSlug = normSlug(url.searchParams.get("slug") || "");
-      const incomingPhone = normPhone(
-        url.searchParams.get("phone") ||
-        url.searchParams.get("tel") ||
-        url.searchParams.get("build_tel") ||
-        ""
-      );
-
-      if (incomingSlug) saveSlugOnly(incomingSlug);
-      if (incomingPhone) savePhoneOnly(incomingPhone);
-
-      let changed = false;
-      CLEAN_QUERY_KEYS.forEach((key) => {
-        if (url.searchParams.has(key)) {
-          url.searchParams.delete(key);
-          changed = true;
-        }
-      });
-
-      if (changed) {
-        history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-      }
-    } catch (_) {}
-  }
-
-  function cleanInternalUrl(raw, fallback = "./dashboard-pro.html") {
-    const input = String(raw || "").trim() || fallback;
-
-    try {
-      const url = new URL(input, location.href);
-      CLEAN_QUERY_KEYS.forEach((key) => url.searchParams.delete(key));
-
-      if (url.origin === location.origin) {
-        const file = url.pathname.split("/").pop() || "dashboard-pro.html";
-        return `./${file}${url.search || ""}${url.hash || ""}`;
-      }
-
-      return url.toString();
-    } catch (_) {
-      return fallback;
-    }
   }
 
   function saveSlugOnly(slug) {
@@ -254,6 +207,57 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
     }
   }
 
+  function cleanVisibleUrl() {
+    try {
+      const url = new URL(location.href);
+
+      const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+      const incomingPhone = normPhone(
+        url.searchParams.get("phone") ||
+        url.searchParams.get("tel") ||
+        url.searchParams.get("build_tel") ||
+        ""
+      );
+
+      if (incomingSlug) saveSlugOnly(incomingSlug);
+      if (incomingPhone) savePhoneOnly(incomingPhone);
+
+      let changed = false;
+
+      CLEAN_QUERY_KEYS.forEach((key) => {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    } catch (_) {}
+  }
+
+  function cleanInternalUrl(raw, fallback = "./dashboard-pro.html") {
+    const input = String(raw || "").trim() || fallback;
+
+    try {
+      const url = new URL(input, location.href);
+
+      CLEAN_QUERY_KEYS.forEach((key) => {
+        url.searchParams.delete(key);
+      });
+
+      if (url.origin === location.origin) {
+        const file = url.pathname.split("/").pop() || "dashboard-pro.html";
+        return `./${file}${url.search || ""}${url.hash || ""}`;
+      }
+
+      return url.toString();
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   function clearSessionsOnly() {
     for (const key of STORAGE.SESSION_KEYS) {
       try { localStorage.removeItem(key); } catch (_) {}
@@ -263,9 +267,11 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
   function clearAllLocalState() {
     clearSessionsOnly();
+
     try { localStorage.removeItem(STORAGE.SLUG_KEY); } catch (_) {}
     try { localStorage.removeItem(STORAGE.PHONE_KEY); } catch (_) {}
     try { localStorage.removeItem(STORAGE.LAST_SLUG_KEY); } catch (_) {}
+
     try { sessionStorage.removeItem(STORAGE.SLUG_KEY); } catch (_) {}
     try { sessionStorage.removeItem(STORAGE.PHONE_KEY); } catch (_) {}
     try { sessionStorage.removeItem(STORAGE.LAST_SLUG_KEY); } catch (_) {}
@@ -288,10 +294,10 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       const owner_id = parsed.owner_id || null;
 
       const access =
-        !!parsed.access ||
-        !!parsed.access_ok ||
-        !!parsed.ok ||
-        !!parsed.has_access;
+        parsed.access === true ||
+        parsed.access_ok === true ||
+        parsed.ok === true ||
+        parsed.has_access === true;
 
       const verifiedAt =
         Number(parsed.verified_at || parsed.validated_at_ms || parsed.ts || 0) || 0;
@@ -299,7 +305,9 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       const validatedAtIso = parsed.validated_at || null;
 
       let ageOk = false;
+
       if (verifiedAt && isRecent(verifiedAt)) ageOk = true;
+
       if (!ageOk && validatedAtIso) {
         const dt = new Date(validatedAtIso).getTime();
         if (dt && isRecent(dt)) ageOk = true;
@@ -324,6 +332,45 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     return null;
   }
+
+  function buildPinUrl() {
+    return cleanInternalUrl(CFG.PIN_PATH, "./pin.html");
+  }
+
+  function goPin() {
+    location.replace(buildPinUrl());
+  }
+
+  function buildPayUrl() {
+    const url = new URL(CFG.PAY_URL);
+    url.searchParams.set("module", MODULE);
+    return url.toString();
+  }
+
+  function goPay() {
+    location.replace(buildPayUrl());
+  }
+
+  const stored = readStoredSession();
+  const savedSlug = readSavedSlug();
+  const savedPhone = readSavedPhone();
+
+  const state = {
+    module: MODULE,
+    slug: normSlug(stored?.slug || savedSlug || ""),
+    phone: normPhone(stored?.phone || savedPhone || ""),
+    owner_id: stored?.owner_id || null,
+    access: false,
+    access_ok: false,
+    preview: true,
+    ready_flag: false,
+    error: null,
+    source: stored ? "session" : (savedSlug || savedPhone) ? "storage" : "none",
+    verified_at: stored?.verified_at || null,
+    validated_at: stored?.validated_at || null,
+    pin_url: buildPinUrl(),
+    pay_url: buildPayUrl()
+  };
 
   function saveSession(payload = {}) {
     const verifiedAtMs = Number(payload.verified_at || nowMs()) || nowMs();
@@ -360,24 +407,6 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
     return session;
   }
 
-  function buildPinUrl() {
-    return cleanInternalUrl(CFG.PIN_PATH, "./pin.html");
-  }
-
-  function goPin() {
-    location.replace(buildPinUrl());
-  }
-
-  function buildPayUrl() {
-    const url = new URL(CFG.PAY_URL);
-    url.searchParams.set("module", MODULE);
-    return url.toString();
-  }
-
-  function goPay() {
-    location.replace(buildPayUrl());
-  }
-
   async function resolveSubBySlug(slug) {
     const s = normSlug(slug);
     if (!s) return null;
@@ -390,6 +419,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     for (const params of tries) {
       const res = await tableGet(CFG.TABLES.SUBSCRIPTIONS_PUBLIC, params);
+
       if (!res.ok || !Array.isArray(res.data) || !res.data[0]) continue;
 
       return {
@@ -414,6 +444,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     for (const params of tries) {
       const res = await tableGet(CFG.TABLES.SUBSCRIPTIONS_PUBLIC, params);
+
       if (!res.ok || !Array.isArray(res.data) || !res.data[0]) continue;
 
       return {
@@ -439,6 +470,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     for (const body of tries) {
       const res = await rpc(CFG.RPC.HAS_ACCESS, body);
+
       if (!res.ok) continue;
 
       if (res.data === true) return true;
@@ -452,10 +484,11 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
   function parseVerifyPinPayload(data, fallbackPhone = "") {
     const raw = Array.isArray(data) ? data[0] : data;
+
     if (!raw) return null;
 
     if (typeof raw === "object" && !Array.isArray(raw)) {
-      if (raw.ok === true) {
+      if (raw.ok === true || raw.ok === "t" || raw.ok === "true") {
         return {
           ok: true,
           phone: normPhone(raw.phone || raw.p_phone || fallbackPhone || ""),
@@ -466,6 +499,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       }
 
       const vals = Object.values(raw);
+
       if (vals.length >= 3) {
         const okLike =
           vals[0] === true ||
@@ -487,8 +521,10 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     if (typeof raw === "string") {
       const txt = raw.trim();
+
       if (txt.startsWith("(") && txt.endsWith(")")) {
         const tupleHead = txt.match(/^\(([^,]+),([^,]+),([^,]+),?(.*)\)$/);
+
         if (tupleHead) {
           const okToken = String(tupleHead[1] || "").trim().replace(/^"|"$/g, "");
           const modToken = String(tupleHead[2] || "").trim().replace(/^"|"$/g, "");
@@ -525,6 +561,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     for (const body of tries) {
       const res = await rpc(CFG.RPC.VERIFY_PIN, body);
+
       if (!res.ok) continue;
 
       const parsed = parseVerifyPinPayload(res.data, ph);
@@ -542,27 +579,6 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
   }
 
   cleanVisibleUrl();
-
-  const stored = readStoredSession();
-  const savedSlug = readSavedSlug();
-  const savedPhone = readSavedPhone();
-
-  const state = {
-    module: MODULE,
-    slug: normSlug(stored?.slug || savedSlug || ""),
-    phone: normPhone(stored?.phone || savedPhone || ""),
-    owner_id: stored?.owner_id || null,
-    access: false,
-    access_ok: false,
-    preview: true,
-    ready_flag: false,
-    error: null,
-    source: stored ? "session" : (savedSlug || savedPhone) ? "storage" : "none",
-    verified_at: stored?.verified_at || null,
-    validated_at: stored?.validated_at || null,
-    pin_url: buildPinUrl(),
-    pay_url: buildPayUrl()
-  };
 
   let pendingPromise = null;
 
@@ -799,6 +815,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
     saveSession(payload = {}) {
       const saved = saveSession(payload);
+
       state.slug = saved.slug;
       state.phone = saved.phone;
       state.owner_id = saved.owner_id || null;
@@ -811,6 +828,7 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
       state.error = null;
       state.pin_url = buildPinUrl();
       state.pay_url = buildPayUrl();
+
       return saved;
     },
 
@@ -876,17 +894,3 @@ guard = r'''/* guard.js — DIGIY BUILD GUARD
 
   ready();
 })();
-'''
-out = Path("/mnt/data/guard_build_secure_session8_cleanurl.js")
-out.write_text(guard, encoding="utf-8")
-
-checks = {
-    "phone_equals": "phone=" in guard,
-    "slug_equals": "slug=" in guard,
-    "return_equals": "return=" in guard,
-    "KEEP_PHONE_IN_URL": "KEEP_PHONE_IN_URL" in guard,
-    "ensureUrlIdentity": "ensureUrlIdentity" in guard
-}
-print("Fichier créé :", out)
-print("Contrôle :", checks)
-
