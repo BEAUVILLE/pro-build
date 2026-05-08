@@ -37,6 +37,38 @@
       display:none !important;
     }
 
+    .digiyRouteNav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:0 0 14px;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    .digiyRouteNav a{
+      flex:1;
+      min-width:132px;
+      min-height:42px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(255,255,255,.045);
+      color:inherit;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:1000;
+      text-align:center;
+    }
+
+    .digiyRouteNav a:hover{
+      border-color:rgba(250,204,21,.44);
+      background:rgba(250,204,21,.08);
+    }
+
     .digiyBuildBottomNav{
       position:fixed;
       left:0;
@@ -116,6 +148,10 @@
     }
 
     @media(max-width:680px){
+      .digiyRouteNav a{
+        min-width:calc(50% - 6px);
+      }
+
       .digiyBuildProfileFastRow{
         grid-template-columns:1fr 1fr;
       }
@@ -130,6 +166,13 @@
   <div class="app">
     <div class="wrap">
       <div class="card">
+
+        <nav class="digiyRouteNav" aria-label="Navigation DIGIY">
+          <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
+          <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
+          <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
+          <a href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
+        </nav>
 
         <div class="hero">
           <div class="hero-brand">
@@ -297,22 +340,24 @@
     </div>
   </nav>
 
-
   <script>
     (() => {
       "use strict";
-      const CLEAN_KEYS = ["phone", "tel", "build_tel", "slug", "module", "from", "return"];
+
+      const CLEAN_KEYS = ["phone", "tel", "build_tel", "slug", "module", "from", "return", "v"];
 
       function cleanCurrentUrl(){
         try{
           const url = new URL(window.location.href);
           let changed = false;
+
           CLEAN_KEYS.forEach((key) => {
             if(url.searchParams.has(key)){
               url.searchParams.delete(key);
               changed = true;
             }
           });
+
           if(changed){
             window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
           }
@@ -323,21 +368,37 @@
         document.querySelectorAll('a[href]').forEach((a) => {
           const raw = a.getAttribute('href') || '';
           if(!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return;
+
           try{
             const url = new URL(raw, window.location.href);
+
             if(url.origin !== window.location.origin) return;
+
             CLEAN_KEYS.forEach((key) => url.searchParams.delete(key));
+
             const file = url.pathname.split('/').pop() || 'dashboard-pro.html';
             a.setAttribute('href', `./${file}${url.search || ''}${url.hash || ''}`);
           }catch(_){}
         });
       }
 
+      function wireBackButton(){
+        const btnBack = document.getElementById("btnBack");
+        if(btnBack){
+          btnBack.addEventListener("click", () => {
+            window.location.href = "./cockpit.html";
+          });
+        }
+      }
+
       cleanCurrentUrl();
       cleanLocalLinks();
+      wireBackButton();
+
       window.addEventListener('DOMContentLoaded', () => {
         cleanCurrentUrl();
         cleanLocalLinks();
+        wireBackButton();
         setTimeout(cleanLocalLinks, 250);
         setTimeout(cleanLocalLinks, 900);
       });
