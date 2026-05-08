@@ -35,7 +35,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{margin:0;padding:0}
 
     body{
@@ -140,9 +139,7 @@
       text-transform:uppercase;
     }
 
-    .muted{
-      color:var(--muted);
-    }
+    .muted{color:var(--muted)}
 
     .row{
       display:flex;
@@ -290,6 +287,7 @@
     }
 
     input,select{font-weight:800}
+
     textarea{
       min-height:90px;
       resize:vertical;
@@ -390,7 +388,6 @@
       color:var(--muted);
       line-height:1.55;
     }
-
 
     .quickBuild{
       margin-top:12px;
@@ -696,6 +693,7 @@
       backdrop-filter:blur(16px);
       -webkit-backdrop-filter:blur(16px);
     }
+
     .bottomNavInner{
       width:min(100%,760px);
       margin:0 auto;
@@ -703,6 +701,7 @@
       grid-template-columns:repeat(5,1fr);
       gap:6px;
     }
+
     .bottomNav a{
       min-height:58px;
       border-radius:16px;
@@ -717,7 +716,9 @@
       border:1px solid transparent;
       text-decoration:none;
     }
+
     .bottomNav .ico{font-size:18px;line-height:1}
+
     .bottomNav a.active{
       color:#062015;
       background:linear-gradient(135deg,var(--gold),var(--ok));
@@ -736,7 +737,6 @@
       .serviceFastRow{grid-template-columns:1fr 1fr}
       .top-actions .btn{width:100%}
     }
-
   </style>
 </head>
 
@@ -753,7 +753,7 @@
       <div>
         <h1>🧰 Je propose mes services — Service</h1>
         <div class="sub">
-          Identifiant : <b id="slug">—</b> • Téléphone : <b id="owner">—</b><br>
+          Session : <b id="slug">privée</b> • Contact : <b id="owner">masqué</b><br>
           Accès : <b id="stat">initialisation…</b>
         </div>
       </div>
@@ -800,7 +800,6 @@
       <div class="row">
         <button class="btn" id="btnJobs" type="button">📋 Voir les demandes</button>
       </div>
-
 
       <div class="card quickBuild" id="quickBuildNote">
         <div class="quickBuildTitle">✍️ Notes rapides</div>
@@ -961,7 +960,7 @@
   <div class="box">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
       <div style="font-weight:1000" id="modalTitle">➕ Nouveau devis</div>
-      <div class="badge neutral" id="mSlug">—</div>
+      <div class="badge neutral" id="mSlug">session privée</div>
     </div>
 
     <div class="fgrid">
@@ -1016,7 +1015,6 @@
   </div>
 </div>
 
-
 <nav class="bottomNav" aria-label="Navigation BUILD">
   <div class="bottomNavInner">
     <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
@@ -1048,7 +1046,7 @@
   const $ = (id) => document.getElementById(id);
 
   function uid() {
-    return (crypto && crypto.randomUUID)
+    return (window.crypto && crypto.randomUUID)
       ? crypto.randomUUID()
       : ("id_" + Math.random().toString(16).slice(2) + Date.now());
   }
@@ -1069,6 +1067,20 @@
 
   function normPhone(v) {
     return String(v || "").replace(/[^\d]/g, "");
+  }
+
+  function maskPhone(v) {
+    const p = normPhone(v);
+    if (!p) return "masqué";
+    if (p.length <= 6) return "••••";
+    return p.slice(0, 3) + "••••" + p.slice(-3);
+  }
+
+  function maskSlug(v) {
+    const s = normSlug(v);
+    if (!s) return "session privée";
+    const parts = s.split("-");
+    return parts[0] ? parts[0] + "-••••" : "session privée";
   }
 
   function escapeHtml(v) {
@@ -1094,37 +1106,49 @@
     }
   }
 
+  function cleanVisibleUrl() {
+    try {
+      const url = new URL(window.location.href);
+      const keys = ["slug", "phone", "tel", "build_tel", "module", "from", "return", "v"];
+      let changed = false;
+
+      keys.forEach((key) => {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    } catch (_) {}
+  }
+
   function storageKey() {
     return "DIGIY_BUILD_QUOTES::" + (ACCESS.slug || "noslug");
   }
 
   function dashboardUrl() {
-    return buildSafeUrl("./dashboard-pro.html", {
-      slug: ACCESS.slug,
-      phone: ACCESS.phone
-    });
+    return "./dashboard-pro.html";
   }
 
   function profileUrl() {
-    return buildSafeUrl("./profile.html", {
-      slug: ACCESS.slug,
-      phone: ACCESS.phone
-    });
+    return "./profile.html";
   }
 
   function pinUrl() {
-    return buildSafeUrl("./pin.html", {
-      slug: ACCESS.slug,
-      phone: ACCESS.phone
-    });
+    return "./pin.html";
   }
 
   function manageSubUrl() {
     const url = new URL(ABOS_URL);
     url.searchParams.set("module", MODULE_CODE);
-    if (ACCESS.phone) url.searchParams.set("phone", ACCESS.phone);
-    if (ACCESS.slug) url.searchParams.set("slug", ACCESS.slug);
-    url.searchParams.set("return", dashboardUrl());
+    try {
+      url.searchParams.set("return", new URL("./dashboard-pro.html", window.location.href).toString());
+    } catch (_) {
+      url.searchParams.set("return", "./dashboard-pro.html");
+    }
     return url.toString();
   }
 
@@ -1158,7 +1182,7 @@
     const a = document.createElement("a");
     const objectUrl = URL.createObjectURL(blob);
     a.href = objectUrl;
-    a.download = "build-" + (ACCESS.slug || "noslug") + ".json";
+    a.download = "build-" + (ACCESS.slug || "session") + ".json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 900);
     return rows.length;
@@ -1186,13 +1210,15 @@
   }
 
   function setTopState() {
-    $("slug").textContent = ACCESS.slug || "—";
-    $("owner").textContent = ACCESS.phone || "—";
+    $("slug").textContent = maskSlug(ACCESS.slug);
+    $("owner").textContent = maskPhone(ACCESS.phone);
     $("modePill").textContent = ACCESS.live ? "session active" : "accès sécurisé";
     $("stat").textContent = ACCESS.live ? "ouvert" : "fermé";
+
     $("sessionText").textContent = ACCESS.live
-      ? "Ta session est active. Tu peux circuler entre ta gestion, ta fiche et tes autres pages sans repasser par le code d’accès."
+      ? "Ta session est active. Tu peux circuler entre ton accueil, ton service, ta fiche et tes autres pages sans repasser par le code d’accès."
       : "Ta session n’est pas active. Le code d’accès reste ta porte d’entrée ou de secours.";
+
     $("sessionBadge").textContent = ACCESS.live ? "OK" : "FERMÉ";
 
     $("btnPinEntry").href = pinUrl();
@@ -1203,6 +1229,7 @@
       bottomHome: dashboardUrl(),
       bottomMore: profileUrl()
     };
+
     Object.entries(links).forEach(([id, href]) => {
       const el = $(id);
       if(el) el.href = href;
@@ -1213,8 +1240,9 @@
     const bottomNotes = $("bottomNotes");
     const fastDemandes = $("fastDemandes");
     const fastNotes = $("fastNotes");
+
     if(bottomDemandes) bottomDemandes.href = "#demandes";
-    if(bottomService) bottomService.href = buildSafeUrl("./cockpit.html", { slug: ACCESS.slug, phone: ACCESS.phone });
+    if(bottomService) bottomService.href = "./cockpit.html";
     if(bottomNotes) bottomNotes.href = "#quickBuildNote";
     if(fastDemandes) fastDemandes.href = "#demandes";
     if(fastNotes) fastNotes.href = "#quickBuildNote";
@@ -1260,7 +1288,7 @@
     }
 
     clearForm();
-    $("mSlug").textContent = ACCESS.slug || "—";
+    $("mSlug").textContent = "session privée";
 
     if (row) {
       EDIT.id = row.id;
@@ -1306,8 +1334,7 @@
       "Je te recontacte pour le devis ou le chantier.\n" +
       "Service : " + (row.type || "—") + "\n" +
       "Montant : " + money(row.amount) + "\n" +
-      "Date : " + (row.date || "—") + "\n" +
-      "Identifiant : " + (ACCESS.slug || "")
+      "Date : " + (row.date || "—")
     );
 
     return `
@@ -1431,14 +1458,11 @@
 
   function supportUrl() {
     const txt = encodeURIComponent(
-      "Support ENTREPRENEUR MULTI SERVICES.\n" +
-      "Identifiant : " + (ACCESS.slug || "") + "\n" +
-      "Téléphone : " + (ACCESS.phone || "") + "\n" +
-      "Besoin d’aide."
+      "Support Mes services DIGIY.\n" +
+      "Besoin d’aide sur mon accès, ma fiche ou mon espace service."
     );
     return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
   }
-
 
   function quickBuildNorm(text){
     return String(text || "")
@@ -1777,7 +1801,6 @@
     renderQuickBuildMemory();
   }
 
-
   function bindUi() {
     bindQuickBuildNote();
 
@@ -1798,6 +1821,7 @@
 
     $("btnNew").onclick = () => openModal();
     $("fastNewQuote").onclick = () => openModal();
+
     $("btnJobs").onclick = () => {
       $("filter").value = "all";
       renderList();
@@ -1828,6 +1852,7 @@
         alert("Aucun client avec téléphone détecté pour le moment.");
         return;
       }
+
       const wa = normPhone(firstWithPhone.phone);
       const txt = encodeURIComponent(
         "Bonjour " + (firstWithPhone.client || "") + ",\n" +
@@ -1836,6 +1861,7 @@
         "Montant : " + money(firstWithPhone.amount) + "\n" +
         "Date : " + (firstWithPhone.date || "—")
       );
+
       location.href = "https://wa.me/" + wa + "?text=" + txt;
     };
 
@@ -1862,11 +1888,13 @@
         if (row) openModal(row);
         return;
       }
+
       if (act === "sent") return updateRowStatus(id, { status: "sent" });
       if (act === "accept") return updateRowStatus(id, { status: "accepted" });
       if (act === "run") return updateRowStatus(id, { status: "running" });
       if (act === "done") return updateRowStatus(id, { status: "done" });
       if (act === "cancel") return updateRowStatus(id, { status: "cancelled" });
+
       if (act === "del") {
         if (confirm("Supprimer cette entrée ?")) deleteRow(id);
       }
@@ -1874,21 +1902,47 @@
   }
 
   async function init() {
+    const params = new URLSearchParams(location.search);
+
     const hintedSlug =
-      new URLSearchParams(location.search).get("slug") ||
+      params.get("slug") ||
       sessionStorage.getItem("digiy_build_slug") ||
       sessionStorage.getItem("digiy_build_last_slug") ||
       localStorage.getItem("digiy_build_last_slug") ||
       "";
+
+    const hintedPhone =
+      params.get("phone") ||
+      params.get("tel") ||
+      params.get("build_tel") ||
+      sessionStorage.getItem("digiy_build_phone") ||
+      localStorage.getItem("digiy_build_phone") ||
+      "";
+
+    if (hintedSlug) {
+      try {
+        sessionStorage.setItem("digiy_build_slug", normSlug(hintedSlug));
+        sessionStorage.setItem("digiy_build_last_slug", normSlug(hintedSlug));
+        localStorage.setItem("digiy_build_last_slug", normSlug(hintedSlug));
+      } catch (_) {}
+    }
+
+    if (hintedPhone) {
+      try {
+        sessionStorage.setItem("digiy_build_phone", normPhone(hintedPhone));
+        localStorage.setItem("digiy_build_phone", normPhone(hintedPhone));
+      } catch (_) {}
+    }
 
     bindUi();
 
     if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
       ACCESS.live = false;
       ACCESS.slug = normSlug(hintedSlug);
-      ACCESS.phone = "";
+      ACCESS.phone = normPhone(hintedPhone);
       setTopState();
       setLockedView();
+      cleanVisibleUrl();
       return;
     }
 
@@ -1896,7 +1950,7 @@
 
     const st = window.DIGIY_GUARD.state || {};
     ACCESS.slug = normSlug(st.slug || hintedSlug);
-    ACCESS.phone = normPhone(st.phone || "");
+    ACCESS.phone = normPhone(st.phone || hintedPhone || "");
     ACCESS.live = !!(st.access_ok && ACCESS.slug);
 
     if (ACCESS.slug) {
@@ -1907,6 +1961,14 @@
       } catch (_) {}
     }
 
+    if (ACCESS.phone) {
+      try {
+        sessionStorage.setItem("digiy_build_phone", ACCESS.phone);
+        localStorage.setItem("digiy_build_phone", ACCESS.phone);
+      } catch (_) {}
+    }
+
+    cleanVisibleUrl();
     setTopState();
 
     if (!ACCESS.live) {
@@ -1919,12 +1981,13 @@
   }
 
   init().catch((err) => {
-    console.error("BUILD cockpit init error", err);
+    console.error("BUILD service init error", err);
     ACCESS.live = false;
     ACCESS.slug = "";
     ACCESS.phone = "";
     setTopState();
     setLockedView();
+    cleanVisibleUrl();
   });
 })();
 </script>
