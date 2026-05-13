@@ -190,6 +190,12 @@
       color:#062015;
     }
 
+    .btn.qr{
+      border:none;
+      background:linear-gradient(90deg, rgba(250,204,21,.96), rgba(249,115,22,.90));
+      color:#1a1200;
+    }
+
     .btn.dashboard{
       border:none;
       background:linear-gradient(90deg, rgba(99,102,241,.96), rgba(56,189,248,.92));
@@ -728,7 +734,7 @@
 
     .serviceFastRow{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:10px;
       margin-top:12px;
     }
@@ -764,6 +770,7 @@
       <div class="pill" id="modePill">service terrain</div>
       <button class="btn dashboard" id="btnDashboard" type="button">🏠 Accueil</button>
       <button class="btn profile" id="btnProfile" type="button">⚙️ Plus</button>
+      <button class="btn qr" id="btnQr" type="button">🔳 Mon QR</button>
       <button class="btn" id="btnHelp" type="button">💬 Support</button>
       <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
     </div>
@@ -772,13 +779,14 @@
   <div class="card" id="service" style="margin-top:12px">
     <div class="title">Service terrain</div>
     <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6;margin-top:6px">
-      Ici tu poses un devis, suis une demande, notes une dépense ou un acompte, puis tu gardes la trace propre.
+      Ici tu poses un devis, suis une demande, notes une dépense ou un acompte, prépares ton QR public, puis tu gardes la trace propre.
     </div>
     <div class="serviceFastRow">
       <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
       <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
       <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
       <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
+      <a class="btn qr" id="fastQr" href="./qr.html">🔳 Mon QR</a>
     </div>
   </div>
 
@@ -929,6 +937,7 @@
       <div class="row">
         <button class="btn" id="btnPrint" type="button">🖨️ Imprimer</button>
         <button class="btn" id="btnWhatsApp" type="button">📲 Écrire au client</button>
+        <button class="btn qr" id="btnQrTool" type="button">🔳 Préparer mon QR</button>
       </div>
 
       <div style="height:12px"></div>
@@ -1137,6 +1146,10 @@
     return "./profile.html";
   }
 
+  function qrUrl() {
+    return "./qr.html";
+  }
+
   function pinUrl() {
     return "./pin.html";
   }
@@ -1226,6 +1239,7 @@
 
     const links = {
       fastPlus: profileUrl(),
+      fastQr: qrUrl(),
       bottomHome: dashboardUrl(),
       bottomMore: profileUrl()
     };
@@ -1807,6 +1821,8 @@
     $("btnDashboard").onclick = () => { location.href = dashboardUrl(); };
     $("btnGoDashboard").onclick = () => { location.href = dashboardUrl(); };
     $("btnProfile").onclick = () => { location.href = profileUrl(); };
+    if($("btnQr")) $("btnQr").onclick = () => { location.href = qrUrl(); };
+    if($("btnQrTool")) $("btnQrTool").onclick = () => { location.href = qrUrl(); };
     $("btnHelp").onclick = () => { location.href = supportUrl(); };
     $("btnSupportInline").onclick = () => { location.href = supportUrl(); };
 
