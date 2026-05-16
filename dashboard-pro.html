@@ -2026,7 +2026,7 @@
 
   async function checkPayAccess(){
     const S = getSbClient();
-    if(!S || !ACCESS.phone) return false;
+    if(!S || !ACCESS.phone) return null;
     try{
       const { data, error } = await S.rpc("digiy_check_module_access",{
         p_phone: ACCESS.phone,
@@ -2038,6 +2038,7 @@
   }
 
   function applyPayAccess(hasPayAccess){
+    if(hasPayAccess === null || hasPayAccess === undefined) return;
     const card = document.getElementById("payUpsellSection");
     const btn  = document.getElementById("btnMonArgent");
     if(hasPayAccess){
@@ -2115,5 +2116,7 @@
 </script>
 </body>
 </html>
+
+
 
 
