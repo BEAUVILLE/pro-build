@@ -2041,10 +2041,33 @@
     if(hasPayAccess === null || hasPayAccess === undefined) return;
     const card = document.getElementById("payUpsellSection");
     const btn  = document.getElementById("btnMonArgent");
+
     if(hasPayAccess){
-      if(card) card.style.display = "none";
+      // Synchroniser avec le système localStorage natif du module
+      try{
+        const flags = [
+          "digiy_pay_access_ok","digiy_pay_has_access",
+          "DIGIY_PAY_ACCESS_OK","DIGIY_PAY_HAS_ACCESS"
+        ];
+        flags.forEach(k => {
+          localStorage.setItem(k,"true");
+          sessionStorage.setItem(k,"true");
+        });
+      }catch(_){}
+
+      // URL PAY cockpit
       const url = PAY_COCKPIT_URL + (ACCESS.slug ? "?slug=" + encodeURIComponent(ACCESS.slug) : "");
+
+      // Rewirer les boutons natifs btnMoneyTop et fastMoney
+      ["btnMoneyTop","fastMoney"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.onclick = () => { location.href = url; };
+      });
+
+      // Notre card upsell
+      if(card) card.style.display = "none";
       if(btn){ btn.href = url; btn.textContent = "💰 Ouvrir Mon Argent"; }
+
     } else {
       if(card) card.style.display = "";
       if(btn) btn.href = buildPayUpsellUrl();
@@ -2116,6 +2139,10 @@
 </script>
 </body>
 </html>
+
+
+
+
 
 
 
