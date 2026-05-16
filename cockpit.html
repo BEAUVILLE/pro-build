@@ -35,6 +35,7 @@
     }
 
     *{box-sizing:border-box}
+
     html,body{margin:0;padding:0}
 
     body{
@@ -139,7 +140,9 @@
       text-transform:uppercase;
     }
 
-    .muted{color:var(--muted)}
+    .muted{
+      color:var(--muted);
+    }
 
     .row{
       display:flex;
@@ -210,6 +213,13 @@
     .btn.warn{
       border-color:rgba(245,158,11,.35);
       background:rgba(245,158,11,.10);
+    }
+
+    .btn.money{
+      border:none;
+      background:linear-gradient(90deg, rgba(250,204,21,.96), rgba(34,197,94,.92));
+      color:#062015;
+      box-shadow:0 14px 32px rgba(250,204,21,.16);
     }
 
     .lock{
@@ -704,7 +714,7 @@
       width:min(100%,760px);
       margin:0 auto;
       display:grid;
-      grid-template-columns:repeat(5,1fr);
+      grid-template-columns:repeat(6,1fr);
       gap:6px;
     }
 
@@ -734,7 +744,7 @@
 
     .serviceFastRow{
       display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
+      grid-template-columns:repeat(6,minmax(0,1fr));
       gap:10px;
       margin-top:12px;
     }
@@ -759,8 +769,8 @@
       <div>
         <h1>🧰 Je propose mes services — Service</h1>
         <div class="sub">
-          Session : <b id="slug">privée</b> • Contact : <b id="owner">masqué</b><br>
-          Accès : <b id="stat">initialisation…</b>
+          Session : <b id="slug">privée</b><br>
+          Accès : <b id="stat">initialisation…</b> · accès privé 8h après ton code
         </div>
       </div>
     </div>
@@ -771,6 +781,7 @@
       <button class="btn dashboard" id="btnDashboard" type="button">🏠 Accueil</button>
       <button class="btn profile" id="btnProfile" type="button">⚙️ Plus</button>
       <button class="btn qr" id="btnQr" type="button">🔳 Mon QR</button>
+      <button class="btn money" id="btnMoneyTop" type="button">💰 Mon argent</button>
       <button class="btn" id="btnHelp" type="button">💬 Support</button>
       <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
     </div>
@@ -785,7 +796,7 @@
       <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
       <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
       <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
-      <button class="btn primary" id="fastMoney" type="button">💰 Mon argent</button>
+      <button class="btn money" id="fastMoney" type="button">💰 Mon argent</button>
       <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
       <a class="btn qr" id="fastQr" href="./qr.html">🔳 Mon QR</a>
     </div>
@@ -939,6 +950,7 @@
         <button class="btn" id="btnPrint" type="button">🖨️ Imprimer</button>
         <button class="btn" id="btnWhatsApp" type="button">📲 Écrire au client</button>
         <button class="btn qr" id="btnQrTool" type="button">🔳 Préparer mon QR</button>
+        <button class="btn money" id="btnMoneyTool" type="button">💰 Mon argent</button>
       </div>
 
       <div style="height:12px"></div>
@@ -1025,12 +1037,13 @@
   </div>
 </div>
 
-<nav class="bottomNav" aria-label="Navigation BUILD">
+<nav class="bottomNav" aria-label="Navigation service">
   <div class="bottomNavInner">
     <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
     <a id="bottomDemandes" href="#demandes"><span class="ico">📋</span><span>Demandes</span></a>
     <a class="active" id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
     <a id="bottomNotes" href="#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
+    <a id="bottomMoney" href="#"><span class="ico">💰</span><span>Argent</span></a>
     <a id="bottomMore" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
   </div>
 </nav>
@@ -1040,8 +1053,9 @@
   "use strict";
 
   const MODULE_CODE = "BUILD";
-  const SUPPORT_PHONE = "221771342889";
   const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
+  const SUPPORT_BASE_URL = ABOS_URL;
+  const CLEAN_QUERY_KEYS = ["slug","phone","tel","build_tel","module","from","return","v"];
 
   const ACCESS = {
     slug: "",
@@ -1056,8 +1070,8 @@
   const $ = (id) => document.getElementById(id);
 
   function uid() {
-    return (window.crypto && crypto.randomUUID)
-      ? crypto.randomUUID()
+    return (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
       : ("id_" + Math.random().toString(16).slice(2) + Date.now());
   }
 
@@ -1079,18 +1093,11 @@
     return String(v || "").replace(/[^\d]/g, "");
   }
 
-  function maskPhone(v) {
-    const p = normPhone(v);
-    if (!p) return "masqué";
-    if (p.length <= 6) return "••••";
-    return p.slice(0, 3) + "••••" + p.slice(-3);
-  }
-
   function maskSlug(v) {
     const s = normSlug(v);
-    if (!s) return "session privée";
-    const parts = s.split("-");
-    return parts[0] ? parts[0] + "-••••" : "session privée";
+    if (!s) return "privée";
+    const prefix = s.split("-")[0] || "service";
+    return prefix + "-••••";
   }
 
   function escapeHtml(v) {
@@ -1102,27 +1109,12 @@
       .replace(/'/g, "&#039;");
   }
 
-  function buildSafeUrl(path, params = {}) {
-    try {
-      const url = new URL(path, window.location.href);
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && String(value).trim() !== "") {
-          url.searchParams.set(key, String(value));
-        }
-      });
-      return url.pathname + url.search + url.hash;
-    } catch (_) {
-      return path || "#";
-    }
-  }
-
   function cleanVisibleUrl() {
     try {
       const url = new URL(window.location.href);
-      const keys = ["slug", "phone", "tel", "build_tel", "module", "from", "return", "v"];
       let changed = false;
 
-      keys.forEach((key) => {
+      CLEAN_QUERY_KEYS.forEach((key) => {
         if (url.searchParams.has(key)) {
           url.searchParams.delete(key);
           changed = true;
@@ -1225,12 +1217,11 @@
 
   function setTopState() {
     $("slug").textContent = maskSlug(ACCESS.slug);
-    $("owner").textContent = maskPhone(ACCESS.phone);
     $("modePill").textContent = ACCESS.live ? "session active" : "accès sécurisé";
-    $("stat").textContent = ACCESS.live ? "ouvert" : "fermé";
+    $("stat").textContent = ACCESS.live ? "ouverte" : "fermée";
 
     $("sessionText").textContent = ACCESS.live
-      ? "Ta session est active. Tu peux circuler entre ton accueil, ton service, ta fiche et tes autres pages sans repasser par le code d’accès."
+      ? "Ta session privée est active pour 8h. Tu peux circuler entre ton accueil, ton service, ta fiche et tes autres pages sans repasser par le code d’accès."
       : "Ta session n’est pas active. Le code d’accès reste ta porte d’entrée ou de secours.";
 
     $("sessionBadge").textContent = ACCESS.live ? "OK" : "FERMÉ";
@@ -1472,11 +1463,10 @@
   }
 
   function supportUrl() {
-    const txt = encodeURIComponent(
-      "Support Mes services DIGIY.\n" +
-      "Besoin d’aide sur mon accès, ma fiche ou mon espace service."
-    );
-    return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
+    const url = new URL(SUPPORT_BASE_URL);
+    url.searchParams.set("module", MODULE_CODE);
+    url.searchParams.set("besoin", "support");
+    return url.toString();
   }
 
   function quickBuildNorm(text){
@@ -1653,11 +1643,6 @@
     return ["service_income","advance","material_purchase","labor_cost","client_debt"].includes(type);
   }
 
-  function paySlugFromBuildPhone(){
-    const p = normPhone(ACCESS.phone);
-    return p ? "pay-" + p : "";
-  }
-
   function payBuildLabel(item){
     const type = String(item?.type || "").toLowerCase();
     const comp = String(item?.complement || "").trim();
@@ -1671,12 +1656,7 @@
   }
 
   function buildPayFromBuildUrl(item){
-    const phone = normPhone(ACCESS.phone);
-    const paySlug = paySlugFromBuildPhone();
     const qsPay = new URLSearchParams();
-
-    if(paySlug) qsPay.set("slug", paySlug);
-    if(phone) qsPay.set("phone", phone);
 
     qsPay.set("fromDraft", "1");
     qsPay.set("direction", item?.direction === "in" ? "in" : "out");
@@ -1754,7 +1734,7 @@
             <a class="memoryPayAction" href="${escapeHtml(buildPayFromBuildUrl(item))}">
               💼 Envoyer vers Mon argent
             </a>
-            <div class="memoryPayHint">Abonnement Mon argent requis pour enregistrer.</div>
+            <div class="memoryPayHint">Mon argent s’ouvrira avec sa session privée. Aucun téléphone n’est envoyé dans le lien.</div>
           ` : ``}
         </div>
       `;
@@ -1817,56 +1797,53 @@
   }
 
 
-  function payBuildUrl() {
-    const phone = normPhone(ACCESS.phone);
-    const paySlug = phone ? "pay-" + phone : "";
-    const url = new URL("https://pro-pay.digiylyfe.com/admin.html");
+  function payBuildUrl(extra = {}) {
+    const qsPay = new URLSearchParams();
+    qsPay.set("source_module", "BUILD");
+    qsPay.set("intent", "module_home");
 
-    if (paySlug) url.searchParams.set("slug", paySlug);
-    if (phone) url.searchParams.set("phone", phone);
+    if(ACCESS.slug) qsPay.set("source_slug", ACCESS.slug);
 
-    return url.toString();
+    Object.entries(extra || {}).forEach(([k,v]) => {
+      if(v !== undefined && v !== null && String(v).trim() !== ""){
+        qsPay.set(k, String(v));
+      }
+    });
+
+    return "https://pro-pay.digiylyfe.com/admin.html?" + qsPay.toString();
   }
 
   function paySubscribeUrl() {
     const url = new URL(ABOS_URL);
     url.searchParams.set("module", "PAY");
     url.searchParams.set("from_module", "BUILD");
+    url.searchParams.set("return", payBuildUrl());
 
-    try{
-      url.searchParams.set("return", payBuildUrl());
-    }catch(_){}
-
-    if (ACCESS.slug) url.searchParams.set("source_slug", ACCESS.slug);
-    if (ACCESS.phone) url.searchParams.set("phone", ACCESS.phone);
+    if(ACCESS.slug) url.searchParams.set("source_slug", ACCESS.slug);
 
     return url.toString();
   }
 
-  function hasPayAccess(){
-    try{
-      const keys = [
-        "digiy_pay_access_ok",
-        "digiy_pay_has_access",
-        "DIGIY_PAY_ACCESS_OK"
-      ];
-
-      for(const k of keys){
-        const v = localStorage.getItem(k) || sessionStorage.getItem(k);
-        if(String(v).toLowerCase() === "true" || v === "1") return true;
+  function openMoneyDoor() {
+    /*
+      Porte volontairement simple :
+      PAY garde sa propre sécurité.
+      Si la session PAY est active, pro-pay ouvre.
+      Sinon, commencer à payer prend le relais.
+    */
+    const localOk = (() => {
+      try{
+        const keys = ["digiy_pay_access_ok","digiy_pay_has_access","DIGIY_PAY_ACCESS_OK","DIGIY_PAY_HAS_ACCESS"];
+        return keys.some(k => {
+          const v = sessionStorage.getItem(k) || localStorage.getItem(k);
+          return String(v || "").toLowerCase() === "true" || String(v || "") === "1";
+        });
+      }catch(_){
+        return false;
       }
-    }catch(_){}
+    })();
 
-    return false;
-  }
-
-  function openMoneyDoor(){
-    if(hasPayAccess()){
-      location.href = payBuildUrl();
-      return;
-    }
-
-    location.href = paySubscribeUrl();
+    location.href = localOk ? payBuildUrl() : paySubscribeUrl();
   }
 
   function bindUi() {
@@ -1878,8 +1855,11 @@
     if($("btnQr")) $("btnQr").onclick = () => { location.href = qrUrl(); };
     if($("btnQrTool")) $("btnQrTool").onclick = () => { location.href = qrUrl(); };
     $("btnHelp").onclick = () => { location.href = supportUrl(); };
-    $("fastMoney").onclick = () => { openMoneyDoor(); };
     $("btnSupportInline").onclick = () => { location.href = supportUrl(); };
+    if($("btnMoneyTop")) $("btnMoneyTop").onclick = openMoneyDoor;
+    if($("fastMoney")) $("fastMoney").onclick = openMoneyDoor;
+    if($("btnMoneyTool")) $("btnMoneyTool").onclick = openMoneyDoor;
+    if($("bottomMoney")) $("bottomMoney").onclick = (e) => { e.preventDefault(); openMoneyDoor(); };
 
     $("btnLogout").onclick = () => {
       try {
@@ -1982,35 +1962,12 @@
       localStorage.getItem("digiy_build_last_slug") ||
       "";
 
-    const hintedPhone =
-      params.get("phone") ||
-      params.get("tel") ||
-      params.get("build_tel") ||
-      sessionStorage.getItem("digiy_build_phone") ||
-      localStorage.getItem("digiy_build_phone") ||
-      "";
-
-    if (hintedSlug) {
-      try {
-        sessionStorage.setItem("digiy_build_slug", normSlug(hintedSlug));
-        sessionStorage.setItem("digiy_build_last_slug", normSlug(hintedSlug));
-        localStorage.setItem("digiy_build_last_slug", normSlug(hintedSlug));
-      } catch (_) {}
-    }
-
-    if (hintedPhone) {
-      try {
-        sessionStorage.setItem("digiy_build_phone", normPhone(hintedPhone));
-        localStorage.setItem("digiy_build_phone", normPhone(hintedPhone));
-      } catch (_) {}
-    }
-
     bindUi();
 
     if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
       ACCESS.live = false;
       ACCESS.slug = normSlug(hintedSlug);
-      ACCESS.phone = normPhone(hintedPhone);
+      ACCESS.phone = "";
       setTopState();
       setLockedView();
       cleanVisibleUrl();
@@ -2021,7 +1978,7 @@
 
     const st = window.DIGIY_GUARD.state || {};
     ACCESS.slug = normSlug(st.slug || hintedSlug);
-    ACCESS.phone = normPhone(st.phone || hintedPhone || "");
+    ACCESS.phone = normPhone(st.phone || "");
     ACCESS.live = !!(st.access_ok && ACCESS.slug);
 
     if (ACCESS.slug) {
@@ -2032,15 +1989,8 @@
       } catch (_) {}
     }
 
-    if (ACCESS.phone) {
-      try {
-        sessionStorage.setItem("digiy_build_phone", ACCESS.phone);
-        localStorage.setItem("digiy_build_phone", ACCESS.phone);
-      } catch (_) {}
-    }
-
-    cleanVisibleUrl();
     setTopState();
+    cleanVisibleUrl();
 
     if (!ACCESS.live) {
       setLockedView();
@@ -2052,7 +2002,7 @@
   }
 
   init().catch((err) => {
-    console.error("BUILD service init error", err);
+    console.error("BUILD cockpit init error", err);
     ACCESS.live = false;
     ACCESS.slug = "";
     ACCESS.phone = "";
@@ -2062,7 +2012,6 @@
   });
 })();
 </script>
-  <script src="./build-actions-terrain.js?v=build-actions-terrain-v1"></script>
 </body>
 </html>
 
