@@ -785,6 +785,7 @@
       <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
       <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
       <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
+      <button class="btn primary" id="fastMoney" type="button">💰 Mon argent</button>
       <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
       <a class="btn qr" id="fastQr" href="./qr.html">🔳 Mon QR</a>
     </div>
@@ -1815,6 +1816,59 @@
     renderQuickBuildMemory();
   }
 
+
+  function payBuildUrl() {
+    const phone = normPhone(ACCESS.phone);
+    const paySlug = phone ? "pay-" + phone : "";
+    const url = new URL("https://pro-pay.digiylyfe.com/admin.html");
+
+    if (paySlug) url.searchParams.set("slug", paySlug);
+    if (phone) url.searchParams.set("phone", phone);
+
+    return url.toString();
+  }
+
+  function paySubscribeUrl() {
+    const url = new URL(ABOS_URL);
+    url.searchParams.set("module", "PAY");
+    url.searchParams.set("from_module", "BUILD");
+
+    try{
+      url.searchParams.set("return", payBuildUrl());
+    }catch(_){}
+
+    if (ACCESS.slug) url.searchParams.set("source_slug", ACCESS.slug);
+    if (ACCESS.phone) url.searchParams.set("phone", ACCESS.phone);
+
+    return url.toString();
+  }
+
+  function hasPayAccess(){
+    try{
+      const keys = [
+        "digiy_pay_access_ok",
+        "digiy_pay_has_access",
+        "DIGIY_PAY_ACCESS_OK"
+      ];
+
+      for(const k of keys){
+        const v = localStorage.getItem(k) || sessionStorage.getItem(k);
+        if(String(v).toLowerCase() === "true" || v === "1") return true;
+      }
+    }catch(_){}
+
+    return false;
+  }
+
+  function openMoneyDoor(){
+    if(hasPayAccess()){
+      location.href = payBuildUrl();
+      return;
+    }
+
+    location.href = paySubscribeUrl();
+  }
+
   function bindUi() {
     bindQuickBuildNote();
 
@@ -1824,6 +1878,7 @@
     if($("btnQr")) $("btnQr").onclick = () => { location.href = qrUrl(); };
     if($("btnQrTool")) $("btnQrTool").onclick = () => { location.href = qrUrl(); };
     $("btnHelp").onclick = () => { location.href = supportUrl(); };
+    $("fastMoney").onclick = () => { openMoneyDoor(); };
     $("btnSupportInline").onclick = () => { location.href = supportUrl(); };
 
     $("btnLogout").onclick = () => {
@@ -2010,3 +2065,4 @@
   <script src="./build-actions-terrain.js?v=build-actions-terrain-v1"></script>
 </body>
 </html>
+
