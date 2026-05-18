@@ -154,7 +154,7 @@ const SLUG_PREFIX=(window.DIGIY_SLUG_PREFIX||MODULE.toLowerCase()).replace(/_/g,
 const MAX_AGE=8*60*60*1000;
 const mod=MODULE.toLowerCase();
 const SKEYS=[`digiy_${mod}_session`,`digiy_${mod}_guard_session`,`digiy_guard_${mod}_session`];
-const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"DIGIY_LOC_HUB_PHONE","digiy_phone"];
+const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"digiy_phone"];
 const SLKEYS=[`digiy_${mod}_last_slug`,`digiy_${mod}_slug`,"digiy_last_slug"];
 
 const $=id=>document.getElementById(id);
@@ -219,9 +219,11 @@ async function goStep2(){
     showSt("status1","❌ Numéro trop court.\nFormat attendu : 221 77 XXX XX XX","err");
     shake(phoneEl);return;
   }
+  // Normalisation Sénégal : 9 chiffres → préfixe 221 automatique
+  const normalized = (raw.length===9 && (raw.startsWith("7")||raw.startsWith("3"))) ? "221"+raw : raw;
   btnContinue.disabled=true;
   clearSt("status1");
-  confirmedPhone=raw;
+  confirmedPhone=normalized;
   showStep2();
 }
 btnContinue.addEventListener("click",goStep2);
@@ -281,7 +283,7 @@ async function doLogin(){
       pin="";updateDots();updateEnterBtn();
       for(let i=0;i<4;i++)$("d"+i).classList.add("err");
       shake($("pinDots"));
-      showSt("status2","❌ Code incorrect.\nVérifie tes 4 chiffres et réessaie.","err");
+      showSt("status2","❌ Code incorrect.\nVérifie tes 4 chiffres. Si tu n'as pas encore de code pour ce module, contacte le support DIGIY.","err");
       return;
     }
     const rpcSlug=row?.slug||row?.identifiant||"";
@@ -299,4 +301,6 @@ async function doLogin(){
 </script>
 </body>
 </html>
+
+
 
