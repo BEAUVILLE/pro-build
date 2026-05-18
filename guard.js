@@ -83,9 +83,10 @@
 
   function normPhone(value) {
     const raw = String(value || "").trim();
-    const cleaned = raw.replace(/[^\d+]/g, "");
-    const digits = cleaned.replace(/[^\d]/g, "");
+    const digits = raw.replace(/[^\d]/g, "");
     if (!digits) return "";
+    // Auto-préfixe 221 pour numéros sénégalais à 9 chiffres (7x, 3x)
+    if (digits.length === 9 && /^[37]/.test(digits)) return "221" + digits;
     return digits;
   }
 
@@ -471,15 +472,21 @@
     for (const body of tries) {
       const res = await rpc(CFG.RPC.HAS_ACCESS, body);
 
+      // RPC absent (404) ou non configuré → on ne bloque pas
+      if (res.status === 404 || res.status === 0) return true;
       if (!res.ok) continue;
 
       if (res.data === true) return true;
       if (res.data?.ok === true) return true;
       if (res.data?.access === true) return true;
       if (res.data?.has_access === true) return true;
+
+      // RPC présent mais retourne false explicitement → on sort
+      if (res.data === false || res.data?.ok === false) return false;
     }
 
-    return false;
+    // Aucun RPC n'a répondu clairement → on laisse passer (PIN validé suffit)
+    return true;
   }
 
   function parseVerifyPinPayload(data, fallbackPhone = "") {
@@ -894,3 +901,4 @@
 
   ready();
 })();
+
