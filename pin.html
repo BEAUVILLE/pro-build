@@ -3,983 +3,300 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="theme-color" content="#07110f"/>
-  <title>Je propose mes services — Accès</title>
-  <meta
-    name="description"
-    content="Je propose mes services — ouvrir l’accès et revenir vers Accueil, Demandes, Service, Notes ou Plus."
-  />
+  <title>Accès • DIGIY</title>
+  <meta name="theme-color" content="#020617"/>
 
+  <!-- CONFIG — changer ces 5 lignes par module -->
   <script>
-    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_URL      = "https://wesqmwjjtsefyjnluosj.supabase.co";
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
-    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
-    window.DIGIY_MODULE = "BUILD";
-    window.DIGIY_LOGIN_URL = "./pin.html";
+    window.DIGIY_SUPABASE_ANON     = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE       = "BUILD";
+window.DIGIY_MODULE_LABEL = "Mes services";
+window.DIGIY_MODULE_ICON  = "🏗️";
+window.DIGIY_INDEX_URL    = "./index.html";
+window.DIGIY_SLUG_PREFIX  = "build";
   </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root{
-      --bg:#07110f;
-      --bg2:#0c1815;
-      --card:rgba(255,255,255,.05);
-      --line:rgba(255,255,255,.10);
-      --text:#f8fafc;
-      --muted:#cbd5e1;
-      --gold:#d4af37;
-      --gold2:#facc15;
-      --green:#16a34a;
-      --red:#ef4444;
-      --orange:#f97316;
-      --shadow:0 18px 60px rgba(0,0,0,.35);
-      --radius:24px;
-      --max:560px;
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-
-    body{
-      min-height:100dvh;
-      background:
-        radial-gradient(circle at top, rgba(212,175,55,.12), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(22,163,74,.10), transparent 24%),
-        linear-gradient(180deg, var(--bg), #030807 70%);
-      color:var(--text);
-      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px 20px calc(104px + env(safe-area-inset-bottom,0px));
-    }
-
-    .wrap{
-      width:100%;
-      max-width:var(--max);
-    }
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      backdrop-filter:blur(12px);
-    }
-
-    .routeNav{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      padding:14px 14px 0;
-    }
-
-    .routeNav a{
-      flex:1;
-      min-width:120px;
-      min-height:40px;
-      border-radius:999px;
-      border:1px solid rgba(212,175,55,.22);
-      background:rgba(255,255,255,.045);
-      color:var(--text);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:7px;
-      padding:9px 10px;
-      font-size:.82rem;
-      font-weight:1000;
-      text-align:center;
-    }
-
-    .routeNav a:hover{
-      border-color:rgba(250,204,21,.44);
-      background:rgba(250,204,21,.08);
-    }
-
-    .hero{
-      padding:18px 22px 10px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      background:
-        radial-gradient(circle at top right, rgba(212,175,55,.18), transparent 34%);
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:10px;
-    }
-
-    .logo{
-      width:64px;
-      height:64px;
-      border-radius:18px;
-      object-fit:cover;
-      background:#fff;
-      border:1px solid rgba(212,175,55,.25);
-      box-shadow:0 12px 30px rgba(0,0,0,.20);
-      flex:0 0 auto;
-    }
-
-    .brand h1{
-      margin:0;
-      font-size:1.1rem;
-      line-height:1.2;
-      letter-spacing:.2px;
-      font-weight:900;
-    }
-
-    .brand p{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:.94rem;
-      line-height:1.45;
-    }
-
-    .body{
-      padding:20px;
-    }
-
-    .intro{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size:.97rem;
-      line-height:1.55;
-    }
-
-    .field{
-      margin-bottom:14px;
-    }
-
-    label{
-      display:block;
-      margin-bottom:7px;
-      font-size:.92rem;
-      color:#e5e7eb;
-      font-weight:800;
-    }
-
-    input{
-      width:100%;
-      min-height:52px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      padding:0 15px;
-      font-size:1rem;
-      outline:none;
-      transition:.18s ease;
-      font-family:inherit;
-    }
-
-    input:focus{
-      border-color:rgba(212,175,55,.6);
-      box-shadow:0 0 0 4px rgba(212,175,55,.12);
-    }
-
-    .pin-row{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .pin-row input{
-      flex:1;
-      text-align:center;
-      letter-spacing:.28em;
-      font-size:1.15rem;
-      font-weight:800;
-    }
-
-    .mini-btn{
-      min-width:54px;
-      min-height:52px;
-      border:none;
-      border-radius:16px;
-      cursor:pointer;
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      font-size:1rem;
-      font-weight:800;
-      font-family:inherit;
-    }
-
-    .actions{
-      display:grid;
-      gap:10px;
-      margin-top:18px;
-    }
-
-    button.primary,
-    a.btn{
-      appearance:none;
-      border:none;
-      border-radius:18px;
-      min-height:54px;
-      padding:0 16px;
-      cursor:pointer;
-      text-decoration:none;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      font-size:1rem;
-      transition:transform .08s ease, opacity .18s ease, background .18s ease;
-      font-family:inherit;
-    }
-
-    button.primary:active,
-    a.btn:active,
-    .mini-btn:active{
-      transform:scale(.99);
-    }
-
-    button.primary{
-      background:linear-gradient(135deg, var(--gold), var(--gold2));
-      color:#111827;
-    }
-
-    a.btn.secondary{
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    a.btn.pay{
-      background:linear-gradient(135deg, rgba(249,115,22,.22), rgba(249,115,22,.12));
-      color:#fff;
-      border:1px solid rgba(249,115,22,.30);
-    }
-
-    .status{
-      margin-top:16px;
-      border-radius:16px;
-      padding:12px 14px;
-      font-size:.94rem;
-      line-height:1.5;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-      min-height:48px;
-    }
-
-    .status.ok{
-      border-color:rgba(22,163,74,.35);
-      background:rgba(22,163,74,.10);
-      color:#dcfce7;
-    }
-
-    .status.err{
-      border-color:rgba(239,68,68,.35);
-      background:rgba(239,68,68,.10);
-      color:#fee2e2;
-    }
-
-    .meta{
-      display:grid;
-      gap:8px;
-      margin-top:16px;
-      padding:14px;
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:18px;
-      background:rgba(255,255,255,.025);
-      font-size:.92rem;
-    }
-
-    .meta-row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .meta-row .k{color:var(--muted)}
-    .meta-row .v{
-      color:var(--text);
-      font-weight:700;
-      text-align:right;
-      word-break:break-word;
-    }
-
-    .foot{
-      padding:0 20px 20px;
-      color:#94a3b8;
-      font-size:.84rem;
-      text-align:center;
-      line-height:1.55;
-    }
-
-    .hidden{display:none!important}
-
-    .bottomNav{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      z-index:99990;
-      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-      background:rgba(7,17,15,.94);
-      border-top:1px solid rgba(255,255,255,.10);
-      backdrop-filter:blur(16px);
-      -webkit-backdrop-filter:blur(16px);
-    }
-
-    .bottomNavInner{
-      width:min(100%,760px);
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:6px;
-    }
-
-    .bottomNav a{
-      min-height:58px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      align-content:center;
-      gap:3px;
-      color:rgba(248,250,252,.70);
-      font-size:11px;
-      font-weight:950;
-      text-align:center;
-      border:1px solid transparent;
-      text-decoration:none;
-    }
-
-    .bottomNav .ico{font-size:18px;line-height:1}
-
-    .bottomNav a.active{
-      color:#111827;
-      background:linear-gradient(135deg,var(--gold),var(--gold2));
-      border-color:rgba(250,204,21,.28);
-      box-shadow:0 12px 26px rgba(250,204,21,.18);
-    }
-
-    .fastLinks{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .fastLinks a{
-      min-height:42px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      font-size:.86rem;
-      font-weight:850;
-      padding:9px 10px;
-    }
-
-    @media(max-width:560px){
-      .routeNav a{
-        min-width:calc(50% - 6px);
-      }
-    }
-
-    @media(max-width:520px){
-      .fastLinks{grid-template-columns:1fr 1fr}
-    }
+    :root{--bg:#020617;--bg2:#0b1020;--line:rgba(148,163,184,.20);--ink:#f9fafb;--muted:#94a3b8;--gold:#facc15;--green:#22c55e;--red:#ef4444}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100dvh;display:grid;place-items:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:radial-gradient(ellipse 800px 500px at 15% -5%,rgba(250,204,21,.13),transparent 55%),radial-gradient(ellipse 700px 400px at 88% 5%,rgba(34,197,94,.10),transparent 55%),linear-gradient(180deg,var(--bg2),var(--bg))}
+    .card{width:min(420px,100%);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:28px;padding:28px 24px 24px;box-shadow:0 28px 70px rgba(0,0,0,.55)}
+    .header{text-align:center;margin-bottom:22px}
+    .ico{font-size:36px;line-height:1;display:block;margin-bottom:10px}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid rgba(250,204,21,.30);background:rgba(250,204,21,.08);color:#fde68a;font-size:11px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+    .title{font-size:1.25rem;font-weight:1100;line-height:1.2}
+    .steps{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 22px}
+    .step{display:flex;flex-direction:column;align-items:center;gap:4px}
+    .step-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:transparent;display:grid;place-items:center;font-size:13px;font-weight:1000;color:var(--muted);transition:all .25s}
+    .step-dot.active{border-color:var(--gold);background:rgba(250,204,21,.12);color:var(--gold)}
+    .step-dot.done{border-color:var(--green);background:rgba(34,197,94,.15);color:var(--green)}
+    .step-lbl{font-size:10px;font-weight:900;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+    .step-lbl.active{color:var(--gold)}
+    .step-connector{width:32px;height:2px;background:var(--line);border-radius:2px;margin-bottom:14px;transition:background .3s}
+    .step-connector.done{background:var(--green)}
+    .panel{display:none}
+    .panel.active{display:block}
+    .label{display:block;font-size:.78rem;font-weight:950;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+    .phone-wrap{position:relative}
+    .phone-flag{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}
+    .input{width:100%;padding:14px 15px 14px 42px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--ink);font-size:1.05rem;font-weight:900;font-family:inherit;outline:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s}
+    .input::placeholder{color:rgba(148,163,184,.45)}
+    .input:focus{border-color:rgba(250,204,21,.50);box-shadow:0 0 0 3px rgba(250,204,21,.09)}
+    .input.err-field{border-color:rgba(239,68,68,.50)!important}
+    .phone-recap{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-radius:12px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.06);margin-bottom:18px}
+    .phone-recap-num{font-size:.9rem;font-weight:950;color:#86efac}
+    .phone-recap-btn{font-size:.75rem;font-weight:950;color:var(--muted);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
+    .phone-recap-btn:hover{color:var(--ink)}
+    .pin-dots{display:flex;justify-content:center;gap:16px;margin:8px 0 20px}
+    .dot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(148,163,184,.30);background:transparent;transition:background .12s,border-color .12s,transform .10s}
+    .dot.filled{background:var(--gold);border-color:var(--gold);transform:scale(1.12)}
+    .dot.err{border-color:var(--red)!important;background:rgba(239,68,68,.2)!important}
+    .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+    .key{appearance:none;border:1px solid rgba(148,163,184,.18);border-radius:14px;background:rgba(255,255,255,.04);color:var(--ink);font-size:1.3rem;font-weight:1000;font-family:inherit;min-height:58px;cursor:pointer;transition:background .12s,transform .08s,border-color .12s;touch-action:manipulation;user-select:none}
+    .key:hover{background:rgba(255,255,255,.08);border-color:rgba(250,204,21,.25)}
+    .key:active{transform:scale(.94);background:rgba(250,204,21,.12)}
+    .key.zero{grid-column:2}
+    .key.del{font-size:1rem;color:var(--muted)}
+    .key.del:hover{color:var(--red);border-color:rgba(239,68,68,.30)}
+    .btn{width:100%;min-height:52px;border-radius:16px;border:1px solid rgba(250,204,21,.35);background:linear-gradient(135deg,rgba(250,204,21,.22),rgba(34,197,94,.18));color:#fff;font-size:1rem;font-weight:1100;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s,transform .10s,background .15s;touch-action:manipulation}
+    .btn:hover:not(:disabled){background:linear-gradient(135deg,rgba(250,204,21,.32),rgba(34,197,94,.26))}
+    .btn:active:not(:disabled){transform:scale(.98)}
+    .btn:disabled{opacity:.40;cursor:not-allowed}
+    .status{margin-top:12px;min-height:0;padding:0;border-radius:12px;font-size:.84rem;font-weight:900;line-height:1.5;display:none;white-space:pre-wrap}
+    .status.show{display:block;padding:10px 13px;margin-top:12px}
+    .status.err{background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.30);color:#fca5a5}
+    .status.ok{background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.30);color:#86efac}
+    .status.spin{background:rgba(148,163,184,.07);border:1px solid var(--line);color:var(--muted)}
+    .note{margin-top:18px;text-align:center;color:rgba(148,163,184,.55);font-size:.74rem;font-weight:800;line-height:1.55}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+    .shake{animation:shake .35s ease}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="card">
-      <nav class="routeNav" aria-label="Navigation DIGIY">
-        <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
-        <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
-        <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
-        <a href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
-      </nav>
+<div class="card">
 
-      <div class="hero">
-        <div class="brand">
-          <img
-            class="logo"
-            src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
-            alt="Logo DIGIYLYFE"
-          />
-          <div>
-            <h1>JE PROPOSE MES SERVICES</h1>
-            <p>Accès simple avec ton code</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="body">
-        <p class="intro">
-          Entre ton <strong>code d’accès</strong>. Si cet appareil connaît déjà ton espace, ton code suffit.
-          Sinon, ajoute aussi le téléphone de l’abonnement pour ouvrir la première session.
-        </p>
-
-        <div class="field" id="phoneField">
-          <label for="phone">Téléphone de l’abonnement</label>
-          <input id="phone" type="tel" inputmode="numeric" placeholder="Ex : 221771234567" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-form-type="other"/>
-        </div>
-
-        <div class="field">
-          <label for="pin">Code d’accès</label>
-          <div class="pin-row">
-            <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="one-time-code"/>
-            <button id="togglePin" class="mini-btn" type="button" aria-label="Afficher le code">👁️</button>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button id="btnOpen" class="primary" type="button">🔓 Ouvrir mes services</button>
-          <a id="btnCockpit" class="btn secondary hidden" href="./dashboard-pro.html">🏠 Aller à l’accueil</a>
-          <a id="btnAbos" class="btn pay" href="https://commencer-a-payer.digiylyfe.com/?module=BUILD" target="_blank" rel="noopener">💳 Gérer mon abonnement</a>
-        </div>
-
-        <div class="fastLinks">
-          <a id="fastHome" href="./dashboard-pro.html">🏠 Accueil</a>
-          <a id="fastDemandes" href="./cockpit.html#demandes">📋 Demandes</a>
-          <a id="fastService" href="./cockpit.html">🧰 Service</a>
-          <a id="fastNotes" href="./cockpit.html#quickBuildNote">✍️ Notes</a>
-        </div>
-
-        <div id="status" class="status">Prêt.</div>
-
-        <div class="meta">
-          <div class="meta-row">
-            <div class="k">Activité</div>
-            <div class="v">Entrepreneur multi services</div>
-          </div>
-          <div class="meta-row">
-            <div class="k">Retour</div>
-            <div class="v">Accueil</div>
-          </div>
-          <div class="meta-row">
-            <div class="k">Accès gardé ici</div>
-            <div class="v" id="sessionInfo">Aucun</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="foot">
-        DIGIYLYFE • accès privé • session gardée ici pendant 8 heures
-      </div>
-    </section>
+  <div class="header">
+    <span class="ico" id="moduleIcon">🏠</span>
+    <div class="badge">🔑 Accès DIGIY</div>
+    <div class="title" id="moduleLabel">Je loue</div>
   </div>
 
-  <nav class="bottomNav" aria-label="Navigation BUILD">
-    <div class="bottomNavInner">
-      <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
-      <a id="bottomDemandes" href="./cockpit.html#demandes"><span class="ico">📋</span><span>Demandes</span></a>
-      <a id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
-      <a id="bottomNotes" href="./cockpit.html#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
-      <a class="active" id="bottomMore" href="./pin.html"><span class="ico">🔐</span><span>Accès</span></a>
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot active" id="dot1">1</div>
+      <div class="step-lbl active" id="lbl1">Numéro</div>
     </div>
-  </nav>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const MODULE = "BUILD";
-      const SESSION_HOURS = 8;
-      const SUPPORT_URL = "https://commencer-a-payer.digiylyfe.com/";
-
-      const SUPABASE_URL = window.DIGIY_SUPABASE_URL;
-      const SUPABASE_KEY = window.DIGIY_SUPABASE_ANON_KEY || window.DIGIY_SUPABASE_ANON;
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      const SESSION_KEYS = [
-        "DIGIY_BUILD_PIN_SESSION",
-        "DIGIY_BUILD_SESSION",
-        "DIGIY_PIN_SESSION",
-        "DIGIY_ACCESS",
-        "DIGIY_SESSION_BUILD",
-        "digiy_build_session"
-      ];
-
-      const STORAGE_KEYS = {
-        slug: "digiy_build_slug",
-        phone: "digiy_build_phone",
-        lastSlug: "digiy_build_last_slug",
-        lastSession: "DIGIY_LAST_SESSION"
-      };
-
-      const CLEAN_URLS = {
-        home: "./dashboard-pro.html",
-        demandes: "./cockpit.html#demandes",
-        service: "./cockpit.html",
-        notes: "./cockpit.html#quickBuildNote",
-        pin: "./pin.html"
-      };
-
-      const el = {
-        phone: document.getElementById("phone"),
-        phoneField: document.getElementById("phoneField"),
-        pin: document.getElementById("pin"),
-        togglePin: document.getElementById("togglePin"),
-        btnOpen: document.getElementById("btnOpen"),
-        btnCockpit: document.getElementById("btnCockpit"),
-        btnAbos: document.getElementById("btnAbos"),
-        status: document.getElementById("status"),
-        sessionInfo: document.getElementById("sessionInfo")
-      };
-
-      function normPhone(v){
-        const digits = String(v || "").replace(/\D+/g, "").trim();
-        if (!digits) return "";
-        if (digits.length === 9) return "221" + digits;
-        return digits;
-      }
-
-      function normSlug(v){
-        return String(v || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
-
-      function safeJsonParse(raw){
-        try { return JSON.parse(raw); } catch(_) { return null; }
-      }
-
-      function setStatus(message, type = ""){
-        el.status.className = `status${type ? " " + type : ""}`;
-        el.status.textContent = message;
-      }
-
-      function clearVisiblePhoneField(){
-        try{
-          el.phone.value = "";
-          el.phone.setAttribute("autocomplete","off");
-        }catch(_){}
-      }
-
-      function cleanVisibleUrl(){
-        try{
-          const url = new URL(window.location.href);
-          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
-          const incomingPhone = normPhone(
-            url.searchParams.get("phone") ||
-            url.searchParams.get("tel") ||
-            url.searchParams.get("build_tel") ||
-            ""
-          );
-
-          if (incomingSlug){
-            try { sessionStorage.setItem(STORAGE_KEYS.slug, incomingSlug); } catch(_) {}
-            try { sessionStorage.setItem(STORAGE_KEYS.lastSlug, incomingSlug); } catch(_) {}
-            try { localStorage.setItem(STORAGE_KEYS.slug, incomingSlug); } catch(_) {}
-            try { localStorage.setItem(STORAGE_KEYS.lastSlug, incomingSlug); } catch(_) {}
-          }
-
-          if (incomingPhone){
-            try { sessionStorage.setItem(STORAGE_KEYS.phone, incomingPhone); } catch(_) {}
-            try { localStorage.setItem(STORAGE_KEYS.phone, incomingPhone); } catch(_) {}
-          }
-
-          ["slug","phone","tel","build_tel","module","from","return","v"].forEach((key) => url.searchParams.delete(key));
-          window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-        }catch(_){}
-      }
-
-      function applyCleanLinks(){
-        const map = {
-          fastHome: CLEAN_URLS.home,
-          fastDemandes: CLEAN_URLS.demandes,
-          fastService: CLEAN_URLS.service,
-          fastNotes: CLEAN_URLS.notes,
-          bottomHome: CLEAN_URLS.home,
-          bottomDemandes: CLEAN_URLS.demandes,
-          bottomService: CLEAN_URLS.service,
-          bottomNotes: CLEAN_URLS.notes,
-          bottomMore: CLEAN_URLS.pin
-        };
-
-        Object.entries(map).forEach(([id, href]) => {
-          const node = document.getElementById(id);
-          if (node) node.href = href;
-        });
-
-        el.btnCockpit.href = CLEAN_URLS.home;
-
-        try{
-          const pay = new URL(SUPPORT_URL);
-          pay.searchParams.set("module", MODULE);
-          el.btnAbos.href = pay.toString();
-        }catch(_){
-          el.btnAbos.href = SUPPORT_URL;
-        }
-      }
-
-      function saveSession(payload){
-        const session = {
-          module: MODULE,
-          slug: normSlug(payload.slug || ""),
-          phone: normPhone(payload.phone || ""),
-          access_ok: true,
-          access: true,
-          ok: true,
-          reason: payload.reason || "pin_ok",
-          validated_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString(),
-          ts: Date.now(),
-          verified_at: Date.now()
-        };
-
-        SESSION_KEYS.forEach((key) => {
-          try { localStorage.setItem(key, JSON.stringify(session)); } catch(_) {}
-          try { sessionStorage.setItem(key, JSON.stringify(session)); } catch(_) {}
-        });
-
-        try { localStorage.setItem(STORAGE_KEYS.slug, session.slug); } catch(_) {}
-        try { sessionStorage.setItem(STORAGE_KEYS.slug, session.slug); } catch(_) {}
-        try { localStorage.setItem(STORAGE_KEYS.lastSlug, session.slug); } catch(_) {}
-        try { sessionStorage.setItem(STORAGE_KEYS.lastSlug, session.slug); } catch(_) {}
-        try { localStorage.setItem(STORAGE_KEYS.phone, session.phone); } catch(_) {}
-        try { sessionStorage.setItem(STORAGE_KEYS.phone, session.phone); } catch(_) {}
-
-        try {
-          localStorage.setItem(STORAGE_KEYS.lastSession, JSON.stringify({
-            module: MODULE,
-            slug: session.slug,
-            phone: session.phone,
-            validated_at: session.validated_at
-          }));
-        } catch(_) {}
-
-        try{ window.DIGIY_ACCESS = Object.assign({}, window.DIGIY_ACCESS || {}, session); }catch(_){}
-
-        return session;
-      }
-
-      function loadSession(){
-        for (const key of SESSION_KEYS){
-          try {
-            const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
-            if (!raw) continue;
-            const parsed = safeJsonParse(raw);
-            if (!parsed || typeof parsed !== "object") continue;
-            const moduleName = String(parsed.module || parsed.module_code || "").toUpperCase();
-            if (moduleName && moduleName !== MODULE) continue;
-            return parsed;
-          } catch(_) {}
-        }
-        return null;
-      }
-
-      function sessionStillValid(s){
-        const ts =
-          Number(s?.verified_at || s?.validated_at_ms || s?.ts || 0) ||
-          (s?.validated_at ? new Date(s.validated_at).getTime() : 0);
-        if (!ts) return false;
-        const ms = Date.now() - ts;
-        return ms >= 0 && ms < SESSION_HOURS * 60 * 60 * 1000;
-      }
-
-      function readSavedPhone(){
-        const s = loadSession();
-        return normPhone(
-          sessionStorage.getItem(STORAGE_KEYS.phone) ||
-          localStorage.getItem(STORAGE_KEYS.phone) ||
-          s?.phone ||
-          ""
-        );
-      }
-
-      function readSavedSlug(){
-        const s = loadSession();
-        return normSlug(
-          sessionStorage.getItem(STORAGE_KEYS.slug) ||
-          sessionStorage.getItem(STORAGE_KEYS.lastSlug) ||
-          localStorage.getItem(STORAGE_KEYS.slug) ||
-          localStorage.getItem(STORAGE_KEYS.lastSlug) ||
-          s?.slug ||
-          ""
-        );
-      }
-
-      function setOpenLink(){
-        el.btnCockpit.href = CLEAN_URLS.home;
-        el.btnCockpit.classList.remove("hidden");
-        applyCleanLinks();
-      }
-
-      function hydrateSessionState(){
-        cleanVisibleUrl();
-        applyCleanLinks();
-        clearVisiblePhoneField();
-        setTimeout(clearVisiblePhoneField, 80);
-        setTimeout(clearVisiblePhoneField, 350);
-
-        const s = loadSession();
-
-        if (s && sessionStillValid(s)){
-          el.sessionInfo.textContent = "Active";
-          if(el.phoneField) el.phoneField.classList.add("hidden");
-          setOpenLink();
-          setStatus("Session déjà active. Tu peux ouvrir directement l’accueil.", "ok");
-          return;
-        }
-
-        const rememberedPhone = readSavedPhone();
-        const rememberedSlug = readSavedSlug();
-
-        el.sessionInfo.textContent = rememberedPhone || rememberedSlug ? "Appareil connu" : "Aucun";
-
-        if (rememberedPhone || rememberedSlug){
-          if(el.phoneField) el.phoneField.classList.add("hidden");
-          setStatus("Appareil reconnu. Entre ton code pour rouvrir ton espace.", "");
-        }else{
-          if(el.phoneField) el.phoneField.classList.remove("hidden");
-          setStatus("Prêt. Entre ton téléphone d’abonnement et ton code.", "");
-        }
-      }
-
-      async function resolvePhoneBySlug(slug){
-        const s = normSlug(slug);
-        if (!s) return "";
-
-        const { data, error } = await supabase
-          .from("digiy_subscriptions_public")
-          .select("phone,module,slug")
-          .eq("slug", s)
-          .eq("module", MODULE)
-          .limit(1)
-          .maybeSingle();
-
-        if (error) throw error;
-        if (!data) return "";
-        return normPhone(data.phone);
-      }
-
-      async function resolveSlugByPhone(phone){
-        const p = normPhone(phone);
-        if (!p) return "";
-
-        const { data, error } = await supabase
-          .from("digiy_subscriptions_public")
-          .select("phone,module,slug")
-          .eq("phone", p)
-          .eq("module", MODULE)
-          .limit(1)
-          .maybeSingle();
-
-        if (error) throw error;
-        if (!data) return "";
-        return normSlug(data.slug);
-      }
-
-      function parseCompositeTuple(raw){
-        const s = String(raw || "").trim();
-        if (!s.startsWith("(") || !s.endsWith(")")) return null;
-
-        const body = s.slice(1, -1);
-        const out = [];
-        let cur = "";
-        let inQuotes = false;
-
-        for (let i = 0; i < body.length; i++) {
-          const ch = body[i];
-          const prev = i > 0 ? body[i - 1] : "";
-
-          if (ch === '"' && prev !== "\\") {
-            inQuotes = !inQuotes;
-            continue;
-          }
-
-          if (ch === "," && !inQuotes) {
-            out.push(cur);
-            cur = "";
-            continue;
-          }
-
-          cur += ch;
-        }
-
-        out.push(cur);
-        return out.map(part => String(part || "").trim());
-      }
-
-      async function verifyPin(phone, pin){
-        const p = normPhone(phone);
-
-        const { data, error } = await supabase.rpc("digiy_verify_pin", {
-          p_phone: p,
-          p_module: MODULE,
-          p_pin: pin
-        });
-
-        if (error) throw error;
-        if (!data) return { ok:false, reason:"pin_refuse" };
-
-        if (typeof data === "object" && !Array.isArray(data)) {
-          return {
-            ok: data.ok === true || data.ok === "t" || data.ok === "true",
-            reason: data.reason || (data.ok ? "pin_ok" : "pin_refuse"),
-            slug: data.slug || "",
-            phone: data.phone || p,
-            module: data.module || MODULE,
-            label: data.label || ""
-          };
-        }
-
-        if (Array.isArray(data)) {
-          if (!data.length) return { ok:false, reason:"pin_refuse" };
-          const first = data[0];
-
-          if (typeof first === "object" && first !== null) {
-            return {
-              ok: first.ok === true || first.ok === "t" || first.ok === "true",
-              reason: first.reason || (first.ok ? "pin_ok" : "pin_refuse"),
-              slug: first.slug || "",
-              phone: first.phone || p,
-              module: first.module || MODULE,
-              label: first.label || ""
-            };
-          }
-
-          if (typeof first === "string") {
-            const tuple = parseCompositeTuple(first);
-            if (tuple && tuple.length) {
-              return {
-                ok: tuple[0] === "t" || tuple[0] === "true",
-                module: tuple[1] || MODULE,
-                phone: normPhone(tuple[2] || p),
-                label: tuple[3] || "",
-                session_token: tuple[4] || "",
-                slug: "",
-                reason: (tuple[0] === "t" || tuple[0] === "true") ? "pin_ok" : "pin_refuse",
-                raw: first
-              };
-            }
-          }
-        }
-
-        if (typeof data === "string") {
-          const tuple = parseCompositeTuple(data);
-          if (tuple && tuple.length) {
-            return {
-              ok: tuple[0] === "t" || tuple[0] === "true",
-              module: tuple[1] || MODULE,
-              phone: normPhone(tuple[2] || p),
-              label: tuple[3] || "",
-              session_token: tuple[4] || "",
-              slug: "",
-              reason: (tuple[0] === "t" || tuple[0] === "true") ? "pin_ok" : "pin_refuse",
-              raw: data
-            };
-          }
-
-          if (data.trim() === "t" || data.trim() === "true") {
-            return { ok:true, reason:"pin_ok", phone:p, module:MODULE };
-          }
-
-          if (data.trim() === "f" || data.trim() === "false") {
-            return { ok:false, reason:"pin_refuse", phone:p, module:MODULE };
-          }
-        }
-
-        return { ok:false, reason:"pin_refuse", raw:data };
-      }
-
-      async function openWithPin(){
-        try{
-          const visiblePhone = normPhone(el.phone.value);
-          const rememberedPhone = readSavedPhone();
-          const rememberedSlug = readSavedSlug();
-          let phone = visiblePhone || rememberedPhone;
-          const pin = String(el.pin.value || "").trim();
-
-          if (!phone && rememberedSlug){
-            phone = await resolvePhoneBySlug(rememberedSlug);
-          }
-
-          if (!phone){
-            setStatus("Entre le téléphone de l’abonnement et le code.", "err");
-            return;
-          }
-
-          if (!pin){
-            setStatus("Entre ton code.", "err");
-            return;
-          }
-
-          el.btnOpen.disabled = true;
-          setStatus("Vérification du code en cours...");
-
-          const result = await verifyPin(phone, pin);
-
-          if (!result || result.ok !== true){
-            setStatus("Accès non reconnu. Vérifie tes informations.", "err");
-            el.btnOpen.disabled = false;
-            return;
-          }
-
-          const finalPhone = normPhone(result.phone || phone);
-          let finalSlug = normSlug(result.slug || rememberedSlug);
-
-          if (!finalSlug && finalPhone){
-            finalSlug = await resolveSlugByPhone(finalPhone);
-          }
-
-          if (!finalSlug && finalPhone){
-            finalSlug = `build-${finalPhone}`;
-          }
-
-          saveSession({
-            slug: finalSlug,
-            phone: finalPhone,
-            reason: "pin_ok"
-          });
-
-          clearVisiblePhoneField();
-          el.pin.value = "";
-          el.sessionInfo.textContent = "Active";
-          setOpenLink();
-          setStatus("Code validé. Ouverture de l’accueil...", "ok");
-
-          setTimeout(() => {
-            window.location.href = CLEAN_URLS.home;
-          }, 350);
-
-        } catch (err){
-          console.error("[BUILD PIN] erreur", err);
-          setStatus("Erreur de vérification. Réessaie dans un instant.", "err");
-        } finally {
-          el.btnOpen.disabled = false;
-        }
-      }
-
-      el.togglePin.addEventListener("click", () => {
-        const isPwd = el.pin.type === "password";
-        el.pin.type = isPwd ? "text" : "password";
-        el.togglePin.textContent = isPwd ? "🙈" : "👁️";
-      });
-
-      el.btnOpen.addEventListener("click", openWithPin);
-
-      [el.phone, el.pin].forEach((node) => {
-        node.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") openWithPin();
-        });
-      });
-
-      hydrateSessionState();
-    })();
-  </script>
+    <div class="step-connector" id="conn"></div>
+    <div class="step">
+      <div class="step-dot" id="dot2">2</div>
+      <div class="step-lbl" id="lbl2">Code</div>
+    </div>
+  </div>
+
+  <!-- ETAPE 1 -->
+  <div class="panel active" id="step1">
+    <label class="label" for="phoneInput">📱 Ton numéro de téléphone</label>
+    <div class="phone-wrap">
+      <span class="phone-flag">🇸🇳</span>
+      <input id="phoneInput" class="input" type="tel" inputmode="numeric"
+             placeholder="221 77 XXX XX XX" autocomplete="tel" maxlength="15"/>
+    </div>
+    <div class="status" id="status1"></div>
+    <button class="btn" id="btnContinue" type="button" style="margin-top:16px" disabled>Continuer →</button>
+  </div>
+
+  <!-- ETAPE 2 -->
+  <div class="panel" id="step2">
+    <div class="phone-recap">
+      <span class="phone-recap-num" id="phoneDisplay"></span>
+      <button class="phone-recap-btn" id="btnBack" type="button">Modifier</button>
+    </div>
+    <label class="label">🔢 Ton code secret (4 chiffres)</label>
+    <div class="pin-dots" id="pinDots">
+      <div class="dot" id="d0"></div>
+      <div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+    </div>
+    <div class="keypad" id="keypad">
+      <button class="key" data-v="1" type="button">1</button>
+      <button class="key" data-v="2" type="button">2</button>
+      <button class="key" data-v="3" type="button">3</button>
+      <button class="key" data-v="4" type="button">4</button>
+      <button class="key" data-v="5" type="button">5</button>
+      <button class="key" data-v="6" type="button">6</button>
+      <button class="key" data-v="7" type="button">7</button>
+      <button class="key" data-v="8" type="button">8</button>
+      <button class="key" data-v="9" type="button">9</button>
+      <button class="key zero" data-v="0" type="button">0</button>
+      <button class="key del" data-v="DEL" type="button">⌫</button>
+    </div>
+    <button class="btn" id="btnEnter" type="button" disabled>Entrer →</button>
+    <div class="status" id="status2"></div>
+  </div>
+
+  <div class="note">Ton numéro et ton code ne sont jamais partagés.<br>DIGIY · 0% commission · 100% indépendance ∞</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const MODULE=((window.DIGIY_MODULE)||"LOC").toUpperCase();
+const MODULE_LABEL=window.DIGIY_MODULE_LABEL||MODULE;
+const MODULE_ICON=window.DIGIY_MODULE_ICON||"∞";
+const INDEX_URL=window.DIGIY_INDEX_URL||"./index.html";
+const SLUG_PREFIX=(window.DIGIY_SLUG_PREFIX||MODULE.toLowerCase()).replace(/_/g,"-");
+const MAX_AGE=8*60*60*1000;
+const mod=MODULE.toLowerCase();
+const SKEYS=[`digiy_${mod}_session`,`digiy_${mod}_guard_session`,`digiy_guard_${mod}_session`];
+const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"DIGIY_LOC_HUB_PHONE","digiy_phone"];
+const SLKEYS=[`digiy_${mod}_last_slug`,`digiy_${mod}_slug`,"digiy_last_slug"];
+
+const $=id=>document.getElementById(id);
+$("moduleLabel").textContent=MODULE_LABEL;
+$("moduleIcon").textContent=MODULE_ICON;
+document.title=`Accès ${MODULE_LABEL} • DIGIY`;
+
+let pin="",confirmedPhone="";
+
+function norm(p){return String(p||"").replace(/\D/g,"")}
+function fmt(d){if(d.length===12&&d.startsWith("221"))return`${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`;return d}
+function slug(p){return SLUG_PREFIX&&p?`${SLUG_PREFIX}-${p}`:""}
+function qp(n){try{return new URL(location.href).searchParams.get(n)||""}catch(_){return""}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k)||"";localStorage.setItem(k,v)}catch(_){}}
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k)||"";sessionStorage.setItem(k,v)}catch(_){}}
+
+function showSt(id,msg,cls){const e=$(id);e.className="status show "+cls;e.textContent=msg}
+function clearSt(id){const e=$(id);e.className="status";e.textContent=""}
+function shake(el){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");setTimeout(()=>el.classList.remove("shake"),400)}
+
+// prefill : géré par le module au déploiement via ?phone= dans l'URL
+
+function getSb(){
+  if(window._dsb)return window._dsb;
+  const url=window.DIGIY_SUPABASE_URL||"";
+  const key=window.DIGIY_SUPABASE_ANON_KEY||window.DIGIY_SUPABASE_ANON||"";
+  if(!url||!key)throw new Error("Supabase non configuré");
+  if(!window.supabase?.createClient)throw new Error("Librairie Supabase absente");
+  window._dsb=window.supabase.createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+  return window._dsb;
+}
+
+function writeSession(phone,sl,token){
+  const now=Date.now();
+  const sess=JSON.stringify({slug:sl,phone,module:MODULE,validated_at:now,expires_at:now+MAX_AGE,session_token:token||"",access:true,access_ok:true});
+  SKEYS.forEach(k=>{ls(k,sess);ss(k,sess)});
+  PKEYS.forEach(k=>{ls(k,phone);ss(k,phone)});
+  if(sl){
+    SLKEYS.forEach(k=>ls(k,sl));
+    try{const m=JSON.parse(ls("digiy_module_slugs")||"{}")||{};m[MODULE]=sl;ls("digiy_module_slugs",JSON.stringify(m))}catch(_){}
+    ls("digiy_slug",sl);
+  }
+}
+
+function redirect(sl){
+  try{const u=new URL(INDEX_URL,location.href);if(sl)u.searchParams.set("slug",sl);u.searchParams.delete("phone");location.replace(u.toString())}
+  catch(_){location.replace(INDEX_URL)}
+}
+
+// ETAPE 1
+const phoneEl=$("phoneInput");
+const btnContinue=$("btnContinue");
+function updateContinueBtn(){btnContinue.disabled=norm(phoneEl.value).length<9}
+phoneEl.addEventListener("input",()=>{clearSt("status1");phoneEl.classList.remove("err-field");updateContinueBtn()});
+phoneEl.addEventListener("keydown",e=>{if(e.key==="Enter"&&!btnContinue.disabled)goStep2()});
+updateContinueBtn();
+
+async function goStep2(){
+  const raw=norm(phoneEl.value);
+  if(raw.length<9){
+    phoneEl.classList.add("err-field");
+    showSt("status1","❌ Numéro trop court.\nFormat attendu : 221 77 XXX XX XX","err");
+    shake(phoneEl);return;
+  }
+  btnContinue.disabled=true;
+  clearSt("status1");
+  confirmedPhone=raw;
+  showStep2();
+}
+btnContinue.addEventListener("click",goStep2);
+
+// ETAPE 2
+function showStep2(){
+  $("step1").classList.remove("active");$("step2").classList.add("active");
+  $("dot1").className="step-dot done";$("dot1").textContent="✓";$("lbl1").className="step-lbl";
+  $("dot2").className="step-dot active";$("lbl2").className="step-lbl active";
+  $("conn").classList.add("done");
+  $("phoneDisplay").textContent=fmt(confirmedPhone);
+  pin="";updateDots();updateEnterBtn();
+}
+function goStep1(){
+  $("step2").classList.remove("active");$("step1").classList.add("active");
+  $("dot1").className="step-dot active";$("dot1").textContent="1";$("lbl1").className="step-lbl active";
+  $("dot2").className="step-dot";$("lbl2").className="step-lbl";
+  $("conn").classList.remove("done");
+  pin="";clearSt("status2");btnContinue.disabled=false;updateDots();updateEnterBtn();
+}
+$("btnBack").addEventListener("click",goStep1);
+
+function updateDots(){
+  for(let i=0;i<4;i++){const d=$("d"+i);d.classList.toggle("filled",i<pin.length);d.classList.remove("err")}
+}
+function updateEnterBtn(){$("btnEnter").disabled=pin.length!==4}
+
+$("keypad").addEventListener("click",e=>{
+  const key=e.target.closest("[data-v]");if(!key)return;
+  const v=key.dataset.v;
+  if(v==="DEL"){pin=pin.slice(0,-1)}
+  else if(pin.length<4){pin+=v;if(pin.length===4)setTimeout(doLogin,120)}
+  updateDots();updateEnterBtn();clearSt("status2");
+});
+
+document.addEventListener("keydown",e=>{
+  if(document.activeElement===phoneEl)return;
+  if(!$("step2").classList.contains("active"))return;
+  if(/^[0-9]$/.test(e.key)&&pin.length<4){pin+=e.key;updateDots();updateEnterBtn();if(pin.length===4)setTimeout(doLogin,120)}
+  else if(e.key==="Backspace"){pin=pin.slice(0,-1);updateDots();updateEnterBtn()}
+});
+
+$("btnEnter").addEventListener("click",doLogin);
+
+async function doLogin(){
+  if(pin.length!==4)return;
+  $("btnEnter").disabled=true;
+  showSt("status2","⏳ Vérification du code…","spin");
+  try{
+    const sb=getSb();
+    const{data,error}=await sb.rpc("digiy_verify_pin",{p_phone:confirmedPhone,p_module:MODULE,p_pin:pin});
+    if(error)throw new Error(error.message||"Erreur serveur");
+    /* Le RPC retourne un tableau → on prend la première ligne */
+    const row=Array.isArray(data)?data[0]:data;
+    const ok=row===true||row?.ok===true||row?.access===true||row?.status==="ok";
+    if(!ok){
+      pin="";updateDots();updateEnterBtn();
+      for(let i=0;i<4;i++)$("d"+i).classList.add("err");
+      shake($("pinDots"));
+      showSt("status2","❌ Code incorrect.\nVérifie tes 4 chiffres et réessaie.","err");
+      return;
+    }
+    const rpcSlug=row?.slug||row?.identifiant||"";
+    const finalSlug=rpcSlug||slug(confirmedPhone);
+    writeSession(confirmedPhone,finalSlug,row?.session_token||"");
+    showSt("status2","✅ Accès ouvert. Redirection…","ok");
+    setTimeout(()=>redirect(finalSlug),700);
+  }catch(err){
+    pin="";updateDots();updateEnterBtn();
+    $("btnEnter").disabled=false;
+    showSt("status2","❌ Erreur : "+(err?.message||"inattendue."),"err");
+  }
+}
+})();
+</script>
 </body>
 </html>
+
