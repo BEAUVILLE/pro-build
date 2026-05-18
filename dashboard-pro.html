@@ -688,6 +688,42 @@
 
     .hidden{display:none!important}
 
+    .voice-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .btn-voice{
+      min-height:36px;
+      border:1px solid rgba(250,204,21,.22);
+      border-radius:999px;
+      padding:7px 14px;
+      background:rgba(250,204,21,.10);
+      color:#fff4bd;
+      font-size:12px;
+      font-weight:1000;
+      cursor:pointer;
+      font-family:inherit;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .btn-voice[aria-pressed="true"]{
+      background:rgba(250,204,21,.22);
+      border-color:rgba(250,204,21,.40);
+    }
+
+    .voice-status-text{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
     @media(max-width:680px){
       .brand-logo{
         width:68px;
@@ -832,6 +868,11 @@
       <button class="btn money" id="fastMoney" type="button">💰 Mon argent</button>
       <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
       <a class="btn qr" id="fastQr" href="./qr.html">🔳 Mon QR</a>
+    </div>
+
+    <div class="voice-row">
+      <button class="btn-voice" id="btnBuildVoice" type="button" aria-pressed="false">🔔 Alertes vocales</button>
+      <span class="voice-status-text" id="buildVoiceStatus">Voix non activée</span>
     </div>
   </div>
 
@@ -1440,6 +1481,9 @@
       `;
       list.appendChild(item);
     }
+
+    // ── Alertes vocales réactives BUILD ──
+    window.DIGIY_BUILD_VOICE?.announceUsefulAlerts?.(all);
   }
 
   function upsertRowFromForm() {
@@ -2109,8 +2153,212 @@
   });
 })();
 </script>
+<script>
+(function(){
+  "use strict";
+
+  // ── Constantes ────────────────────────────────────────────────
+  const VOICE_ENABLED_KEY = "digiy_build_voice_enabled";
+  const VOICE_SEEN_KEY    = "digiy_build_voice_seen_keys";
+
+  let voiceEnabled     = false;
+  let voiceUnlocked    = false;
+  let lastBuildSnapshot = null;
+
+  const btnVoice      = document.getElementById("btnBuildVoice");
+  const voiceStatusEl = document.getElementById("buildVoiceStatus");
+
+  // ── Voix ──────────────────────────────────────────────────────
+  function pickVoice(){
+    if(!("speechSynthesis" in window)) return null;
+    const voices = speechSynthesis.getVoices() || [];
+    return (
+      voices.find(v => /fr[-_]?FR/i.test(v.lang) && /thomas|paul|daniel|homme|male/i.test(v.name)) ||
+      voices.find(v => /^fr/i.test(v.lang)) ||
+      voices[0] || null
+    );
+  }
+
+  function setVoiceStatus(text){
+    if(voiceStatusEl) voiceStatusEl.textContent = text || "";
+  }
+
+  function refreshVoiceButton(){
+    if(!btnVoice) return;
+    if(voiceEnabled){
+      btnVoice.textContent = "🔔 Alertes activées";
+      btnVoice.setAttribute("aria-pressed","true");
+      setVoiceStatus("Alertes actives cette session");
+    }else{
+      btnVoice.textContent = "🔔 Alertes vocales";
+      btnVoice.setAttribute("aria-pressed","false");
+      setVoiceStatus("Voix non activée");
+    }
+  }
+
+  function speakDigiy(message){
+    if(!voiceEnabled || !voiceUnlocked) return;
+    if(!message || !("speechSynthesis" in window)) return;
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(message);
+      const voice = pickVoice();
+      if(voice) u.voice = voice;
+      u.lang   = voice?.lang || "fr-FR";
+      u.rate   = 0.88;
+      u.pitch  = 1.02;
+      u.volume = 1;
+      u.onstart = () => setVoiceStatus("DIGIY parle…");
+      u.onend   = () => setVoiceStatus("Alertes activées");
+      u.onerror = () => setVoiceStatus("Voix interrompue");
+      speechSynthesis.speak(u);
+    }catch(err){ console.warn("[BUILD VOICE]", err); }
+  }
+
+  function unlockVoice(){
+    if(!("speechSynthesis" in window)){
+      setVoiceStatus("Voix non disponible sur ce navigateur");
+      return;
+    }
+    voiceEnabled = !voiceEnabled;
+    try{ localStorage.setItem(VOICE_ENABLED_KEY, voiceEnabled ? "1" : "0"); }catch{}
+    if(voiceEnabled){
+      voiceUnlocked = true;
+      refreshVoiceButton();
+      const u = new SpeechSynthesisUtterance("Alertes vocales DIGIY BUILD activées. Je parlerai seulement quand une demande ou un devis demande une action.");
+      const voice = pickVoice();
+      if(voice) u.voice = voice;
+      u.lang  = voice?.lang || "fr-FR";
+      u.rate  = 0.88;
+      u.pitch = 1.02;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }else{
+      try{ speechSynthesis.cancel(); }catch{}
+      voiceUnlocked = false;
+      refreshVoiceButton();
+    }
+  }
+
+  // ── Fingerprint / snapshot BUILD ──────────────────────────────
+  function rowVoiceKey(r){
+    return [
+      r?.id || "",
+      r?.status || "draft",
+      r?.updated_at || r?.created_at || ""
+    ].join("|").toLowerCase();
+  }
+
+  function buildBuildSnapshot(rows){
+    const list = Array.isArray(rows) ? rows : [];
+    return {
+      total:    list.length,
+      draft:    list.filter(r => r.status === "draft").length,
+      sent:     list.filter(r => r.status === "sent").length,
+      accepted: list.filter(r => r.status === "accepted").length,
+      running:  list.filter(r => r.status === "running").length
+    };
+  }
+
+  function readSeenVoiceKeys(){
+    try{
+      const raw = localStorage.getItem(VOICE_SEEN_KEY) || "[]";
+      const arr = JSON.parse(raw);
+      return new Set(Array.isArray(arr) ? arr : []);
+    }catch{ return new Set(); }
+  }
+
+  function writeSeenVoiceKeys(set){
+    try{
+      localStorage.setItem(VOICE_SEEN_KEY, JSON.stringify(Array.from(set).slice(-80)));
+    }catch{}
+  }
+
+  // ── Annonces BUILD ────────────────────────────────────────────
+  function announceUsefulAlerts(rows){
+    if(!voiceEnabled || !voiceUnlocked) return;
+
+    const list = Array.isArray(rows) ? rows : [];
+    const snapshot = buildBuildSnapshot(list);
+
+    // Premier passage : mémorise sans parler
+    if(!lastBuildSnapshot){
+      lastBuildSnapshot = snapshot;
+      const seen = readSeenVoiceKeys();
+      list.forEach(r => { const k = rowVoiceKey(r); if(k) seen.add(k); });
+      writeSeenVoiceKeys(seen);
+      return;
+    }
+
+    const seen = readSeenVoiceKeys();
+    const newRows = list.filter(r => {
+      const k = rowVoiceKey(r);
+      return k && !seen.has(k);
+    });
+    list.forEach(r => { const k = rowVoiceKey(r); if(k) seen.add(k); });
+    writeSeenVoiceKeys(seen);
+
+    let message = "";
+
+    if(newRows.length > 0 && snapshot.total > lastBuildSnapshot.total){
+      const r = newRows[0];
+      const clientName = r?.client ? r.client : "";
+      message = clientName
+        ? `Nouvelle demande chantier enregistrée. Client : ${clientName}. Ouvre les demandes pour préparer le devis.`
+        : "Nouvelle demande chantier enregistrée. Ouvre les demandes pour préparer le devis.";
+    }else if(snapshot.draft > lastBuildSnapshot.draft){
+      message = `${snapshot.draft} devis à préparer. Ouvre les demandes pour agir.`;
+    }else if(snapshot.accepted > lastBuildSnapshot.accepted){
+      message = "Devis accepté. Le chantier est prêt à démarrer. Pense à noter les acomptes.";
+    }else if(snapshot.running > lastBuildSnapshot.running){
+      message = "Chantier passé en cours. Note les mouvements dans Mon argent au fil du terrain.";
+    }else if(snapshot.sent > lastBuildSnapshot.sent){
+      message = "Devis envoyé au client. Attends sa réponse ou relance depuis les demandes.";
+    }
+
+    lastBuildSnapshot = snapshot;
+    if(message) speakDigiy(message);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  function initVoiceAlerts(){
+    try{ voiceEnabled = localStorage.getItem(VOICE_ENABLED_KEY) === "1"; }catch{ voiceEnabled = false; }
+    voiceUnlocked = false;
+    refreshVoiceButton();
+    if(btnVoice) btnVoice.addEventListener("click", unlockVoice);
+    if("speechSynthesis" in window){
+      speechSynthesis.onvoiceschanged = () => pickVoice();
+    }
+  }
+
+  // ── Exposition globale ────────────────────────────────────────
+  window.DIGIY_BUILD_VOICE = { announceUsefulAlerts, speakDigiy };
+
+  window.addEventListener("beforeunload", () => {
+    try{ speechSynthesis.cancel(); }catch(_){}
+  });
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden){ try{ speechSynthesis.cancel(); }catch(_){} }
+  });
+
+  initVoiceAlerts();
+})();
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
