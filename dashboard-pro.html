@@ -731,7 +731,8 @@
       }
     }
 
-    #demandes, #service, #quickBuildNote{scroll-margin-top:96px}
+    #demandes, #service, #quickBuildNote, #mesNotes, #mesDevis{scroll-margin-top:96px}
+    .anchorAlias{display:block;height:0;visibility:hidden;scroll-margin-top:96px}
 
     /* ── PAY upsell ─────────────────────────────────────────── */
     .payUpsellCard{
@@ -836,7 +837,7 @@
         alt="Logo DIGIYLYFE"
       />
       <div>
-        <h1>🧰 Je propose mes services — Service</h1>
+        <h1>🧰 Mes services — Mon service</h1>
         <div class="sub">
           Session : <b id="slug">privée</b><br>
           Accès : <b id="stat">initialisation…</b> · accès privé 8h après ton code
@@ -848,14 +849,15 @@
       <button class="btn primary" id="btnNew" type="button">➕ Nouveau devis</button>
       <div class="pill" id="modePill">service terrain</div>
       <button class="btn dashboard" id="btnDashboard" type="button">🏠 Accueil</button>
-      <button class="btn profile" id="btnProfile" type="button">⚙️ Plus</button>
+      <button class="btn profile" id="btnProfile" type="button">🪪 Ma fiche</button>
       <button class="btn qr" id="btnQr" type="button">🔳 Mon QR</button>
       <button class="btn money" id="btnMoneyTop" type="button">💰 Mon argent</button>
-      <button class="btn" id="btnHelp" type="button">💬 Support</button>
+      <button class="btn" id="btnHelp" type="button">💬 Aide</button>
       <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
     </div>
   </div>
 
+  <span class="anchorAlias" id="mesDevis" aria-hidden="true"></span>
   <div class="card" id="service" style="margin-top:12px">
     <div class="title">Service terrain</div>
     <div class="muted" style="font-weight:750;font-size:13px;line-height:1.6;margin-top:6px">
@@ -864,9 +866,9 @@
     <div class="serviceFastRow">
       <button class="btn primary" id="fastNewQuote" type="button">➕ Nouveau devis</button>
       <a class="btn" id="fastDemandes" href="#demandes">📋 Demandes</a>
-      <a class="btn" id="fastNotes" href="#quickBuildNote">✍️ Notes</a>
+      <a class="btn" id="fastNotes" href="#mesNotes">✍️ Notes</a>
       <button class="btn money" id="fastMoney" type="button">💰 Mon argent</button>
-      <a class="btn profile" id="fastPlus" href="./profile.html">⚙️ Plus</a>
+      <a class="btn profile" id="fastPlus" href="./profile.html">🪪 Ma fiche</a>
       <a class="btn qr" id="fastQr" href="./qr.html">🔳 Mon QR</a>
     </div>
 
@@ -895,6 +897,7 @@
         <button class="btn" id="btnJobs" type="button">📋 Voir les demandes</button>
       </div>
 
+      <span class="anchorAlias" id="mesNotes" aria-hidden="true"></span>
       <div class="card quickBuild" id="quickBuildNote">
         <div class="quickBuildTitle">✍️ Notes rapides</div>
         <div class="quickBuildSub">Écris comme tu parles. DIGIY prépare la trace vers Mon argent.</div>
@@ -1028,7 +1031,7 @@
 
       <div style="height:12px"></div>
 
-      <div class="title">Plus utiles</div>
+      <div class="title">Actions utiles</div>
       <div class="row">
         <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder une copie</button>
         <button class="btn danger" id="btnReset" type="button">🧹 Effacer les copies de cet appareil</button>
@@ -1128,8 +1131,8 @@
     <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
     <a id="bottomDemandes" href="#demandes"><span class="ico">📋</span><span>Demandes</span></a>
     <a class="active" id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
-    <a id="bottomNotes" href="#quickBuildNote"><span class="ico">✍️</span><span>Notes</span></a>
-    <a id="bottomMore" href="./profile.html"><span class="ico">⚙️</span><span>Plus</span></a>
+    <a id="bottomNotes" href="#mesNotes"><span class="ico">✍️</span><span>Notes</span></a>
+    <a id="bottomMore" href="./profile.html"><span class="ico">🪪</span><span>Fiche</span></a>
   </div>
 </nav>
 
@@ -1334,9 +1337,9 @@
 
     if(bottomDemandes) bottomDemandes.href = "#demandes";
     if(bottomService) bottomService.href = "./cockpit.html";
-    if(bottomNotes) bottomNotes.href = "#quickBuildNote";
+    if(bottomNotes) bottomNotes.href = "#mesNotes";
     if(fastDemandes) fastDemandes.href = "#demandes";
-    if(fastNotes) fastNotes.href = "#quickBuildNote";
+    if(fastNotes) fastNotes.href = "#mesNotes";
   }
 
   function refreshBackupCard() {
@@ -1784,7 +1787,7 @@
     if(confirmBtn) confirmBtn.style.display = "inline-flex";
 
     box.innerHTML = `
-      <strong>Voilà ce que DIGIY BUILD a préparé :</strong><br>
+      <strong>Voilà ce que DIGIY a préparé :</strong><br>
       Type : ${escapeHtml(draft.title)}<br>
       Montant : ${escapeHtml(amountText)}<br>
       Canal : ${escapeHtml(channelText)}<br>
@@ -2346,6 +2349,32 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
