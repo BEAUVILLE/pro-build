@@ -82,7 +82,7 @@
 
 <body>
   <header class="topHeader">
-    <a class="hdrBack" id="hdrBack" href="./cockpit.html">← Service</a>
+    <a class="hdrBack" id="hdrBack" href="./cockpit.html">← Mon service</a>
     <div class="hdrTitle">HUB SERVICES</div>
     <div class="hdrPill warn" id="sessionPill">session…</div>
   </header>
@@ -95,7 +95,7 @@
         Chaque pavé ouvre un geste clair : demande, devis, chantier, note, fiche, argent, session.
       </div>
       <div class="rule">
-        <b>Index</b> = porte courte. <b>HUB</b> = navigation. <b>Cockpit</b> = travail service. <b>Oreilles</b> = parole du pro rangée dans le logiciel.
+        <b>Index</b> = porte courte. <b>HUB</b> = navigation. <b>Mon service</b> = travail terrain. <b>Mes oreilles</b> = parole rangée dans le logiciel.
       </div>
     </section>
 
@@ -107,19 +107,19 @@
           <div><b>Mon service</b><span>Demandes, devis, chantiers, notes.</span></div>
         </a>
 
-        <a class="tile gold" id="goDashboard" href="./dashboard-pro.html">
-          <div class="tileTop"><div class="tileIcon">🏠</div><div class="tileTag">Accueil</div></div>
-          <div><b>Accueil pro</b><span>Vue simple et retour terrain.</span></div>
-        </a>
-
-        <a class="tile blue" id="goDemandes" href="./cockpit.html#demandes">
+        <a class="tile gold" id="goDemandes" href="./cockpit.html#demandes">
           <div class="tileTop"><div class="tileIcon">📋</div><div class="tileTag">Demandes</div></div>
-          <div><b>Demandes client</b><span>Suivre les besoins à traiter.</span></div>
+          <div><b>Mes demandes</b><span>Voir les besoins clients à traiter.</span></div>
         </a>
 
-        <a class="tile" id="goNotes" href="./cockpit.html#quickBuildNote">
+        <a class="tile blue" id="goDevis" href="./cockpit.html#mesDevis">
+          <div class="tileTop"><div class="tileIcon">🧾</div><div class="tileTag">Devis</div></div>
+          <div><b>Mes devis</b><span>Préparer, modifier, suivre.</span></div>
+        </a>
+
+        <a class="tile" id="goNotes" href="./cockpit.html#mesNotes">
           <div class="tileTop"><div class="tileIcon">📝</div><div class="tileTag">Notes</div></div>
-          <div><b>Notes rapides</b><span>Parole terrain, trace utile.</span></div>
+          <div><b>Notes rapides</b><span>Trace chantier, acompte, dépense, rappel.</span></div>
         </a>
       </div>
     </section>
@@ -129,7 +129,7 @@
       <div class="tileGrid">
         <a class="tile" id="goProfile" href="./profile.html">
           <div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div>
-          <div><b>Ma fiche service</b><span>Métier, zone, photo, lien public.</span></div>
+          <div><b>Ma fiche service</b><span>Métier, zone, contact, photo.</span></div>
         </a>
 
         <a class="tile" id="goQr" href="./qr.html">
@@ -137,14 +137,14 @@
           <div><b>Mon QR</b><span>Partager la fiche au client.</span></div>
         </a>
 
+        <a class="tile blue" id="goClient" href="./profile.html">
+          <div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Public</div></div>
+          <div><b>Côté client</b><span>Préparer la fiche publique.</span></div>
+        </a>
+
         <a class="tile pay" id="goPay" href="https://pro-pay.digiylyfe.com/admin.html">
           <div class="tileTop"><div class="tileIcon">💰</div><div class="tileTag">PAY</div></div>
           <div><b>Mon argent</b><span>Acomptes, soldes, dépenses.</span></div>
-        </a>
-
-        <a class="tile blue" id="goHubGeneral" href="https://digiy-hub.digiylyfe.com/">
-          <div class="tileTop"><div class="tileIcon">🧭</div><div class="tileTag">Général</div></div>
-          <div><b>HUB général</b><span>Retour aux portes DIGIY.</span></div>
         </a>
       </div>
     </section>
@@ -167,9 +167,9 @@
           <div><b>Site DIGIY</b><span>Maison publique DIGIYLYFE.</span></div>
         </a>
 
-        <a class="tile gold" id="goTarifs" href="https://tarifs.digiylyfe.com/">
-          <div class="tileTop"><div class="tileIcon">📦</div><div class="tileTag">Tarifs</div></div>
-          <div><b>Tarifs</b><span>Voir les offres et accès.</span></div>
+        <a class="tile gold" id="goHubGeneral" href="https://digiy-hub.digiylyfe.com/">
+          <div class="tileTop"><div class="tileIcon">🧭</div><div class="tileTag">HUB</div></div>
+          <div><b>HUB général</b><span>Retour aux portes DIGIY.</span></div>
         </a>
       </div>
     </section>
@@ -179,9 +179,9 @@
     <div class="bottomInner">
       <a class="active" href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a>
       <a href="./cockpit.html"><span class="bi">🧰</span><span>Service</span></a>
-      <a href="./dashboard-pro.html"><span class="bi">🏠</span><span>Accueil</span></a>
+      <a href="./cockpit.html#demandes"><span class="bi">📋</span><span>Demandes</span></a>
+      <a href="./cockpit.html#mesNotes"><span class="bi">📝</span><span>Notes</span></a>
       <a href="./profile.html"><span class="bi">🪪</span><span>Fiche</span></a>
-      <a href="./session.html"><span class="bi">🛡️</span><span>Session</span></a>
     </div>
   </nav>
 
@@ -255,7 +255,7 @@
         if(!el) return;
         const ok = !!(state && (state.access_ok || state.access || state.pin_session_ok));
         el.textContent = ok
-          ? "Compte reconnu. Ouvre le bon pavé : service, demandes, fiche, notes ou argent."
+          ? "Compte reconnu. Ouvre le bon pavé : demandes, devis, chantiers, notes, fiche service ou argent."
           : "Accès à vérifier. Les portes restent visibles, mais le PIN protège ton service.";
       }
 
