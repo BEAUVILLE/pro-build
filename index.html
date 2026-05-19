@@ -3,682 +3,185 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="theme-color" content="#061b14"/>
-  <title>Mes services — Accès DIGIY</title>
-  <meta
-    name="description"
-    content="Mes services — entrée simple et sécurisée vers l’espace métier DIGIY."
-  />
+  <title>Mes services — Entrée</title>
+  <meta name="theme-color" content="#1e7a46"/>
+  <meta name="description" content="DIGIY Mes services PRO — porte courte vers le HUB service, avec secours anti-404."/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="digiy-build" content="services-index-porte-hub-anti-404-20260519"/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js?v=services-index-porte-hub-anti-404-20260519"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
     :root{
-      --bg:#061b14;
-      --bg2:#0a2b1f;
-      --card:rgba(8,33,24,.94);
-      --line:rgba(255,255,255,.12);
-      --text:#eafff1;
-      --muted:rgba(234,255,241,.74);
-      --gold:#facc15;
-      --ok:#22c55e;
-      --bad:#fb7185;
-      --shadow:0 22px 60px rgba(0,0,0,.45);
-      --radius:22px;
+      --bg:#1e7a46;--bg2:#155a34;--bg3:#0e4226;--gold:#c4973f;--green:#22c55e;
+      --line:rgba(255,255,255,.18);--text:#f0fff5;--muted:rgba(240,255,245,.78);
+      --shadow:0 18px 46px rgba(0,0,0,.24);--r:26px;--max:760px;
     }
-
     *{box-sizing:border-box}
-
-    html,body{margin:0;padding:0}
-
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     body{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:16px;
-      color:var(--text);
-      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0;min-height:100dvh;display:grid;place-items:center;padding:16px;color:var(--text);
+      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;
       background:
-        radial-gradient(circle at 20% 0%, rgba(250,204,21,.14), transparent 40%),
-        radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 40%),
-        linear-gradient(135deg,var(--bg),var(--bg2));
+        radial-gradient(600px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
+        radial-gradient(420px 280px at 92% 8%,rgba(196,151,63,.15),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
     }
-
-    .box{
-      width:100%;
-      max-width:580px;
-      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:24px;
+    a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}
+    .door{
+      width:min(var(--max),100%);border:1px solid rgba(255,255,255,.18);border-radius:var(--r);
+      background:radial-gradient(500px 220px at 100% 0%,rgba(196,151,63,.12),transparent 70%),rgba(8,50,24,.78);
+      box-shadow:var(--shadow);padding:22px;display:grid;gap:16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     }
-
-    .routeNav{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin:0 0 14px;
-    }
-
-    .routeNav a{
-      flex:1;
-      min-width:140px;
-      min-height:42px;
-      border-radius:999px;
-      border:1px solid rgba(250,204,21,.24);
-      background:rgba(255,255,255,.045);
-      color:var(--text);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:7px;
-      padding:10px 12px;
-      font-size:13px;
-      font-weight:1000;
-    }
-
-    .routeNav a:hover{
-      border-color:rgba(250,204,21,.44);
-      background:rgba(250,204,21,.08);
-    }
-
-    .top{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:12px;
-    }
-
-    .logo{
-      width:58px;
-      height:58px;
-      border-radius:17px;
-      object-fit:cover;
-      background:#fff;
-      border:1px solid rgba(250,204,21,.28);
-      box-shadow:0 14px 34px rgba(0,0,0,.26);
-      flex:0 0 auto;
-    }
-
-    h1{
-      margin:0;
-      font-size:22px;
-      line-height:1.1;
-      letter-spacing:.02em;
-      font-weight:900;
-    }
-
-    .sub{
-      margin-top:4px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.45;
-      font-weight:700;
-    }
-
-    .hero{
-      margin-top:14px;
-      padding:14px 15px;
-      border-radius:16px;
-      border:1px solid rgba(250,204,21,.24);
-      background:rgba(250,204,21,.06);
-      color:#fde68a;
-      font-size:13px;
-      font-weight:800;
-      line-height:1.55;
-    }
-
-    .statebox{
-      margin-top:14px;
-      padding:14px 15px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-    }
-
-    .stateLabel{
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--muted);
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .stateValue{
-      font-size:15px;
-      font-weight:900;
-      word-break:break-word;
-    }
-
-    .stateValue.ok{color:#bbf7d0}
-    .stateValue.wait{color:#fde68a}
-    .stateValue.none{color:var(--muted)}
-
-    .meta{
-      margin-top:8px;
-      font-size:12.5px;
-      color:var(--muted);
-      line-height:1.5;
-      font-weight:700;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:16px;
-    }
-
-    .btn{
-      flex:1;
-      min-width:180px;
-      padding:13px 14px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      font-weight:900;
-      cursor:pointer;
-      transition:.15s;
-      text-align:center;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:rgba(250,204,21,.42);
-    }
-
-    .btn.primary{
-      border:none;
-      background:linear-gradient(90deg,var(--ok),var(--gold));
-      color:#062015;
-    }
-
-    .mini{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:12.5px;
-      line-height:1.55;
-      font-weight:700;
-    }
-
-    .mini b{color:var(--text)}
-
-    .audioBox{
-      position:relative;
-      margin-top:14px;
-      border:1px solid rgba(250,204,21,.42);
-      border-radius:18px;
-      padding:14px;
-      background:
-        radial-gradient(circle at top right, rgba(250,204,21,.18), transparent 42%),
-        radial-gradient(circle at bottom left, rgba(34,197,94,.13), transparent 44%),
-        linear-gradient(180deg, rgba(250,204,21,.10), rgba(34,197,94,.06));
-      box-shadow:0 18px 40px rgba(0,0,0,.22), inset 0 0 0 1px rgba(250,204,21,.05);
-      overflow:hidden;
-    }
-
-    .audioLead{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      margin-bottom:8px;
-      padding:6px 11px;
-      border-radius:999px;
-      background:rgba(250,204,21,.16);
-      border:1px solid rgba(250,204,21,.40);
-      color:#fff1bb;
-      font-size:11px;
-      font-weight:1000;
-    }
-
-    .audioLead .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--gold);
-      box-shadow:0 0 14px rgba(250,204,21,.70);
-      animation:audioPulse 1.5s ease-in-out infinite;
-    }
-
-    .audioTitle{
-      color:#fff7cf;
-      font-size:15px;
-      line-height:1.25;
-      font-weight:1000;
-    }
-
-    .audioText{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
-      font-weight:800;
-    }
-
-    .audioActions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
-    .audioBtn{
-      min-height:44px;
-      border-radius:999px;
-      border:1px solid rgba(250,204,21,.55);
-      background:linear-gradient(135deg, var(--gold), #f59e0b);
-      color:#062015;
-      font-weight:1000;
-      padding:10px 14px;
-      cursor:pointer;
-      box-shadow:0 12px 26px rgba(250,204,21,.22);
-      font-family:inherit;
-    }
-
-    .audioBtn.stop{
-      background:rgba(239,68,68,.10);
-      border-color:rgba(239,68,68,.35);
-      color:#fecaca;
-      box-shadow:none;
-    }
-
-    .audioProgressWrap{
-      height:5px;
-      margin-top:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.12);
-      overflow:hidden;
-    }
-
-    .audioProgress{
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg, var(--gold), var(--ok));
-      transition:width .2s linear;
-    }
-
-    .audioHint{
-      margin-top:8px;
-      color:#fde68a;
-      font-size:12px;
-      font-weight:950;
-      line-height:1.4;
-    }
-
-    @keyframes audioPulse{
-      0%,100%{transform:scale(1);opacity:1}
-      50%{transform:scale(1.25);opacity:.72}
-    }
-
-    @media(max-width:560px){
-      .routeNav a,
-      .audioBtn{width:100%}
-      .box{padding:18px}
-    }
+    .brand{display:flex;align-items:center;gap:13px}
+    .badge{width:58px;height:58px;border-radius:20px;display:grid;place-items:center;background:rgba(196,151,63,.16);border:1px solid rgba(196,151,63,.32);font-size:30px;flex:0 0 auto}
+    .kicker{color:#fff0a8;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000}
+    .brandTitle{color:#fff;font-size:18px;font-weight:1000;margin-top:2px}
+    h1{margin:0;color:#fff;font-size:clamp(36px,9vw,62px);line-height:.96;letter-spacing:-.055em;font-weight:1000}
+    h1 span{color:#fff0a8}
+    .lead{margin:0;color:var(--muted);font-size:17px;font-weight:1000;line-height:1.42}
+    .status{min-height:54px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:rgba(240,255,245,.92);font-size:15px;font-weight:1000;line-height:1.35}
+    .dot{width:13px;height:13px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 6px rgba(245,158,11,.12);flex:0 0 auto}
+    .status.ok .dot{background:#22c55e;box-shadow:0 0 0 6px rgba(34,197,94,.12)}
+    .status.bad .dot{background:#ef4444;box-shadow:0 0 0 6px rgba(239,68,68,.12)}
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .btn{min-height:60px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 14px;color:var(--text);font-size:17px;font-weight:1000;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.13)}
+    .btn.primary{color:#052215;border-color:rgba(34,197,94,.38);background:linear-gradient(135deg,#22c55e,#bbf7d0)}
+    .btn.gold{color:#241a0d;border-color:rgba(196,151,63,.38);background:linear-gradient(135deg,#c4973f,#fff0a8)}
+    .btn.ghost{color:rgba(240,255,245,.88);background:rgba(255,255,255,.06)}
+    .rule{padding:12px 14px;border-radius:18px;border:1px dashed rgba(255,255,255,.22);background:rgba(0,0,0,.14);color:rgba(240,255,245,.86);font-size:14px;font-weight:1000;line-height:1.4}
+    .rule b{color:#fff0a8}
+    @media(max-width:540px){body{padding:10px}.door{padding:18px;border-radius:24px}.actions{grid-template-columns:1fr}.btn{font-size:18px}.lead{font-size:16px}.rule{font-size:13px}}
   </style>
 </head>
+
 <body>
-  <main class="box">
-    <nav class="routeNav" aria-label="Navigation DIGIY">
-      <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
-      <a id="btnHubTop" href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
-      <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
-      <a href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
-    </nav>
-
-    <div class="top">
-      <img
-        class="logo"
-        src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
-        alt="Logo DIGIYLYFE"
-      />
+  <main class="door" aria-label="Entrée Mes services">
+    <div class="brand">
+      <div class="badge">🧰</div>
       <div>
-        <h1>MES SERVICES</h1>
-        <div class="sub">Entrée sécurisée vers ton espace Mes services.</div>
+        <div class="kicker">DIGIY PRO · MES SERVICES</div>
+        <div class="brandTitle">Porte d’entrée</div>
       </div>
     </div>
 
-    <div class="hero">
-      Cette page ouvre la bonne porte : ton accueil Mes services, ta fiche publique, ton code d’accès et le retour vers Mon Espace pro.
-      Si ta session est déjà ouverte, tu vas directement à ton accueil. Sinon, tu ouvres ta session avec ton code.
-    </div>
+    <h1>Entrée courte.<br><span>Direction HUB.</span></h1>
 
-    <div class="audioBox" aria-label="Explication audio DIGIY Mes services">
-      <div class="audioLead"><span class="dot"></span> Conseil DIGIY · écoute d'abord</div>
-      <div class="audioTitle">🎧 Comprendre Mes services avant d’ouvrir ton accès</div>
-      <div class="audioText">
-        Une voix explique où part la demande d’un client, comment l’artisan reçoit une demande claire,
-        et pourquoi DIGIY garde le contact direct entre le client et le professionnel.
-      </div>
-      <div class="audioHint">👉 Une minute pour comprendre le chemin client → artisan.</div>
-      <div class="audioActions">
-        <button class="audioBtn" id="btnBuildAudio" type="button">🎧 Écouter DIGIY</button>
-        <button class="audioBtn stop" id="btnBuildAudioStop" type="button">⏹ Stop</button>
-      </div>
-      <div class="audioProgressWrap" aria-hidden="true"><div class="audioProgress" id="buildAudioProgress"></div></div>
-    </div>
+    <p class="lead">
+      Cette page ne porte plus tout le module.
+      Elle ouvre le HUB service ; le vrai travail reste dans cockpit.html.
+    </p>
 
-    <div class="statebox">
-      <div class="stateLabel">Accès</div>
-      <div class="stateValue wait" id="accessState">Vérification de cet appareil…</div>
-      <div class="meta" id="accessMeta">
-        Aucune information sensible n’est affichée ici. L’accès privé reste gardé localement sur ton appareil.
-      </div>
+    <div class="status" id="statusBox">
+      <span class="dot"></span>
+      <span id="statusText">Contrôle du HUB Mes services…</span>
     </div>
 
     <div class="actions">
-      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code d’accès</a>
-      <a class="btn" id="btnCockpit" href="./dashboard-pro.html">🏠 Mon accueil</a>
-      <a class="btn" id="btnPublicProfile" href="./profile.html">🌍 Ma fiche publique</a>
-      <a class="btn" id="btnProSpace" href="https://pro-espace.digiylyfe.com/" rel="noopener">🏢 Espace pro</a>
+      <button class="btn primary" id="btnHub" type="button">🧭 Ouvrir le HUB</button>
+      <a class="btn gold" id="btnPin" href="./pin.html">🔐 Mon accès</a>
+      <a class="btn ghost" id="btnCockpit" href="./cockpit.html">🧰 Service</a>
+      <a class="btn ghost" id="btnProfile" href="./profile.html">🪪 Ma fiche</a>
     </div>
 
-    <div class="mini">
-      <b>Conseil :</b> ton espace privé sert à gérer les demandes, devis, suivi terrain et notes rapides.
-      Ta fiche publique sert à montrer ton service au client. DIGIY garde le chemin simple, sans exposer tes informations privées en façade.
+    <div class="rule">
+      Ordre propre : poser <b>hub.html</b>, puis poser cet <b>index.html</b>.
+      Si le HUB manque, cette porte ne force pas un 404.
     </div>
   </main>
 
   <script>
     (() => {
       "use strict";
-
-      const MODULE = "BUILD";
-      const SESSION_HOURS = 8;
-      const CLEAN_QUERY_KEYS = ["slug","phone","tel","build_tel","module","from","return","v"];
-
-      const STORAGE_KEYS = {
-        slug: "digiy_build_slug",
-        phone: "digiy_build_phone",
-        lastSlug: "digiy_build_last_slug"
-      };
-
-      const SESSION_KEYS = [
-        "DIGIY_BUILD_PIN_SESSION",
-        "DIGIY_BUILD_SESSION",
-        "DIGIY_BUILD_ACCESS",
-        "DIGIY_MASTER_PIN_SESSION",
-        "DIGIY_PIN_SESSION",
-        "DIGIY_ACCESS",
-        "digiy_build_session"
+      const ROUTES = { hub:"./hub.html", pin:"./pin.html", cockpit:"./cockpit.html", profile:"./profile.html" };
+      const SENSITIVE_KEYS = [
+        "phone","tel","p_phone","owner_phone","owner_id","slug","build_phone","build_slug","service_phone","service_slug",
+        "business_phone","whatsapp","msisdn","subscription_phone","checkout_phone","subscription_slug","pro_slug","source_slug",
+        "pin","pin4","token","session_token","module","return","redirect","redirect_url","url","from","v"
       ];
-
-      function normSlug(v){
-        return String(v || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
-
-      function normPhone(v){
-        return String(v || "").replace(/[^\d]/g, "");
-      }
-
-      function safeJsonParse(raw){
-        try { return JSON.parse(raw); } catch (_) { return null; }
-      }
-
-      function saveLocalIdentity(slug, phone){
-        const s = normSlug(slug);
-        const p = normPhone(phone);
-
-        if(s){
-          try{ sessionStorage.setItem(STORAGE_KEYS.slug, s); }catch(_){}
-          try{ sessionStorage.setItem(STORAGE_KEYS.lastSlug, s); }catch(_){}
-          try{ localStorage.setItem(STORAGE_KEYS.slug, s); }catch(_){}
-          try{ localStorage.setItem(STORAGE_KEYS.lastSlug, s); }catch(_){}
-        }
-
-        if(p){
-          try{ sessionStorage.setItem(STORAGE_KEYS.phone, p); }catch(_){}
-          try{ localStorage.setItem(STORAGE_KEYS.phone, p); }catch(_){}
-        }
-      }
+      const $ = id => document.getElementById(id);
+      let hubAvailable = false;
 
       function cleanVisibleUrl(){
         try{
-          const url = new URL(window.location.href);
-
-          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
-          const incomingPhone = normPhone(
-            url.searchParams.get("phone") ||
-            url.searchParams.get("tel") ||
-            url.searchParams.get("build_tel") ||
-            ""
-          );
-
-          saveLocalIdentity(incomingSlug, incomingPhone);
-
-          let changed = false;
-          CLEAN_QUERY_KEYS.forEach((key) => {
-            if(url.searchParams.has(key)){
-              url.searchParams.delete(key);
-              changed = true;
-            }
-          });
-
-          if(changed){
-            history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-          }
+          const url = new URL(location.href); let changed = false;
+          SENSITIVE_KEYS.forEach(key => { if(url.searchParams.has(key)){ url.searchParams.delete(key); changed = true; } });
+          if(changed) history.replaceState({}, document.title, url.pathname + url.search + url.hash);
         }catch(_){}
       }
 
-      function readSavedSlug(){
-        return normSlug(
-          sessionStorage.getItem(STORAGE_KEYS.slug) ||
-          sessionStorage.getItem(STORAGE_KEYS.lastSlug) ||
-          localStorage.getItem(STORAGE_KEYS.slug) ||
-          localStorage.getItem(STORAGE_KEYS.lastSlug) ||
-          ""
-        );
-      }
-
-      function readSavedPhone(){
-        return normPhone(
-          sessionStorage.getItem(STORAGE_KEYS.phone) ||
-          localStorage.getItem(STORAGE_KEYS.phone) ||
-          ""
-        );
-      }
-
-      function readStoredSession(){
-        for(const key of SESSION_KEYS){
-          let parsed = null;
-          try{
-            parsed = safeJsonParse(localStorage.getItem(key)) || safeJsonParse(sessionStorage.getItem(key));
-          }catch(_){}
-
-          if(!parsed || typeof parsed !== "object") continue;
-
-          const moduleName = String(parsed.module || parsed.module_code || "").toUpperCase();
-          if(moduleName && moduleName !== MODULE) continue;
-
-          const access =
-            parsed.access === true ||
-            parsed.access_ok === true ||
-            parsed.ok === true ||
-            parsed.has_access === true;
-
-          if(!access) continue;
-
-          return parsed;
-        }
-
-        return null;
-      }
-
-      function sessionStillValid(session){
-        if(!session) return false;
-
-        const ts =
-          Number(session.verified_at || session.validated_at_ms || session.ts || 0) ||
-          (session.validated_at ? new Date(session.validated_at).getTime() : 0);
-
-        if(!ts) return false;
-
-        const age = Date.now() - ts;
-        return age >= 0 && age < SESSION_HOURS * 60 * 60 * 1000;
-      }
-
-      function syncStaticLinks(){
-        const btnCockpit = document.getElementById("btnCockpit");
-        const btnPublicProfile = document.getElementById("btnPublicProfile");
-        const btnProSpace = document.getElementById("btnProSpace");
-        const btnHubTop = document.getElementById("btnHubTop");
-
-        if(btnCockpit) btnCockpit.href = "./dashboard-pro.html";
-        if(btnPublicProfile) btnPublicProfile.href = "./profile.html";
-        if(btnProSpace) btnProSpace.href = "https://pro-espace.digiylyfe.com/";
-        if(btnHubTop) btnHubTop.href = "https://digiy-hub.digiylyfe.com/";
-      }
-
-      function setAccessState(){
-        const accessState = document.getElementById("accessState");
-        const accessMeta = document.getElementById("accessMeta");
-        const btnEnter = document.getElementById("btnEnter");
-        if(!accessState || !accessMeta || !btnEnter) return;
-
-        const session = readStoredSession();
-        const hasLocalIdentity = !!(readSavedSlug() || readSavedPhone());
-
-        if(sessionStillValid(session)){
-          accessState.textContent = "Session active sur cet appareil.";
-          accessState.className = "stateValue ok";
-          accessMeta.textContent = "Tu peux revenir à ton accueil sans repasser par le code.";
-          btnEnter.href = "./dashboard-pro.html";
-          btnEnter.textContent = "🏠 Ouvrir mon accueil";
-          return;
-        }
-
-        if(hasLocalIdentity){
-          accessState.textContent = "Appareil reconnu.";
-          accessState.className = "stateValue wait";
-          accessMeta.textContent = "Entre ton code d’accès pour rouvrir une session privée de 8 heures.";
-          btnEnter.href = "./pin.html";
-          btnEnter.textContent = "🔐 Entrer mon code";
-          return;
-        }
-
-        accessState.textContent = "Nouvel appareil.";
-        accessState.className = "stateValue none";
-        accessMeta.textContent = "Ouvre l’accès avec ton code. Aucune information privée n’est affichée sur cette page.";
-        btnEnter.href = "./pin.html";
-        btnEnter.textContent = "🔐 Ouvrir mon accès";
-      }
-
-      const buildAudioText =
-        "Bienvenue dans Mes services by DIGIY. Ici, on aide un professionnel du terrain à recevoir des demandes plus claires. " +
-        "Quand un client cherche un artisan, un réparateur, un plombier, un électricien, un menuisier, un mécanicien ou un prestataire local, la demande doit partir avec les bonnes informations : le besoin, le lieu, le contact, l'urgence et le prochain échange. " +
-        "Le professionnel reçoit ainsi une demande plus propre, moins confuse, plus facile à traiter. DIGIY ne remplace pas le métier. DIGIY prépare le chemin, garde le lien direct, et aide le client à arriver chez le bon professionnel. " +
-        "Le paiement et la relation restent directs. Zéro commission. Le terrain garde la main.";
-
-      let buildAudioPlaying = false;
-      let buildAudioTimer = null;
-      let buildAudioStart = 0;
-      const buildAudioDuration = 52000;
-
-      function setBuildAudioProgress(percent){
-        const bar = document.getElementById("buildAudioProgress");
-        if(bar) bar.style.width = Math.max(0, Math.min(100, percent)) + "%";
-      }
-
-      function startBuildAudioProgress(){
-        clearInterval(buildAudioTimer);
-        buildAudioStart = Date.now();
-        setBuildAudioProgress(0);
-        buildAudioTimer = setInterval(() => {
-          const elapsed = Date.now() - buildAudioStart;
-          setBuildAudioProgress((elapsed / buildAudioDuration) * 100);
-        }, 180);
-      }
-
-      function stopBuildAudio(){
-        try{ window.speechSynthesis.cancel(); }catch(_){}
-        clearInterval(buildAudioTimer);
-        buildAudioTimer = null;
-        buildAudioPlaying = false;
-        setBuildAudioProgress(0);
-        const btn = document.getElementById("btnBuildAudio");
-        if(btn) btn.textContent = "🎧 Écouter DIGIY";
-      }
-
-      function pickFrenchVoice(){
+      function cleanInternalLinks(){
         try{
-          const voices = window.speechSynthesis.getVoices() || [];
-          return voices.find(v => /fr[-_ ]?FR/i.test(v.lang || "")) ||
-                 voices.find(v => /^fr/i.test(v.lang || "")) ||
-                 null;
-        }catch(_){
-          return null;
-        }
+          document.querySelectorAll("a[href]").forEach(link => {
+            const href = link.getAttribute("href") || "";
+            if(!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+            const url = new URL(href, location.href);
+            if(url.origin !== location.origin) return;
+            SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
+            const file = url.pathname.split("/").pop() || "index.html";
+            link.setAttribute("href","./" + file + (url.search || "") + (url.hash || ""));
+          });
+        }catch(_){}
       }
 
-      function playBuildAudio(){
-        if(!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)){
-          alert("Audio non disponible sur ce navigateur.");
+      function setStatus(text, kind){
+        const box = $("statusBox"), el = $("statusText");
+        if(el) el.textContent = text;
+        if(box) box.className = kind ? "status " + kind : "status";
+      }
+
+      function safeGo(path){
+        try{
+          const url = new URL(path, location.href);
+          SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
+          const file = url.pathname.split("/").pop() || "index.html";
+          location.href = "./" + file + (url.search || "") + (url.hash || "");
+        }catch(_){ location.href = path; }
+      }
+
+      async function checkHub(){
+        try{
+          const res = await fetch(ROUTES.hub + "?check=" + Date.now(), { method:"HEAD", cache:"no-store" });
+          return !!(res && res.ok);
+        }catch(_){ return false; }
+      }
+
+      async function boot(){
+        cleanVisibleUrl();
+        cleanInternalLinks();
+        hubAvailable = await checkHub();
+        if(hubAvailable){
+          setStatus("HUB Mes services trouvé. Ouverture propre…", "ok");
+          window.setTimeout(() => safeGo(ROUTES.hub), 550);
           return;
         }
-
-        if(buildAudioPlaying){
-          stopBuildAudio();
-          return;
-        }
-
-        stopBuildAudio();
-
-        const utter = new SpeechSynthesisUtterance(buildAudioText);
-        utter.lang = "fr-FR";
-        utter.rate = 0.84;
-        utter.pitch = 1.02;
-        utter.volume = 1;
-
-        const voice = pickFrenchVoice();
-        if(voice) utter.voice = voice;
-
-        utter.onstart = () => {
-          buildAudioPlaying = true;
-          const btn = document.getElementById("btnBuildAudio");
-          if(btn) btn.textContent = "⏸️ Lecture en cours";
-          startBuildAudioProgress();
-        };
-
-        utter.onend = () => {
-          stopBuildAudio();
-          setBuildAudioProgress(100);
-          setTimeout(() => setBuildAudioProgress(0), 700);
-        };
-
-        utter.onerror = stopBuildAudio;
-        window.speechSynthesis.speak(utter);
+        setStatus("HUB Mes services introuvable : hub.html n’est pas encore posé. Aucun 404 forcé.", "bad");
       }
 
-      cleanVisibleUrl();
-      syncStaticLinks();
-      setAccessState();
+      $("btnHub")?.addEventListener("click", () => {
+        if(hubAvailable) safeGo(ROUTES.hub);
+        else setStatus("Impossible d’ouvrir : pose d’abord le fichier hub.html dans le dépôt.", "bad");
+      });
+      $("btnPin")?.addEventListener("click", ev => { ev.preventDefault(); safeGo(ROUTES.pin); });
+      $("btnCockpit")?.addEventListener("click", ev => { ev.preventDefault(); safeGo(ROUTES.cockpit); });
+      $("btnProfile")?.addEventListener("click", ev => { ev.preventDefault(); safeGo(ROUTES.profile); });
 
-      document.getElementById("btnBuildAudio")?.addEventListener("click", playBuildAudio);
-      document.getElementById("btnBuildAudioStop")?.addEventListener("click", stopBuildAudio);
-      window.addEventListener("beforeunload", stopBuildAudio);
-      document.addEventListener("visibilitychange", () => { if(document.hidden) stopBuildAudio(); });
-
-      if("speechSynthesis" in window){
-        window.speechSynthesis.onvoiceschanged = () => {};
-      }
+      boot();
     })();
   </script>
 </body>
 </html>
+
