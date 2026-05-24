@@ -4,7 +4,7 @@
 */
 (function(){
   'use strict';
-  var VERSION='oreille-metier-core-20260524-services';
+  var VERSION='oreille-metier-core-20260524-services-paves';
 
   function norm(v){return String(v||'').replace(/\s+/g,' ').replace(/\s+([,.!?;:])/g,'$1').trim();}
   function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
@@ -48,8 +48,32 @@
 
   function injectStyles(){
     if(document.getElementById('digiyOreilleStyles'))return;
-    var s=document.createElement('style');s.id='digiyOreilleStyles';
-    s.textContent='.digiy-oreille-box{border:1px solid rgba(24,32,20,.14);border-radius:26px;padding:16px;background:#fff8e8;box-shadow:0 16px 34px rgba(0,0,0,.18);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#182014}.digiy-oreille-box *{box-sizing:border-box}.digiy-oreille-head strong{display:block;font-size:1.4rem;line-height:1.05;letter-spacing:-.04em}.digiy-oreille-head span{display:block;margin-top:4px;color:#635b45;font-weight:850;line-height:1.35}.digiy-oreille-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.digiy-oreille-actions button,.digiy-oreille-template{border:1px solid rgba(24,32,20,.12);border-radius:999px;padding:11px 14px;font-weight:950;cursor:pointer;background:#fff7df;color:#182014;box-shadow:0 8px 20px rgba(32,24,8,.08)}.digiy-oreille-actions .primary{background:linear-gradient(135deg,#0f6b42,#134f38);color:#fff}.digiy-oreille-actions .gold{background:linear-gradient(135deg,#f8dd80,#d6a63a);color:#2a2108}.digiy-oreille-actions .dark{background:#11170f;color:#fff}.digiy-oreille-status{border-radius:18px;background:#062612;color:#d8ffe8;padding:12px 14px;font-weight:900;line-height:1.35;margin:10px 0}.digiy-oreille-text{width:100%;min-height:150px;resize:vertical;border-radius:20px;border:1px solid rgba(24,32,20,.14);padding:14px;font:inherit;font-weight:800;line-height:1.45;background:#fffdf5;color:#182014;outline:none}.digiy-oreille-template{width:100%;border-radius:18px;text-align:left;line-height:1.35;box-shadow:none;background:#fffdf4}.digiy-oreille-templates,.digiy-oreille-notes{display:grid;gap:9px;margin-top:10px}.digiy-oreille-note{border-radius:18px;padding:12px;background:#fffdf4;border:1px solid rgba(24,32,20,.14);font-weight:800;line-height:1.35}.digiy-oreille-note b{display:block;margin-bottom:4px}.digiy-oreille-note small{display:block;color:#635b45;font-weight:850;margin-top:7px}@media(max-width:560px){.digiy-oreille-actions button{width:100%}.digiy-oreille-box{padding:13px;border-radius:22px}}';
+    var s=document.createElement('style');
+    s.id='digiyOreilleStyles';
+    s.textContent=`
+      .digiy-oreille-box{border:1px solid rgba(24,32,20,.14);border-radius:28px;padding:18px;background:#fff8e8;box-shadow:0 18px 38px rgba(0,0,0,.20);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#182014}
+      .digiy-oreille-box *{box-sizing:border-box}
+      .digiy-oreille-head strong{display:block;font-size:1.62rem;line-height:1.04;letter-spacing:-.045em;font-weight:1000;color:#102015}
+      .digiy-oreille-head span{display:block;margin-top:6px;color:#5b523c;font-size:1.02rem;font-weight:950;line-height:1.36}
+      .digiy-oreille-actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+      .digiy-oreille-actions button{border:1px solid rgba(24,32,20,.12);border-radius:999px;padding:13px 16px;font-size:1rem;font-weight:1000;cursor:pointer;background:#fff7df;color:#182014;box-shadow:0 8px 20px rgba(32,24,8,.08)}
+      .digiy-oreille-actions .primary{background:linear-gradient(135deg,#0f6b42,#134f38);color:#fff}
+      .digiy-oreille-actions .gold{background:linear-gradient(135deg,#f8dd80,#d6a63a);color:#2a2108}
+      .digiy-oreille-actions .dark{background:#11170f;color:#fff}
+      .digiy-oreille-status{border-radius:20px;background:#062612;color:#d8ffe8;padding:14px 16px;font-size:1.02rem;font-weight:1000;line-height:1.38;margin:12px 0}
+      .digiy-oreille-text{width:100%;min-height:158px;resize:vertical;border-radius:22px;border:1px solid rgba(24,32,20,.14);padding:15px;font:inherit;font-size:1.05rem;font-weight:950;line-height:1.48;background:#fffdf5;color:#182014;outline:none}
+      .digiy-oreille-templates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px}
+      .digiy-oreille-template{width:100%;min-height:96px;border:2px solid rgba(15,107,66,.18);border-radius:24px;text-align:left;display:flex;align-items:center;background:linear-gradient(160deg,#fffdf4,#fff4c8);color:#102015;padding:16px 17px;font-size:1.12rem;font-weight:1000;line-height:1.24;letter-spacing:-.018em;box-shadow:0 12px 26px rgba(32,24,8,.10);cursor:pointer}
+      .digiy-oreille-template:hover{background:linear-gradient(160deg,#fff7d8,#eaffef);border-color:rgba(15,107,66,.34);transform:translateY(-1px)}
+      .digiy-oreille-template:active{transform:none}
+      .digiy-oreille-notes{display:grid;gap:12px;margin-top:14px}
+      .digiy-oreille-note{min-height:92px;border-radius:24px;padding:16px 17px;background:linear-gradient(160deg,#fffdf4,#ecfff3);border:2px solid rgba(15,107,66,.16);font-size:1.05rem;font-weight:950;line-height:1.38;color:#182014;box-shadow:0 12px 26px rgba(32,24,8,.08)}
+      .digiy-oreille-note b{display:block;margin-bottom:6px;font-size:1.28rem;font-weight:1000;color:#0f3b25;letter-spacing:-.03em}
+      .digiy-oreille-note span,.digiy-oreille-note div{font-size:1.05rem;font-weight:950;line-height:1.38;color:#3f3828}
+      .digiy-oreille-note small{display:block;color:#635b45;font-size:.96rem;font-weight:950;margin-top:8px}
+      @media(max-width:760px){.digiy-oreille-templates{grid-template-columns:1fr}.digiy-oreille-template{min-height:88px;font-size:1.08rem}.digiy-oreille-actions button{width:100%}}
+      @media(max-width:560px){.digiy-oreille-box{padding:14px;border-radius:24px}.digiy-oreille-head strong{font-size:1.42rem}.digiy-oreille-template{min-height:84px;padding:15px;font-size:1.04rem;border-radius:22px}.digiy-oreille-note b{font-size:1.18rem}}
+    `;
     document.head.appendChild(s);
   }
   function renderNotes(box,cfg){if(!box)return;var list=getNotes(cfg);box.innerHTML='';if(!list.length){box.innerHTML='<div class="digiy-oreille-note"><b>Aucune note rangée</b><span>Teste une phrase, puis clique sur Ranger.</span></div>';return;}list.forEach(function(n){var d=document.createElement('div');d.className='digiy-oreille-note';d.innerHTML='<b>'+esc(n.module||cfg.module||'BUILD')+'</b><div>'+esc(n.text)+'</div><small>'+esc(n.date||'')+'</small>';box.appendChild(d);});}
