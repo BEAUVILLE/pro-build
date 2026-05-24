@@ -1,0 +1,75 @@
+/* DIGIYLYFE — OREILLE MÉTIER CORE
+   Le pro parle ou clique. DIGIY formule. Le pro valide. Le logiciel range.
+   Rien n’est confirmé automatiquement.
+*/
+(function(){
+  'use strict';
+  var VERSION='oreille-metier-core-20260524-services';
+
+  function norm(v){return String(v||'').replace(/\s+/g,' ').replace(/\s+([,.!?;:])/g,'$1').trim();}
+  function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+  function storeKey(cfg){return String((cfg&&cfg.storagePrefix)||'DIGIY_OREILLE_METIER')+'_'+String((cfg&&cfg.module)||'BUILD').toUpperCase().replace(/[^A-Z0-9]+/g,'_')+'_NOTES_V1';}
+  function now(){try{return new Date().toLocaleString('fr-FR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(_){return String(new Date());}}
+  function getNotes(cfg){try{var a=JSON.parse(localStorage.getItem(storeKey(cfg))||'[]');return Array.isArray(a)?a:[];}catch(_){return [];}}
+  function setNotes(cfg,list){try{localStorage.setItem(storeKey(cfg),JSON.stringify((list||[]).slice(0,80)));}catch(_){}}
+  function clearNotes(cfg){try{localStorage.removeItem(storeKey(cfg));}catch(_){}}
+  function saveNote(cfg,text,extra){var clean=norm(text);if(!clean)return null;var list=getNotes(cfg);var n=Object.assign({id:'note_'+Date.now(),module:String((cfg&&cfg.module)||'BUILD').toUpperCase(),text:clean,date:now(),source:'oreille-metier',status:'draft'},extra||{});list.unshift(n);setNotes(cfg,list);return n;}
+
+  function toast(msg){
+    var t=document.getElementById('digiyOreilleToast');
+    if(!t){t=document.createElement('div');t.id='digiyOreilleToast';t.setAttribute('role','status');t.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#062612;color:#f0fff5;padding:12px 16px;border-radius:999px;box-shadow:0 16px 36px rgba(0,0,0,.25);font:900 14px system-ui;opacity:0;pointer-events:none;transition:.2s ease;z-index:99999;max-width:min(92vw,620px);text-align:center';document.body.appendChild(t);}
+    t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';clearTimeout(toast._timer);toast._timer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';},2200);
+  }
+
+  function speak(text,opt){
+    if(!('speechSynthesis' in window)){toast('Lecture vocale non disponible ici');return false;}
+    var clean=norm(text);if(!clean){toast('Rien à lire');return false;}
+    window.speechSynthesis.cancel();
+    function run(){
+      var voices=window.speechSynthesis.getVoices()||[];
+      var u=new SpeechSynthesisUtterance(clean);u.lang=(opt&&opt.lang)||'fr-FR';u.rate=(opt&&opt.rate)||0.86;u.pitch=(opt&&opt.pitch)||1.02;u.volume=1;
+      var preferred=voices.find(function(v){return /fr/i.test(v.lang||'')&&/Google|Thomas|Daniel|Amelie|Audrey|Pauline/i.test(v.name||'');})||voices.find(function(v){return /fr/i.test(v.lang||'');})||voices[0];
+      if(preferred)u.voice=preferred;u.onstart=function(){toast('DIGIY parle');};u.onend=function(){toast('Lecture terminée');};u.onerror=function(){toast('Lecture interrompue');};window.speechSynthesis.speak(u);
+    }
+    if(window.speechSynthesis.getVoices().length)run();else{var tries=0,timer=setInterval(function(){tries++;if(window.speechSynthesis.getVoices().length||tries>12){clearInterval(timer);run();}},120);}return true;
+  }
+  function stopVoice(){if('speechSynthesis' in window){window.speechSynthesis.cancel();toast('Lecture arrêtée');return true;}return false;}
+  function canListen(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition);}
+  function listen(opt){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Micro non supporté ici');opt&&opt.onError&&opt.onError(new Error('SpeechRecognition not supported'));return null;}
+    stopVoice();var r=new SR();r.lang=(opt&&opt.lang)||'fr-FR';r.interimResults=true;r.continuous=false;var finalText='';
+    r.onstart=function(){toast('Oreille ouverte');opt&&opt.onStart&&opt.onStart();};
+    r.onresult=function(e){var interim='';for(var i=e.resultIndex;i<e.results.length;i++){var tr=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=tr+' ';else interim+=tr;}opt&&opt.onText&&opt.onText(norm(finalText+interim));};
+    r.onerror=function(e){toast('Micro interrompu');opt&&opt.onError&&opt.onError(e);};
+    r.onend=function(){opt&&opt.onEnd&&opt.onEnd(norm(finalText));};
+    r.start();return r;
+  }
+  async function copy(text){var clean=norm(text);if(!clean){toast('Rien à copier');return false;}try{await navigator.clipboard.writeText(clean);toast('Copié');return true;}catch(_){var a=document.createElement('textarea');a.value=clean;a.setAttribute('readonly','readonly');a.style.position='fixed';a.style.left='-9999px';document.body.appendChild(a);a.focus();a.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){ok=false;}document.body.removeChild(a);toast(ok?'Copie tentée':'Copie impossible ici');return ok;}}
+
+  function injectStyles(){
+    if(document.getElementById('digiyOreilleStyles'))return;
+    var s=document.createElement('style');s.id='digiyOreilleStyles';
+    s.textContent='.digiy-oreille-box{border:1px solid rgba(24,32,20,.14);border-radius:26px;padding:16px;background:#fff8e8;box-shadow:0 16px 34px rgba(0,0,0,.18);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#182014}.digiy-oreille-box *{box-sizing:border-box}.digiy-oreille-head strong{display:block;font-size:1.4rem;line-height:1.05;letter-spacing:-.04em}.digiy-oreille-head span{display:block;margin-top:4px;color:#635b45;font-weight:850;line-height:1.35}.digiy-oreille-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.digiy-oreille-actions button,.digiy-oreille-template{border:1px solid rgba(24,32,20,.12);border-radius:999px;padding:11px 14px;font-weight:950;cursor:pointer;background:#fff7df;color:#182014;box-shadow:0 8px 20px rgba(32,24,8,.08)}.digiy-oreille-actions .primary{background:linear-gradient(135deg,#0f6b42,#134f38);color:#fff}.digiy-oreille-actions .gold{background:linear-gradient(135deg,#f8dd80,#d6a63a);color:#2a2108}.digiy-oreille-actions .dark{background:#11170f;color:#fff}.digiy-oreille-status{border-radius:18px;background:#062612;color:#d8ffe8;padding:12px 14px;font-weight:900;line-height:1.35;margin:10px 0}.digiy-oreille-text{width:100%;min-height:150px;resize:vertical;border-radius:20px;border:1px solid rgba(24,32,20,.14);padding:14px;font:inherit;font-weight:800;line-height:1.45;background:#fffdf5;color:#182014;outline:none}.digiy-oreille-template{width:100%;border-radius:18px;text-align:left;line-height:1.35;box-shadow:none;background:#fffdf4}.digiy-oreille-templates,.digiy-oreille-notes{display:grid;gap:9px;margin-top:10px}.digiy-oreille-note{border-radius:18px;padding:12px;background:#fffdf4;border:1px solid rgba(24,32,20,.14);font-weight:800;line-height:1.35}.digiy-oreille-note b{display:block;margin-bottom:4px}.digiy-oreille-note small{display:block;color:#635b45;font-weight:850;margin-top:7px}@media(max-width:560px){.digiy-oreille-actions button{width:100%}.digiy-oreille-box{padding:13px;border-radius:22px}}';
+    document.head.appendChild(s);
+  }
+  function renderNotes(box,cfg){if(!box)return;var list=getNotes(cfg);box.innerHTML='';if(!list.length){box.innerHTML='<div class="digiy-oreille-note"><b>Aucune note rangée</b><span>Teste une phrase, puis clique sur Ranger.</span></div>';return;}list.forEach(function(n){var d=document.createElement('div');d.className='digiy-oreille-note';d.innerHTML='<b>'+esc(n.module||cfg.module||'BUILD')+'</b><div>'+esc(n.text)+'</div><small>'+esc(n.date||'')+'</small>';box.appendChild(d);});}
+  function defaultFormulate(text,cfg){var clean=norm(text);var m=String((cfg&&cfg.module)||'BUILD').toUpperCase();return clean?m+' · Note métier : '+clean+' À vérifier, modifier et valider par le pro avant envoi ou rangement.':m+' · Note vide : préciser la demande avant validation.';}
+  function mount(cfg){
+    cfg=Object.assign({module:'BUILD',title:'Oreille Métier',subtitle:'Le pro parle ou clique. DIGIY formule. Le pro valide. Le logiciel range.',templates:[],guideText:'Oreille Métier DIGIYLYFE. Rien n’est confirmé automatiquement.',formulate:null,buildSaveExtra:null,target:'#digiy-oreille-metier'},cfg||{});
+    var target=typeof cfg.target==='string'?document.querySelector(cfg.target):cfg.target;if(!target)target=document.querySelector('#digiy-oreille-metier,[data-digiy-oreille]');if(!target)return null;
+    injectStyles();target.innerHTML='<section class="digiy-oreille-box"><div class="digiy-oreille-head"><strong>🎙️ '+esc(cfg.title)+'</strong><span>'+esc(cfg.subtitle)+'</span></div><div class="digiy-oreille-actions"><button type="button" class="primary" data-action="listen">🎙️ Parler</button><button type="button" class="gold" data-action="formulate">✨ Formuler</button><button type="button" data-action="copy">📋 Copier</button><button type="button" data-action="save">🗂️ Ranger</button><button type="button" data-action="guide">🎧 Guide</button><button type="button" class="dark" data-action="stop">⏹ Stop</button></div><div class="digiy-oreille-status" data-role="status">Oreille prête. Le pro parle ou clique, DIGIY formule.</div><textarea class="digiy-oreille-text" data-role="text">'+esc(cfg.templates[0]||'')+'</textarea><div class="digiy-oreille-templates" data-role="templates"></div><div class="digiy-oreille-notes" data-role="notes"></div></section>';
+    var status=target.querySelector('[data-role="status"]'),txt=target.querySelector('[data-role="text"]'),tpl=target.querySelector('[data-role="templates"]'),nt=target.querySelector('[data-role="notes"]');
+    function st(m){if(status)status.textContent=m;}function refresh(){renderNotes(nt,cfg);} 
+    (cfg.templates||[]).forEach(function(t){var b=document.createElement('button');b.type='button';b.className='digiy-oreille-template';b.textContent=t;b.onclick=function(){txt.value=t;st('Phrase prête chargée. Le pro peut modifier avant de copier ou ranger.');};tpl.appendChild(b);});
+    target.addEventListener('click',function(e){var a=e.target.closest('[data-action]');if(!a)return;var action=a.getAttribute('data-action');
+      if(action==='listen')listen({onStart:function(){st('Oreille ouverte. Parle naturellement, puis vérifie le texte.');},onText:function(v){txt.value=v;},onEnd:function(){st('Parole captée. Clique sur Formuler pour préparer une note métier.');},onError:function(){st('Micro indisponible. Utilise les phrases prêtes.');}});
+      if(action==='formulate'){txt.value=(typeof cfg.formulate==='function'?cfg.formulate(txt.value,cfg):defaultFormulate(txt.value,cfg));st('Texte formulé. Le pro doit relire, modifier et valider.');toast('Formulé');}
+      if(action==='copy')copy(txt.value).then(function(){st('Texte copié. Tu peux le coller dans WhatsApp, SMS ou une fiche métier.');});
+      if(action==='save'){var extra=typeof cfg.buildSaveExtra==='function'?cfg.buildSaveExtra(txt.value,cfg):{};var saved=saveNote(cfg,txt.value,extra);if(saved){refresh();st('Note rangée localement. Le pro garde la main.');toast('Note rangée');}else toast('Rien à ranger');}
+      if(action==='guide')speak(cfg.guideText);if(action==='stop')stopVoice();
+    });
+    refresh();return{config:cfg,target:target,refreshNotes:refresh,getText:function(){return txt.value;},setText:function(v){txt.value=norm(v);}};
+  }
+
+  window.DigiyOreilleMetier={version:VERSION,mount:mount,init:mount,speak:speak,stopVoice:stopVoice,listen:listen,canListen:canListen,copy:copy,normalizeText:norm,escapeHtml:esc,saveNote:saveNote,getNotes:getNotes,setNotes:setNotes,clearNotes:clearNotes,showToast:toast};
+})();
