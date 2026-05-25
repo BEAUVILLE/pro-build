@@ -31,12 +31,114 @@
     .sectionTitle{font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,255,245,.58);margin:0 0 9px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.tile{min-height:148px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:15px;border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.08);box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent}.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.ico{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);font-size:26px;flex:0 0 auto}.tag{min-height:28px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}.tile b{display:block;font-size:21px;font-weight:1000;line-height:1.05;letter-spacing:-.025em;color:#fff}.tile span{display:block;margin-top:6px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.30}.primary{border-color:rgba(34,197,94,.38)!important;background:rgba(34,197,94,.14)!important}.gold{border-color:rgba(196,151,63,.42)!important;background:rgba(196,151,63,.13)!important}.blue{border-color:rgba(139,140,255,.34)!important;background:rgba(139,140,255,.13)!important}.pay{border-color:rgba(250,204,21,.45)!important;background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(196,151,63,.25))!important}.voice{border-color:rgba(250,204,21,.50)!important;background:linear-gradient(135deg,rgba(250,204,21,.24),rgba(34,197,94,.16))!important}
     .bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(8,50,24,.97);border-top:1px solid rgba(196,151,63,.20);backdrop-filter:blur(18px)}.bottomInner{width:min(760px,100%);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(240,255,245,.68);font-size:11px;font-weight:1000;text-align:center;background:rgba(255,255,255,.05);border:1px solid transparent}.bottomInner a.active{color:#102014;background:linear-gradient(135deg,var(--green),var(--gold));border-color:rgba(34,197,94,.24)}
     @media(max-width:860px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.grid{grid-template-columns:1fr}.tile{min-height:136px}h1{font-size:39px}}
+  
+    /* ══ LECTEUR DIGIY — MES SERVICES ══ */
+    .digiyReader{
+      display:grid;
+      gap:12px;
+      padding:16px;
+      border-radius:24px;
+      border:1px solid rgba(250,204,21,.34);
+      background:
+        radial-gradient(520px 190px at 100% 0%,rgba(250,204,21,.18),transparent 70%),
+        linear-gradient(135deg,rgba(34,197,94,.18),rgba(196,151,63,.12));
+      box-shadow:var(--shadow);
+    }
+    .digiyReaderTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .digiyReaderKicker{
+      color:var(--gold2);
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .digiyReader h2{
+      margin:0;
+      color:#fff;
+      font-size:clamp(25px,6vw,38px);
+      line-height:.98;
+      letter-spacing:-.045em;
+      font-weight:1000;
+    }
+    .digiyReaderText{
+      color:rgba(240,255,245,.84);
+      font-size:15px;
+      font-weight:950;
+      line-height:1.45;
+      max-width:760px;
+    }
+    .digiyReaderActions{
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+    }
+    .digiyReaderActions button{
+      min-height:52px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      color:#f0fff5;
+      padding:0 15px;
+      font:inherit;
+      font-size:14px;
+      font-weight:1000;
+      cursor:pointer;
+    }
+    .digiyReaderActions .main{
+      background:linear-gradient(135deg,var(--green),var(--gold));
+      color:#102014;
+      border-color:rgba(250,204,21,.36);
+      box-shadow:0 12px 28px rgba(0,0,0,.18);
+    }
+    .digiyReaderActions .stop{
+      background:rgba(251,113,133,.12);
+      color:#fecaca;
+      border-color:rgba(251,113,133,.32);
+    }
+    .digiyReaderStatus{
+      min-height:20px;
+      color:var(--gold2);
+      font-size:13px;
+      font-weight:1000;
+    }
+    @media(max-width:620px){
+      .digiyReaderActions{display:grid;grid-template-columns:1fr 1fr}
+      .digiyReaderActions button{width:100%}
+    }
+
   </style>
 </head>
 <body>
 <header class="topHeader"><a class="hdrBack" href="https://digiy-hub.digiylyfe.com/">← HUB général</a><div class="hdrTitle">MES SERVICES</div><div class="hdrPill" id="sessionPill">session…</div></header>
 <main class="wrap">
   <section><div class="eyebrow">DIGIY PRO · MES SERVICES</div><h1>Ton service, clair et direct.</h1><div class="lead">Demandes, devis, notes, fiche, argent, session et Oreille : tout est rangé en gestes simples.</div><div class="rule"><b>Doctrine :</b> le pro clique ou parle. DIGIY prépare les mots du service. Le terrain corrige, confirme et garde sa vérité.</div></section>
+
+  <section class="digiyReader" aria-label="Lecteur DIGIY Mes services">
+    <div class="digiyReaderTop">
+      <div>
+        <div class="digiyReaderKicker">🎧 Lecteur DIGIY · Mes services</div>
+        <h2>Comprendre le logiciel.</h2>
+      </div>
+      <div class="digiyReaderActions">
+        <button class="main" id="digiyServicesAudioPlay" type="button">▶ Écouter</button>
+        <button class="stop" id="digiyServicesAudioStop" type="button">⏹ Stop</button>
+      </div>
+    </div>
+    <div class="digiyReaderText" id="digiyServicesAudioText">
+      Mes services aide le pro à garder la trace d’une demande, préparer un devis, noter une intervention,
+      ouvrir son Oreille métier, puis suivre l’argent dans PAY. Le pro parle ou clique, DIGIY prépare,
+      le terrain valide.
+    </div>
+    <div class="digiyReaderStatus" id="digiyServicesAudioStatus">Prêt à lire · indications courtes</div>
+  </section>
+
   <section><div class="sectionTitle">Action immédiate</div><div class="grid">
     <a class="tile primary" href="./cockpit.html#quickService"><div class="tileTop"><div class="ico">✍️</div><div class="tag">Note</div></div><div><b>Noter une demande</b><span>Client, besoin, prix, urgence : DIGIY range.</span></div></a>
     <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">Oreille</div></div><div><b>Oreille Mes services</b><span>Parler, formuler, valider.</span></div></a>
@@ -55,5 +157,112 @@
 <script>
 (()=>{try{if(window.DIGIY_MODULE_BRIDGE&&typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl==='function')window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();}catch(_){}const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));p.textContent=ok?'session ouverte':'accès à vérifier';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
 </script>
+
+<script>
+/* ══ DIGIY VOICE — MES SERVICES ══ */
+(function(){
+  "use strict";
+
+  var SPEAK =
+    "Bienvenue dans Mes services. " +
+    "Ici, le pro peut noter une demande, préparer un devis, garder une trace client, suivre une intervention et revenir à son service sans se perdre. " +
+    "Oreille Mes services permet de parler ou d’écrire peu. DIGIY prépare une phrase claire, mais le professionnel corrige, confirme et garde la vérité du terrain. " +
+    "Le cockpit sert à travailler les demandes, les devis, les notes et le suivi. La fiche service présente le métier, la zone et le contact. PAY reste la porte de l’argent : acompte, arrhes, dépense ou solde doivent laisser une trace. " +
+    "Règle importante : le logiciel ne promet pas à la place du pro. Il prépare, il range, il aide. Le pro valide. " +
+    "Di-ji-laïf garde l’esprit simple : moins d’écrits, plus de clics, une voix utile, et un métier mieux organisé.";
+
+  var play = document.getElementById("digiyServicesAudioPlay");
+  var stop = document.getElementById("digiyServicesAudioStop");
+  var status = document.getElementById("digiyServicesAudioStatus");
+
+  function digiySpeakText(text){
+    return String(text || "")
+      .replace(/\bWave\b/g, "Wéïv")
+      .replace(/\bWhatsApp\b/g, "Ouatsap")
+      .replace(/\bDIGIYLYFE\b/g, "Di-ji-laïf");
+  }
+
+  function setStatus(message){
+    if(status) status.textContent = message;
+  }
+
+  function canSpeak(){
+    return "speechSynthesis" in window;
+  }
+
+  function pickVoice(){
+    if(!canSpeak()) return null;
+    var voices = window.speechSynthesis.getVoices() || [];
+    return voices.find(function(v){ return /^fr/i.test(v.lang || "") && /FR/i.test(v.lang || ""); })
+        || voices.find(function(v){ return /^fr/i.test(v.lang || ""); })
+        || voices[0]
+        || null;
+  }
+
+  function stopSpeech(){
+    if(canSpeak()) window.speechSynthesis.cancel();
+    if(play) play.textContent = "▶ Écouter";
+    setStatus("Lecture arrêtée");
+  }
+
+  function speak(){
+    if(!canSpeak()){
+      setStatus("Lecture vocale non disponible ici");
+      return;
+    }
+
+    if(window.speechSynthesis.paused){
+      window.speechSynthesis.resume();
+      if(play) play.textContent = "⏸ Pause";
+      setStatus("▶ Reprise…");
+      return;
+    }
+
+    if(window.speechSynthesis.speaking){
+      window.speechSynthesis.pause();
+      if(play) play.textContent = "▶ Reprendre";
+      setStatus("⏸ En pause");
+      return;
+    }
+
+    stopSpeech();
+
+    var u = new SpeechSynthesisUtterance(digiySpeakText(SPEAK));
+    u.lang = "fr-FR";
+    u.rate = 0.86;
+    u.pitch = 1.02;
+    u.volume = 1;
+
+    var voice = pickVoice();
+    if(voice) u.voice = voice;
+
+    u.onstart = function(){
+      if(play) play.textContent = "⏸ Pause";
+      setStatus("▶ DIGIY explique Mes services…");
+    };
+    u.onend = function(){
+      if(play) play.textContent = "▶ Écouter";
+      setStatus("✓ Lecture terminée");
+    };
+    u.onerror = function(){
+      if(play) play.textContent = "▶ Écouter";
+      setStatus("Lecture interrompue");
+    };
+
+    window.speechSynthesis.speak(u);
+  }
+
+  if(play) play.addEventListener("click", speak);
+  if(stop) stop.addEventListener("click", stopSpeech);
+
+  if(canSpeak()){
+    window.speechSynthesis.onvoiceschanged = pickVoice;
+  }
+
+  window.addEventListener("pagehide", stopSpeech);
+})();
+</script>
+
 </body>
 </html>
+
