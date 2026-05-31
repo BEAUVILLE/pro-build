@@ -11,6 +11,12 @@
 </style>
 </head>
 <body>
+<script>
+(function(){
+  var s = localStorage.getItem("digiy_guard_session:BUILD");
+  if(!s){ window.location.replace("./hub.html"); }
+})();
+</script>
 <main class="card">
   <div class="k">🧰 Mes services → PAY</div>
   <h1>Argent réel.</h1>
