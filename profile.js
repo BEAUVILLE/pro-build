@@ -224,7 +224,7 @@
     } catch (_) {}
   }
 
-  function cleanRouteUrl(path, fallback = "./dashboard-pro.html") {
+  function cleanRouteUrl(path, fallback = "./hub.html") {
     try {
       const url = new URL(String(path || fallback), window.location.href);
 
@@ -261,7 +261,7 @@
   }
 
   function dashboardUrl() {
-    return cleanRouteUrl("./dashboard-pro.html");
+    return cleanRouteUrl("./hub.html");
   }
 
   function serviceUrl() {
