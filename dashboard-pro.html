@@ -1128,7 +1128,7 @@
 
 <nav class="bottomNav" aria-label="Navigation service">
   <div class="bottomNavInner">
-    <a id="bottomHome" href="./dashboard-pro.html"><span class="ico">🏠</span><span>Accueil</span></a>
+    <a id="bottomHome" href="./hub.html"><span class="ico">🏠</span><span>Accueil</span></a>
     <a id="bottomDemandes" href="#demandes"><span class="ico">📋</span><span>Demandes</span></a>
     <a class="active" id="bottomService" href="./cockpit.html"><span class="ico">🧰</span><span>Service</span></a>
     <a id="bottomNotes" href="#mesNotes"><span class="ico">✍️</span><span>Notes</span></a>
@@ -1220,7 +1220,7 @@
   }
 
   function dashboardUrl() {
-    return "./dashboard-pro.html";
+    return "./hub.html";
   }
 
   function profileUrl() {
@@ -1239,9 +1239,9 @@
     const url = new URL(ABOS_URL);
     url.searchParams.set("module", MODULE_CODE);
     try {
-      url.searchParams.set("return", new URL("./dashboard-pro.html", window.location.href).toString());
+      url.searchParams.set("return", new URL("./hub.html", window.location.href).toString());
     } catch (_) {
-      url.searchParams.set("return", "./dashboard-pro.html");
+      url.searchParams.set("return", "./hub.html");
     }
     return url.toString();
   }
@@ -2349,6 +2349,58 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
