@@ -451,7 +451,7 @@
     } catch (_) {}
   }
 
-  function cleanInternalUrl(raw, fallback = "./dashboard-pro.html") {
+  function cleanInternalUrl(raw, fallback = "./hub.html") {
     const input = String(raw || "").trim() || fallback;
 
     try {
@@ -467,7 +467,7 @@
       }
 
       if (url.origin === location.origin) {
-        const file = url.pathname.split("/").pop() || "dashboard-pro.html";
+        const file = url.pathname.split("/").pop() || "hub.html";
         return `./${file}${url.search || ""}${url.hash || ""}`;
       }
 
@@ -571,7 +571,7 @@
   function buildPayUrl() {
     const url = new URL(CFG.PAY_URL);
     url.searchParams.set("module", MODULE);
-    url.searchParams.set("return", cleanInternalUrl(location.href, "./dashboard-pro.html"));
+    url.searchParams.set("return", cleanInternalUrl(location.href, "./hub.html"));
     return url.toString();
   }
 
@@ -1215,4 +1215,5 @@
     ready({ redirect: true }).catch(() => showPage());
   }
 })();
+
 
