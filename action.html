@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
-  <title>DIGIY GO BUILD — ACTION concentrée</title>
+  <title>DIGIY GO BUILD — Préparer la fiche</title>
 
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
   <meta name="theme-color" content="#0b1d12"/>
@@ -50,7 +50,7 @@ textarea{width:100%;min-height:116px;resize:vertical;border-radius:22px;border:1
 </head>
 <body>
 <main class="wrap">
-  <div class="top"><strong>DIGIY GO BUILD · ACTION concentrée</strong><span>Gauche : voix + écrit · Droite : modèles artisans cliquables</span></div>
+  <div class="top"><strong>DIGIY GO BUILD · ACTION concentrée</strong><span>Voix, clic, modèles artisans · validation humaine</span></div>
   <section class="buildAction" id="build-action" aria-label="BUILD — ACTION artisans">
     <article class="buildLeft">
       <div class="buildTop"><span class="kicker">🏗️ BUILD · artisans tout corps de métiers</span><span class="safe">✓ Artisan valide</span></div>
@@ -58,9 +58,9 @@ textarea{width:100%;min-height:116px;resize:vertical;border-radius:22px;border:1
       <p class="lead" data-i18n="lead">BUILD prépare une demande, un devis, une intervention, un suivi ou une note client. <strong>Rien n’est promis automatiquement.</strong> L’artisan vérifie avant de valider.</p>
       <div class="langBar" aria-label="Langue de travail BUILD"><button class="langBtn isActive" type="button" data-lang="fr">🇫🇷 Français</button><button class="langBtn" type="button" data-lang="wo">🇸🇳 Wolof</button><button class="langBtn" type="button" data-lang="ar">🇸🇦 عربي</button></div>
       <div class="voiceBox"><div class="mic" aria-hidden="true">🏗️</div><div><p class="selectedLabel">Formulation choisie</p><p class="selected" data-selected>“devis plomberie chez client à Mbour”</p></div></div>
-      <div class="textWrap"><label class="textLabel" for="buildText">Ce qu’ACTION prépare <span class="status" data-status>Prêt</span></label><textarea id="buildText" placeholder="Clique un exemple à droite, écris, ou parle si le micro est disponible.">devis plomberie chez client à Mbour</textarea></div>
-      <div class="actions"><button class="btn main" type="button" data-listen>🎙️ Écouter</button><button class="btn" type="button" data-prepare>⚡ Préparer</button><button class="btn" type="button" data-copy>📋 Copier</button><button class="btn green" type="button" data-clear>🧹 Effacer</button></div>
-      <div class="prepared" data-prepared>Brouillon BUILD prêt. L’artisan choisit ensuite : note, devis/intervention ou pont PAY.</div>
+      <div class="textWrap"><label class="textLabel" for="buildText">Ce que DIGIY prépare <span class="status" data-status>Prêt</span></label><textarea id="buildText" placeholder="Clique un exemple à droite, écris, ou parle si le micro est disponible.">devis plomberie chez client à Mbour</textarea></div>
+      <div class="actions"><button class="btn main" type="button" data-listen>🎙️ Écouter</button><button class="btn" type="button" data-prepare>✨ Préparer la fiche</button><button class="btn" type="button" data-copy>📋 Copier</button><button class="btn green" type="button" data-clear>🧹 Effacer</button></div>
+      <div class="prepared" data-prepared>Fiche BUILD prête. L’artisan choisit ensuite : note, devis/intervention ou pont PAY.</div>
       <div class="validation"><button class="validate" type="button" data-save-note>📝 Note</button><button class="validate" type="button" data-save-job>🛠️ Devis</button><button class="validate pay" type="button" data-send-pay>💳 PAY</button></div>
       <div class="chips"><span>Devis préparé</span><span>Pas de promesse automatique</span><span>Message prêt</span><span>Pont PAY si argent</span><span>Artisan garde la main</span></div>
     </article>
@@ -124,7 +124,34 @@ textarea{width:100%;min-height:116px;resize:vertical;border-radius:22px;border:1
   function setupSpeech(){ const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if(!SR){ listenBtn.textContent = "🎙️ Micro non dispo"; return; } recognition = new SR(); recognition.lang = (LANG[currentLang] && LANG[currentLang].speech) || "fr-FR"; recognition.continuous = false; recognition.interimResults = true; recognition.maxAlternatives = 1; recognition.onstart = () => setStatus("J’écoute..."); recognition.onerror = () => setStatus("Micro fragile."); recognition.onend = () => setStatus("Prêt."); recognition.onresult = (event) => { let text = ""; for(let i = event.resultIndex; i < event.results.length; i++) text += event.results[i][0].transcript; text = text.trim(); if(text){ textArea.value = text; currentText = text; selected.textContent = "“" + text + "”"; currentRoute = isPayText(text) ? "PAY" : "BUILD"; updatePayButton(); } }; }
   setupSpeech(); listenBtn.addEventListener("click", () => { if(!recognition){ setStatus("Micro non disponible."); return; } try{ recognition.start(); }catch(e){ setStatus("Micro déjà lancé."); } });
   textArea.addEventListener("input", () => { currentText = textArea.value.trim(); currentRoute = isPayText(currentText) ? "PAY" : "BUILD"; updatePayButton(); });
-  applyLang("fr"); updatePayButton();
+
+  function readMode(){
+    try{ return new URL(location.href).searchParams.get("mode") || ""; }catch(e){ return ""; }
+  }
+  function applyMode(){
+    const mode = readMode();
+    const map = {
+      demande:"message",
+      devis:"quote",
+      intervention:"urgent",
+      urgence:"urgent",
+      chantier:"followup",
+      materiel:"materials",
+      paiement:"deposit",
+      pay:"deposit",
+      acompte:"deposit",
+      depense:"expense"
+    };
+    const key = map[String(mode || "").toLowerCase()];
+    if(!key) return;
+    const card = cards.find(c => c.getAttribute("data-key") === key);
+    if(card){
+      choose(card);
+      setStatus("Mode " + mode + " chargé. Prépare la fiche puis valide.");
+    }
+  }
+
+  applyLang("fr"); applyMode(); updatePayButton();
 })();
 </script>
 </body>
