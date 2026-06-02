@@ -154,5 +154,186 @@ textarea{width:100%;min-height:116px;resize:vertical;border-radius:22px;border:1
   applyLang("fr"); applyMode(); updatePayButton();
 })();
 </script>
+
+<!-- DIGIY BUILD — raccord mémoire officielle Services -->
+<script src="./assets/js/digiy-services-memory.js?v=services-memory-action-packet-20260602"></script>
+<script>
+(function(){
+  "use strict";
+
+  const VERSION = "build-action-services-memory-20260602";
+
+  function $(sel){ return document.querySelector(sel); }
+  function text(){ return String(document.getElementById("buildText")?.value || "").trim(); }
+  function norm(v){
+    return String(v || "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  }
+  function amountFrom(v){
+    const m = String(v || "").replace(/\s+/g," ").match(/(\d[\d\s.,]*)\s*(?:f|fcfa|xof)?/i);
+    if(!m) return 0;
+    const n = Number(String(m[1]).replace(/[^\d]/g,""));
+    return Number.isFinite(n) ? n : 0;
+  }
+  function channelFrom(v){
+    const t = norm(v);
+    if(t.includes("wave")) return "Wave";
+    if(t.includes("orange")) return "Orange Money";
+    if(t.includes("carte") || t.includes("tpe")) return "Carte";
+    if(t.includes("cash") || t.includes("espece")) return "Cash";
+    return "";
+  }
+  function kindFrom(v){
+    const t = norm(v);
+    if(/\bdevis\b|prix|chiffr|intervention|reparation|réparation|chantier|travaux|plomberie|electricite|électricité|urgence/.test(t)) return "job";
+    if(/\bacompte\b|\bsolde\b|\brecette\b|\bdepense\b|dépense|materiel|matériel|wave|cash|orange|carte/.test(t)) return "pay";
+    return "note";
+  }
+  function packet(route){
+    const raw = text();
+    const amount = amountFrom(raw);
+    const channel = channelFrom(raw);
+    const kind = route || kindFrom(raw);
+    const isExpense = /\bdepense\b|dépense|materiel|matériel|achat/.test(norm(raw));
+    const id = "build_action_" + Date.now() + "_" + Math.random().toString(16).slice(2,8);
+
+    return {
+      id,
+      module: "BUILD",
+      source: "DIGIY_GO_BUILD",
+      action_packet_version: "1.0",
+      route: kind,
+      target: kind === "pay" ? "PAY" : kind === "job" ? "BUILD_JOB" : "BUILD_NOTE",
+      status: "draft_validated_by_artisan",
+      validation_required: true,
+      requiresHumanValidation: true,
+      raw_text: raw,
+      clean_text: raw,
+      text: raw,
+      note: raw,
+      amount: amount || null,
+      currency: amount ? "XOF" : "",
+      channel,
+      payType: isExpense ? "expense" : "income",
+      category: isExpense ? "Dépense chantier" : amount ? "Acompte / recette BUILD" : "Demande service",
+      draft: {
+        client_name: "",
+        phone: "",
+        place: "",
+        trade: "",
+        problem: raw,
+        urgency: /urgence|urgent|aujourd/i.test(norm(raw)) ? "urgent" : "",
+        appointment: "",
+        materials: /materiel|matériel|ciment|sable|achat/.test(norm(raw)) ? raw : "",
+        quote_amount: amount || null,
+        payment_mode: channel,
+        message_ready: raw
+      },
+      safety: {
+        noAutoQuote: true,
+        noAutoPromise: true,
+        noAutoPayment: true,
+        humanValidationRequired: true
+      },
+      created_at: new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    };
+  }
+
+  function saveLegacy(key, payload, limit){
+    try{
+      const rows = JSON.parse(localStorage.getItem(key) || "[]");
+      const list = Array.isArray(rows) ? rows : [];
+      list.unshift(payload);
+      localStorage.setItem(key, JSON.stringify(list.slice(0, limit || 120)));
+    }catch(_){}
+  }
+
+  function memory(){
+    return window.DIGIY_SERVICES_MEMORY || null;
+  }
+
+  function saveNoteMemory(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("note");
+
+    try{ memory()?.addNote?.(raw, {source:"action-build", packet:p}); }catch(_){}
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+
+    saveLegacy("DIGIY_BUILD_ACTION_NOTES", p, 120);
+    try{ localStorage.setItem("DIGIY_BUILD_PENDING_NOTE", JSON.stringify(p)); }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:note-saved", {detail:p})); }catch(_){}
+  }
+
+  function saveJobMemory(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("job");
+
+    try{ memory()?.upsertRequest?.(p); }catch(_){}
+    try{ memory()?.upsertQuote?.(p); }catch(_){}
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+
+    saveLegacy("DIGIY_BUILD_ACTION_JOBS", p, 120);
+    try{ localStorage.setItem("DIGIY_BUILD_PENDING_JOB", JSON.stringify(p)); }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:job-saved", {detail:p})); }catch(_){}
+  }
+
+  function savePayBridge(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("pay");
+
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+    try{ memory()?.addNote?.(raw, {source:"action-build-pay-draft", packet:p}); }catch(_){}
+
+    try{
+      localStorage.setItem("DIGIY_PAY_PENDING_MOVEMENT", JSON.stringify(p));
+      localStorage.setItem("DIGIY_BUILD_PAY_BRIDGE", JSON.stringify(p));
+      localStorage.setItem("DIGIY_BUILD_LATEST_ACTION", JSON.stringify(p));
+    }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:pay-bridge", {detail:p})); }catch(_){}
+  }
+
+  function boot(){
+    const noteBtn = $("[data-save-note]");
+    const jobBtn = $("[data-save-job]");
+    const payBtn = $("[data-send-pay]");
+
+    if(noteBtn && noteBtn.dataset.servicesMemoryPatched !== "1"){
+      noteBtn.dataset.servicesMemoryPatched = "1";
+      noteBtn.addEventListener("click", saveNoteMemory);
+    }
+
+    if(jobBtn && jobBtn.dataset.servicesMemoryPatched !== "1"){
+      jobBtn.dataset.servicesMemoryPatched = "1";
+      jobBtn.addEventListener("click", saveJobMemory);
+    }
+
+    if(payBtn && payBtn.dataset.servicesMemoryPatched !== "1"){
+      payBtn.dataset.servicesMemoryPatched = "1";
+      payBtn.addEventListener("click", savePayBridge);
+    }
+
+    window.DIGIY_BUILD_ACTION_MEMORY_PATCH = {
+      version: VERSION,
+      packet,
+      saveNote: saveNoteMemory,
+      saveJob: saveJobMemory,
+      savePay: savePayBridge
+    };
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+</script>
+
 </body>
 </html>
+
