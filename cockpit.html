@@ -153,10 +153,23 @@ label{display:block;margin:10px 0 7px;color:#fff;font-size:13px;font-weight:1000
 <script>
 (()=>{const $=id=>document.getElementById(id);const note=$("noteText"), status=$("statusBox"), list=$("notesList");
 function show(t){status.textContent=t;status.className="status show";setTimeout(()=>status.className="status",2800)}
-function render(){const rows=window.DIGIY_SERVICES_MEMORY?.notes?.()||[];if(!rows.length){list.innerHTML="Aucune note gardée pour le moment.";return;}list.innerHTML=rows.slice(0,12).map(r=>`<div style="padding:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;margin-top:8px;background:rgba(0,0,0,.12)"><b style="color:#fff">${(r.text||"").replace(/[<>&]/g,"")}</b><br><span style="font-size:12px;color:rgba(240,255,245,.65)">${new Date(r.created_at||Date.now()).toLocaleString("fr-FR")}</span></div>`).join("")}
+function readActionRows(){
+  const keys=["DIGIY_BUILD_ACTION_JOBS","DIGIY_BUILD_ACTION_NOTES"];
+  let out=[];
+  keys.forEach(k=>{try{const arr=JSON.parse(localStorage.getItem(k)||"[]");if(Array.isArray(arr)) out=out.concat(arr.map(x=>({...x,_from:k})));}catch(_){}});
+  return out;
+}
+function safe(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function render(){
+  const mem=window.DIGIY_SERVICES_MEMORY?.notes?.()||[];
+  const actionRows=readActionRows().map(r=>({text:r.text||r.note||"",created_at:r.createdAt||r.created_at||Date.now(),source:r.target||r.route||"ACTION"}));
+  const rows=[...actionRows,...mem].sort((a,b)=>String(b.created_at||b.createdAt||"").localeCompare(String(a.created_at||a.createdAt||"")));
+  if(!rows.length){list.innerHTML="Aucune note gardée pour le moment.";return;}
+  list.innerHTML=rows.slice(0,16).map(r=>`<div style="padding:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;margin-top:8px;background:rgba(0,0,0,.12)"><b style="color:#fff">${safe(r.text||r.note||"")}</b><br><span style="font-size:12px;color:rgba(240,255,245,.65)">${safe(r.source||r._from||"Mémoire")} · ${new Date(r.created_at||r.createdAt||Date.now()).toLocaleString("fr-FR")}</span></div>`).join("");
+}
 document.querySelectorAll("[data-template]").forEach(b=>b.onclick=()=>{note.value=b.dataset.template||"";note.focus();});
 $("saveNote").onclick=()=>{const v=(note.value||"").trim();if(!v){show("Écris ou choisis une phrase.");return;}window.DIGIY_SERVICES_MEMORY?.addNote?.(v,{source:"cockpit"});note.value="";render();show("✅ Note gardée localement.");};
-$("preparePay").onclick=()=>{const v=(note.value||"").trim();if(v) window.DIGIY_SERVICES_MEMORY?.addNote?.(v,{source:"pay-draft"});location.href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD#payVoicePanel";};
+$("preparePay").onclick=()=>{const v=(note.value||"").trim();if(v) window.DIGIY_SERVICES_MEMORY?.addNote?.(v,{source:"pay-draft"});location.href="./pay-transition.html?from=BUILD";};
 render();})();
 </script>
 
@@ -196,6 +209,34 @@ render();})();
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
