@@ -1,94 +1,339 @@
-/*
-  DIGIYLYFE — Mémoire locale Mes services
-  Code interne : BUILD
-  Langage visible : Mes services
-  Rôle : brouillons, demandes, devis, notes, fiche.
-  Local robuste d'abord, Supabase ensuite.
-*/
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+
+  <title>DIGIY GO BUILD — Préparer la fiche</title>
+
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
+  <meta name="theme-color" content="#0b1d12"/>
+
+  <style>
+:root{
+  --ink:#f8fafc;
+  --soft:rgba(248,250,252,.78);
+  --gold:#f6c453;
+  --green:#22c55e;
+  --line:rgba(255,255,255,.13);
+  --shadow:0 18px 54px rgba(0,0,0,.34);
+  --fontA:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  font-family:var(--fontA);
+  background:
+    radial-gradient(900px 520px at 8% -10%,rgba(34,197,94,.30),transparent 62%),
+    radial-gradient(760px 420px at 92% 0%,rgba(246,196,83,.20),transparent 58%),
+    linear-gradient(180deg,#0b5f34 0%,#062a1d 30%,#04130d 100%);
+  padding:18px;
+}
+a{color:inherit;text-decoration:none}
+button,textarea{font:inherit}
+.wrap{width:min(1180px,100%);margin:0 auto}
+.top{margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.top strong{font-size:18px;font-weight:1000;color:#fff3cf}.top span{color:var(--soft);font-weight:850;font-size:13px}
+.buildAction{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(340px,.98fr);gap:14px;padding:16px;border-radius:28px;border:1px solid rgba(246,196,83,.42);background:radial-gradient(720px 320px at 0% 0%,rgba(246,196,83,.22),transparent 62%),radial-gradient(680px 320px at 100% 0%,rgba(34,197,94,.22),transparent 60%),linear-gradient(135deg,rgba(10,30,18,.96),rgba(4,15,10,.98));box-shadow:var(--shadow)}
+.buildLeft,.buildRight{position:relative;z-index:1;border-radius:24px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:16px}.buildLeft{display:grid;gap:14px;align-content:start}.buildTop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.kicker,.safe{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:1000}.kicker{border:1px solid rgba(246,196,83,.36);background:rgba(246,196,83,.12);color:#fff3cf;letter-spacing:.10em;text-transform:uppercase}.safe{border:1px solid rgba(34,197,94,.34);background:rgba(34,197,94,.13);color:#dfffe9}
+h1{margin:0;font-size:clamp(34px,5vw,58px);line-height:.92;letter-spacing:-.055em;font-weight:1000;color:#fff}h1 span{color:var(--gold)}.lead{margin:0;color:rgba(248,250,252,.80);font-size:15px;line-height:1.48;font-weight:850}.lead strong{color:#fff3cf}.langBar{display:flex;flex-wrap:wrap;gap:8px}.langBtn{min-height:40px;border-radius:999px;padding:0 13px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:rgba(248,250,252,.86);font-size:12px;font-weight:1000;cursor:pointer}.langBtn.isActive{color:#06140f;background:linear-gradient(135deg,#fff1bd,var(--gold),#22c55e);border-color:rgba(246,196,83,.46)}
+.voiceBox{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center;padding:14px;border-radius:24px;border:1px solid rgba(246,196,83,.28);background:radial-gradient(220px 120px at 20% 20%,rgba(246,196,83,.20),transparent 65%),rgba(0,0,0,.18)}.mic{width:92px;height:92px;border-radius:32px;display:grid;place-items:center;font-size:44px;color:#06140f;background:linear-gradient(135deg,#fff1bd,var(--gold),#22c55e);border:1px solid rgba(255,255,255,.36);box-shadow:0 14px 34px rgba(0,0,0,.28)}.selectedLabel{margin:0 0 6px;color:#fff3cf;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em}.selected{margin:0;color:#fff;font-size:clamp(18px,2.4vw,26px);line-height:1.12;font-weight:1000}.textWrap{display:grid;gap:8px}.textLabel{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff3cf;font-weight:1000;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.status{color:#dfffe9;text-transform:none;letter-spacing:0;font-size:11px}
+textarea{width:100%;min-height:116px;resize:vertical;border-radius:22px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);color:#fff;padding:14px;outline:none;font-size:16px;line-height:1.42;font-weight:850}.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.btn{min-height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 12px;font-size:13px;font-weight:1000;cursor:pointer;text-decoration:none;color:#fff3cf;background:rgba(255,255,255,.07);border:1px solid rgba(246,196,83,.26)}.btn.main{color:#06140f;background:linear-gradient(135deg,#fff1bd,var(--gold),#22c55e);border:1px solid rgba(246,196,83,.54);box-shadow:0 12px 26px rgba(0,0,0,.26)}.btn.green{color:#eafff3;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.28)}
+.prepared{display:none;padding:12px;border-radius:18px;border:1px solid rgba(34,197,94,.24);background:rgba(34,197,94,.08);color:#dfffe9;font-size:13px;line-height:1.42;font-weight:850}.prepared.show{display:block}.validation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.validate{min-height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 12px;font-size:13px;font-weight:1000;cursor:pointer;border:1px solid rgba(255,255,255,.16);color:#fff3cf;background:rgba(246,196,83,.12);border-color:rgba(246,196,83,.34)}.validate.pay{color:#dfffe9;background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.38)}.validate[disabled]{opacity:.45;cursor:not-allowed;filter:grayscale(.35)}.chips{display:flex;flex-wrap:wrap;gap:7px}.chips span{display:inline-flex;align-items:center;min-height:28px;padding:0 9px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:rgba(248,250,252,.86);font-size:10.5px;font-weight:1000}
+.rightHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}.buildRight h2{margin:0;font-size:clamp(22px,3vw,34px);line-height:1;letter-spacing:-.04em;font-weight:1000;color:#fff}.buildRight p{margin:6px 0 0;color:rgba(248,250,252,.70);font-size:13px;line-height:1.38;font-weight:850}.badge{flex:0 0 auto;display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border-radius:999px;border:1px solid rgba(246,196,83,.30);background:rgba(246,196,83,.10);color:#fff3cf;font-size:11px;font-weight:1000}.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.model{min-height:82px;text-align:left;border-radius:18px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.065);color:#fff;padding:11px;cursor:pointer;display:grid;gap:6px;transition:transform .14s,border-color .14s,background .14s}.model:hover,.model.isActive{transform:translateY(-2px);border-color:rgba(246,196,83,.46);background:linear-gradient(135deg,rgba(246,196,83,.15),rgba(34,197,94,.12))}.modelTop{display:flex;align-items:center;gap:8px}.modelIcon{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(246,196,83,.13);border:1px solid rgba(246,196,83,.20);font-size:18px}.model b{font-size:13px;font-weight:1000;color:#fff3cf}.model em{display:block;color:rgba(248,250,252,.82);font-style:normal;font-size:12.5px;line-height:1.32;font-weight:850}.note{margin:12px 0 0;padding:11px;border-radius:17px;border:1px solid rgba(34,197,94,.24);background:rgba(34,197,94,.08);color:#dfffe9;font-size:12.5px;line-height:1.42;font-weight:850}
+@media(min-width:721px){.buildAction{grid-template-columns:minmax(0,1.02fr) minmax(340px,.98fr)!important;align-items:start}.actions{grid-template-columns:repeat(4,minmax(0,1fr))}.validation{grid-template-columns:repeat(3,minmax(0,1fr))}.models{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){body{padding:10px}.buildAction{grid-template-columns:1fr;padding:12px;border-radius:24px}.actions{grid-template-columns:1fr 1fr}.validation{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.validate{min-height:40px;font-size:11px;padding:0 6px}.model{min-height:74px;padding:9px}}
+@media(max-width:520px){.buildLeft,.buildRight{padding:12px;border-radius:20px}.voiceBox{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:10px}.mic{width:64px;height:64px;border-radius:22px;font-size:32px}.models{grid-template-columns:1fr 1fr;gap:7px}.actions{grid-template-columns:1fr 1fr}.validation{grid-template-columns:repeat(3,minmax(0,1fr))}.validate{min-height:38px;font-size:10px;padding:0 4px}.model{min-height:70px;padding:8px;border-radius:15px}.model em{font-size:11px;line-height:1.2}.chips{display:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><strong>DIGIY GO BUILD · ACTION concentrée</strong><span>Voix, clic, modèles artisans · validation humaine</span></div>
+  <section class="buildAction" id="build-action" aria-label="BUILD — ACTION artisans">
+    <article class="buildLeft">
+      <div class="buildTop"><span class="kicker">🏗️ BUILD · artisans tout corps de métiers</span><span class="safe">✓ Artisan valide</span></div>
+      <h1>Parle chantier.<br><span>DIGIY prépare.</span></h1>
+      <p class="lead" data-i18n="lead">BUILD prépare une demande, un devis, une intervention, un suivi ou une note client. <strong>Rien n’est promis automatiquement.</strong> L’artisan vérifie avant de valider.</p>
+      <div class="langBar" aria-label="Langue de travail BUILD"><button class="langBtn isActive" type="button" data-lang="fr">🇫🇷 Français</button><button class="langBtn" type="button" data-lang="wo">🇸🇳 Wolof</button><button class="langBtn" type="button" data-lang="ar">🇸🇦 عربي</button></div>
+      <div class="voiceBox"><div class="mic" aria-hidden="true">🏗️</div><div><p class="selectedLabel">Formulation choisie</p><p class="selected" data-selected>“devis plomberie chez client à Mbour”</p></div></div>
+      <div class="textWrap"><label class="textLabel" for="buildText">Ce que DIGIY prépare <span class="status" data-status>Prêt</span></label><textarea id="buildText" placeholder="Clique un exemple à droite, écris, ou parle si le micro est disponible.">devis plomberie chez client à Mbour</textarea></div>
+      <div class="actions"><button class="btn main" type="button" data-listen>🎙️ Écouter</button><button class="btn" type="button" data-prepare>✨ Préparer la fiche</button><button class="btn" type="button" data-copy>📋 Copier</button><button class="btn green" type="button" data-clear>🧹 Effacer</button></div>
+      <div class="prepared" data-prepared>Fiche BUILD prête. L’artisan choisit ensuite : note, devis/intervention ou pont PAY.</div>
+      <div class="validation"><button class="validate" type="button" data-save-note>📝 Note</button><button class="validate" type="button" data-save-job>🛠️ Devis</button><button class="validate pay" type="button" data-send-pay>💳 PAY</button></div>
+      <div class="chips"><span>Devis préparé</span><span>Pas de promesse automatique</span><span>Message prêt</span><span>Pont PAY si argent</span><span>Artisan garde la main</span></div>
+    </article>
+    <aside class="buildRight" aria-label="Exemples métier BUILD">
+      <div class="rightHead"><div><h2 data-i18n="modelsTitle">Modèles artisans</h2><p data-i18n="modelsSub">Exemples cliquables pour préparer une demande, un devis, une intervention ou un paiement.</p></div><span class="badge">8 modèles</span></div>
+      <div class="models">
+        <button class="model isActive" type="button" data-key="quote" data-template="devis plomberie chez client à Mbour"><span class="modelTop"><span class="modelIcon">🧾</span><b>Devis</b></span><em>“devis plomberie chez client à Mbour”</em></button>
+        <button class="model" type="button" data-key="urgent" data-template="intervention urgente fuite d’eau aujourd’hui"><span class="modelTop"><span class="modelIcon">🚨</span><b>Urgence</b></span><em>“intervention urgente fuite d’eau aujourd’hui”</em></button>
+        <button class="model" type="button" data-key="electric" data-template="réparation électricité demain matin chez client Awa"><span class="modelTop"><span class="modelIcon">💡</span><b>Électricité</b></span><em>“réparation électricité demain matin chez client Awa”</em></button>
+        <button class="model" type="button" data-key="materials" data-template="noter achat ciment et sable pour chantier"><span class="modelTop"><span class="modelIcon">📦</span><b>Matériaux</b></span><em>“noter achat ciment et sable pour chantier”</em></button>
+        <button class="model" type="button" data-key="message" data-template="prépare message devis pour client Mamadou"><span class="modelTop"><span class="modelIcon">📲</span><b>Message client</b></span><em>“prépare message devis pour client Mamadou”</em></button>
+        <button class="model" type="button" data-key="deposit" data-route="PAY" data-template="acompte chantier 30000 Wave dans PAY"><span class="modelTop"><span class="modelIcon">💳</span><b>PAY · acompte</b></span><em>“acompte chantier 30000 Wave dans PAY”</em></button>
+        <button class="model" type="button" data-key="expense" data-route="PAY" data-template="dépense matériel chantier 12000 cash"><span class="modelTop"><span class="modelIcon">💸</span><b>PAY · matériel</b></span><em>“dépense matériel chantier 12000 cash”</em></button>
+        <button class="model" type="button" data-key="followup" data-template="suivi chantier demain 10h vérifier avancement"><span class="modelTop"><span class="modelIcon">🗓️</span><b>Suivi chantier</b></span><em>“suivi chantier demain 10h vérifier avancement”</em></button>
+      </div>
+      <div class="note" data-i18n="note">BUILD prépare. L’artisan contrôle. PAY reçoit seulement l’argent final : acompte, solde, dépense matériel ou main-d’œuvre.</div>
+    </aside>
+  </section>
+</main>
+<script>
+(function(){
+  const root = document.getElementById("build-action");
+  if(!root) return;
+  const selected = root.querySelector("[data-selected]");
+  const textArea = root.querySelector("#buildText");
+  const listenBtn = root.querySelector("[data-listen]");
+  const prepareBtn = root.querySelector("[data-prepare]");
+  const copyBtn = root.querySelector("[data-copy]");
+  const clearBtn = root.querySelector("[data-clear]");
+  const saveNoteBtn = root.querySelector("[data-save-note]");
+  const saveJobBtn = root.querySelector("[data-save-job]");
+  const sendPayBtn = root.querySelector("[data-send-pay]");
+  const status = root.querySelector("[data-status]");
+  const prepared = root.querySelector("[data-prepared]");
+  const cards = Array.from(root.querySelectorAll("[data-template]"));
+  const langButtons = Array.from(root.querySelectorAll("[data-lang]"));
+  const leadEl = root.querySelector("[data-i18n='lead']");
+  const modelsTitleEl = root.querySelector("[data-i18n='modelsTitle']");
+  const modelsSubEl = root.querySelector("[data-i18n='modelsSub']");
+  const noteEl = root.querySelector("[data-i18n='note']");
+  const LANG = {fr:{speech:"fr-FR",lead:"BUILD prépare une demande, un devis, une intervention, un suivi ou une note client. <strong>Rien n’est promis automatiquement.</strong> L’artisan vérifie avant de valider.",modelsTitle:"Modèles artisans",modelsSub:"Exemples cliquables pour préparer une demande, un devis, une intervention ou un paiement.",note:"BUILD prépare. L’artisan contrôle. PAY reçoit seulement l’argent final : acompte, solde, dépense matériel ou main-d’œuvre.",keys:{quote:{label:"Devis",icon:"🧾",text:"devis plomberie chez client à Mbour"},urgent:{label:"Urgence",icon:"🚨",text:"intervention urgente fuite d’eau aujourd’hui"},electric:{label:"Électricité",icon:"💡",text:"réparation électricité demain matin chez client Awa"},materials:{label:"Matériaux",icon:"📦",text:"noter achat ciment et sable pour chantier"},message:{label:"Message client",icon:"📲",text:"prépare message devis pour client Mamadou"},deposit:{label:"PAY · acompte",icon:"💳",text:"acompte chantier 30000 Wave dans PAY"},expense:{label:"PAY · matériel",icon:"💸",text:"dépense matériel chantier 12000 cash"},followup:{label:"Suivi chantier",icon:"🗓️",text:"suivi chantier demain 10h vérifier avancement"}}},wo:{speech:"fr-SN",lead:"BUILD dafay waajal laaj client, devis, intervention, suivi wala note client. <strong>Amul promesse automatique.</strong> Artisan bi xoolaat ba noppi valide.",modelsTitle:"Royukaay artisans",modelsSub:"Pro bi jël misaal, soppi ko, ba noppi valide.",note:"BUILD dafay waajal. Artisan bi moo valide. PAY dafay jot xaalis bu dëgg rekk.",keys:{quote:{label:"Devis",icon:"🧾",text:"devis plomberie chez client ci Mbour"},urgent:{label:"Urgence",icon:"🚨",text:"intervention urgence fuite ndox tey"},electric:{label:"Électricité",icon:"💡",text:"réparation électricité suba ci client Awa"},materials:{label:"Matériaux",icon:"📦",text:"noter achat ciment ak sable pour chantier"},message:{label:"Message client",icon:"📲",text:"waajal message devis pour client Mamadou"},deposit:{label:"PAY · acompte",icon:"💳",text:"acompte chantier 30000 Wave ci PAY"},expense:{label:"PAY · matériel",icon:"💸",text:"dépense matériel chantier 12000 cash"},followup:{label:"Suivi chantier",icon:"🗓️",text:"suivi chantier suba 10h vérifier avancement"}}},ar:{speech:"ar-SA",lead:"BUILD يجهز طلب الزبون، عرض السعر، التدخل، المتابعة أو الملاحظة. <strong>لا يتم وعد أو تأكيد شيء تلقائياً.</strong> الحرفي يراجع ثم يؤكد.",modelsTitle:"نماذج الحرفيين",modelsSub:"أمثلة قابلة للنقر لتحضير طلب أو عرض أو تدخل أو دفع.",note:"BUILD يجهز. الحرفي يتحكم. PAY يستقبل فقط المال النهائي: عربون، رصيد، مصروف مواد أو أجرة.",keys:{quote:{label:"عرض سعر",icon:"🧾",text:"عرض سعر سباكة عند الزبون في Mbour"},urgent:{label:"طارئ",icon:"🚨",text:"تدخل عاجل تسرب ماء اليوم"},electric:{label:"كهرباء",icon:"💡",text:"إصلاح كهرباء غدا صباحا عند الزبونة آوا"},materials:{label:"مواد",icon:"📦",text:"تسجيل شراء إسمنت ورمل للورشة"},message:{label:"رسالة الزبون",icon:"📲",text:"جهز رسالة عرض السعر للزبون مامادو"},deposit:{label:"PAY · عربون",icon:"💳",text:"عربون ورشة 30000 وايف في PAY"},expense:{label:"PAY · مواد",icon:"💸",text:"مصروف مواد الورشة 12000 كاش"},followup:{label:"متابعة الورشة",icon:"🗓️",text:"متابعة الورشة غدا 10h تحقق من التقدم"}}}};
+  let currentLang = "fr", currentText = textArea.value.trim(), currentRoute = "BUILD", recognition = null;
+  function setStatus(text){ if(status) status.textContent = text; }
+  function norm(v){ return String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function isPayText(text){ const t = norm(text); const raw = String(text || ""); return /\bpay\b|\bacompte\b|\bsolde\b|\bdepense\b|\bmateriel\b|\bmain d.oeuvre\b|\brecette\b|\bwave\b|\bcash\b/.test(t) || /مصروف|عربون|وايف|كاش|دفع|دخل|أجرة/.test(raw); }
+  function extractAmount(text){ const raw = String(text || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)); const m = raw.replace(/\s+/g," ").match(/(\d[\d\s.,]*)\s*(?:f|fcfa|xof)?/i); if(!m) return null; const n = Number(m[1].replace(/[^\d]/g,"")); return Number.isFinite(n) && n > 0 ? n : null; }
+  function detectChannel(text){ const t = norm(text); const raw = String(text || ""); if(t.includes("wave") || raw.includes("وايف")) return "Wave"; if(t.includes("orange")) return "Orange Money"; if(t.includes("carte")) return "Carte"; if(t.includes("cash") || t.includes("espece") || raw.includes("كاش")) return "Cash"; return "Wave"; }
+  function buildPayload(route, text){ const amount = extractAmount(text); const cleanText = String(text || "").trim(); const t = norm(cleanText); const raw = String(text || ""); const payType = /\bdepense\b|\bmateriel\b|\bachat\b|مصروف|مواد|شراء/.test(t + " " + raw) ? "expense" : "income"; const channel = detectChannel(cleanText); const category = payType === "expense" ? "Dépense chantier" : "Acompte BUILD"; return {source:"BUILD",module:"BUILD",target:route === "PAY" ? "PAY" : route === "JOB" ? "BUILD_JOB" : "BUILD_NOTE",route,text:cleanText,note:cleanText,amount,currency:amount ? "XOF" : "",channel,who:"Client BUILD",payType,type:payType,typeLabel:payType === "expense" ? "Dépense" : "Recette",category,status:"draft_validated_by_artisan",requiresHumanValidation:true,createdAt:new Date().toISOString(),safety:{noAutoQuote:true,noAutoPromise:true,noAutoPayment:true,humanValidationRequired:true}}; }
+  function updatePayButton(){ const text = textArea.value.trim(); const ok = currentRoute === "PAY" || isPayText(text); sendPayBtn.disabled = !ok; sendPayBtn.title = ok ? "Valider ce brouillon vers PAY" : "PAY seulement pour acompte, solde, recette ou dépense chantier"; }
+  function showPrepared(text, route){ const target = route === "PAY" || isPayText(text) ? "PAY" : route === "JOB" ? "JOB" : "BUILD"; if(target === "PAY"){ const amount = extractAmount(text); prepared.textContent = "Pont PAY prêt : " + text + (amount ? " · montant : " + amount.toLocaleString("fr-FR") + " FCFA" : "") + ". L’artisan valide avant envoi."; }else if(target === "JOB"){ prepared.textContent = "Devis / intervention BUILD prêt : " + text + ". Rien n’est promis automatiquement : l’artisan vérifie et valide."; }else{ prepared.textContent = "Note BUILD prête : " + text + ". L’artisan peut ajuster, copier ou garder en note."; } prepared.classList.add("show"); updatePayButton(); }
+  function choose(card){ currentText = card.getAttribute("data-template") || ""; currentRoute = card.getAttribute("data-route") || (isPayText(currentText) ? "PAY" : /devis|intervention|réparation|reparation|chantier|عرض|تدخل|إصلاح|ورشة/i.test(currentText) ? "JOB" : "BUILD"); selected.textContent = "“" + currentText + "”"; textArea.value = currentText; cards.forEach(btn => btn.classList.remove("isActive")); card.classList.add("isActive"); showPrepared(currentText, currentRoute); setStatus(currentRoute === "PAY" ? "Pont PAY prêt" : currentRoute === "JOB" ? "Devis / intervention prêt" : "Exemple chargé"); }
+  function applyLang(lang){ currentLang = LANG[lang] ? lang : "fr"; const pack = LANG[currentLang]; leadEl.innerHTML = pack.lead; modelsTitleEl.textContent = pack.modelsTitle; modelsSubEl.textContent = pack.modelsSub; noteEl.textContent = pack.note; langButtons.forEach(btn => btn.classList.toggle("isActive", btn.getAttribute("data-lang") === currentLang)); cards.forEach(card => { const item = pack.keys[card.getAttribute("data-key")]; if(!item) return; card.setAttribute("data-template", item.text); const icon = card.querySelector(".modelIcon"), label = card.querySelector("b"), em = card.querySelector("em"); if(icon) icon.textContent = item.icon; if(label) label.textContent = item.label; if(em) em.textContent = "“" + item.text + "”"; }); const active = cards.find(c => c.classList.contains("isActive")) || cards[0]; if(active) choose(active); if(recognition){ try{ recognition.lang = pack.speech || "fr-FR"; }catch(e){} } }
+  cards.forEach(card => card.addEventListener("click", () => choose(card)));
+  prepareBtn.addEventListener("click", () => { const text = textArea.value.trim(); if(!text){ setStatus("Écris ou clique un exemple."); return; } currentText = text; currentRoute = isPayText(text) ? "PAY" : /devis|intervention|réparation|reparation|chantier|عرض|تدخل|إصلاح|ورشة/i.test(text) ? "JOB" : "BUILD"; selected.textContent = "“" + text + "”"; showPrepared(text, currentRoute); setStatus(currentRoute === "PAY" ? "Pont PAY prêt" : currentRoute === "JOB" ? "Devis / intervention prêt" : "Brouillon prêt"); });
+  copyBtn.addEventListener("click", async () => { const text = textArea.value.trim(); const old = copyBtn.textContent; try{ await navigator.clipboard.writeText(text); copyBtn.textContent = "✅ Copié"; }catch(e){ window.prompt("Copie le brouillon :", text); copyBtn.textContent = "✅ Prêt"; } setTimeout(() => copyBtn.textContent = old, 1500); });
+  clearBtn.addEventListener("click", () => { currentText = ""; currentRoute = "BUILD"; textArea.value = ""; selected.textContent = "—"; prepared.classList.remove("show"); cards.forEach(btn => btn.classList.remove("isActive")); updatePayButton(); setStatus("Effacé. Prêt pour une nouvelle action BUILD."); });
+  saveNoteBtn.addEventListener("click", () => { const text = textArea.value.trim(); if(!text){ setStatus("Rien à valider."); return; } const payload = buildPayload("BUILD", text); try{ const key = "DIGIY_BUILD_ACTION_NOTES"; const list = JSON.parse(localStorage.getItem(key) || "[]"); list.unshift(payload); localStorage.setItem(key, JSON.stringify(list.slice(0,80))); localStorage.setItem("DIGIY_BUILD_PENDING_NOTE", JSON.stringify(payload)); }catch(e){} showPrepared(text, "BUILD"); setStatus("Note BUILD validée."); });
+  saveJobBtn.addEventListener("click", () => { const text = textArea.value.trim(); if(!text){ setStatus("Rien à placer en devis / intervention."); return; } const payload = buildPayload("JOB", text); try{ const key = "DIGIY_BUILD_ACTION_JOBS"; const list = JSON.parse(localStorage.getItem(key) || "[]"); list.unshift(payload); localStorage.setItem(key, JSON.stringify(list.slice(0,80))); localStorage.setItem("DIGIY_BUILD_PENDING_JOB", JSON.stringify(payload)); }catch(e){} showPrepared(text, "JOB"); setStatus("Brouillon devis / intervention validé. Vérification humaine toujours nécessaire."); });
+  sendPayBtn.addEventListener("click", () => { const text = textArea.value.trim(); if(!text){ setStatus("Rien à envoyer vers PAY."); return; } if(!(currentRoute === "PAY" || isPayText(text))){ setStatus("Ce brouillon n’est pas un acompte, solde ou une dépense."); updatePayButton(); return; } const payload = buildPayload("PAY", text); try{ localStorage.setItem("DIGIY_PAY_PENDING_MOVEMENT", JSON.stringify(payload)); localStorage.setItem("DIGIY_BUILD_PAY_BRIDGE", JSON.stringify(payload)); localStorage.setItem("DIGIY_BUILD_LATEST_ACTION", JSON.stringify(payload)); }catch(e){} showPrepared(text, "PAY"); setStatus("Pont PAY BUILD validé. Ouverture de la transition…"); setTimeout(() => { try{ location.href = "./pay-transition.html?from=BUILD#from=build-action"; }catch(e){} }, 320); });
+  langButtons.forEach(btn => btn.addEventListener("click", () => { applyLang(btn.getAttribute("data-lang") || "fr"); setStatus("Langue changée."); }));
+  function setupSpeech(){ const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if(!SR){ listenBtn.textContent = "🎙️ Micro non dispo"; return; } recognition = new SR(); recognition.lang = (LANG[currentLang] && LANG[currentLang].speech) || "fr-FR"; recognition.continuous = false; recognition.interimResults = true; recognition.maxAlternatives = 1; recognition.onstart = () => setStatus("J’écoute..."); recognition.onerror = () => setStatus("Micro fragile."); recognition.onend = () => setStatus("Prêt."); recognition.onresult = (event) => { let text = ""; for(let i = event.resultIndex; i < event.results.length; i++) text += event.results[i][0].transcript; text = text.trim(); if(text){ textArea.value = text; currentText = text; selected.textContent = "“" + text + "”"; currentRoute = isPayText(text) ? "PAY" : "BUILD"; updatePayButton(); } }; }
+  setupSpeech(); listenBtn.addEventListener("click", () => { if(!recognition){ setStatus("Micro non disponible."); return; } try{ recognition.start(); }catch(e){ setStatus("Micro déjà lancé."); } });
+  textArea.addEventListener("input", () => { currentText = textArea.value.trim(); currentRoute = isPayText(currentText) ? "PAY" : "BUILD"; updatePayButton(); });
+
+  function readMode(){
+    try{ return new URL(location.href).searchParams.get("mode") || ""; }catch(e){ return ""; }
+  }
+  function applyMode(){
+    const mode = readMode();
+    const map = {
+      demande:"message",
+      devis:"quote",
+      intervention:"urgent",
+      urgence:"urgent",
+      chantier:"followup",
+      materiel:"materials",
+      paiement:"deposit",
+      pay:"deposit",
+      acompte:"deposit",
+      depense:"expense"
+    };
+    const key = map[String(mode || "").toLowerCase()];
+    if(!key) return;
+    const card = cards.find(c => c.getAttribute("data-key") === key);
+    if(card){
+      choose(card);
+      setStatus("Mode " + mode + " chargé. Prépare la fiche puis valide.");
+    }
+  }
+
+  applyLang("fr"); applyMode(); updatePayButton();
+})();
+</script>
+
+<!-- DIGIY BUILD — raccord mémoire officielle Services -->
+<script src="./assets/js/digiy-services-memory.js?v=services-memory-action-packet-20260602"></script>
+<script>
 (function(){
   "use strict";
-  const ROOT="DIGIY_SERVICES_MEMORY_V1";
-  const MODULE="BUILD";
 
-  function safeStorage(kind){
-    try{
-      const s = kind === "session" ? sessionStorage : localStorage;
-      const k = ROOT + "_TEST";
-      s.setItem(k,"1"); s.removeItem(k);
-      return s;
-    }catch(_){return null;}
+  const VERSION = "build-action-services-memory-20260602";
+
+  function $(sel){ return document.querySelector(sel); }
+  function text(){ return String(document.getElementById("buildText")?.value || "").trim(); }
+  function norm(v){
+    return String(v || "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
   }
-  const local=safeStorage("local"), session=safeStorage("session");
+  function amountFrom(v){
+    const m = String(v || "").replace(/\s+/g," ").match(/(\d[\d\s.,]*)\s*(?:f|fcfa|xof)?/i);
+    if(!m) return 0;
+    const n = Number(String(m[1]).replace(/[^\d]/g,""));
+    return Number.isFinite(n) ? n : 0;
+  }
+  function channelFrom(v){
+    const t = norm(v);
+    if(t.includes("wave")) return "Wave";
+    if(t.includes("orange")) return "Orange Money";
+    if(t.includes("carte") || t.includes("tpe")) return "Carte";
+    if(t.includes("cash") || t.includes("espece")) return "Cash";
+    return "";
+  }
+  function kindFrom(v){
+    const t = norm(v);
+    if(/\bdevis\b|prix|chiffr|intervention|reparation|réparation|chantier|travaux|plomberie|electricite|électricité|urgence/.test(t)) return "job";
+    if(/\bacompte\b|\bsolde\b|\brecette\b|\bdepense\b|dépense|materiel|matériel|wave|cash|orange|carte/.test(t)) return "pay";
+    return "note";
+  }
+  function packet(route){
+    const raw = text();
+    const amount = amountFrom(raw);
+    const channel = channelFrom(raw);
+    const kind = route || kindFrom(raw);
+    const isExpense = /\bdepense\b|dépense|materiel|matériel|achat/.test(norm(raw));
+    const id = "build_action_" + Date.now() + "_" + Math.random().toString(16).slice(2,8);
 
-  function readRaw(k){try{return (session&&session.getItem(k))||(local&&local.getItem(k))||""}catch(_){return ""}}
-  function writeRaw(k,v,opts){try{(opts&&opts.session?session:local).setItem(k,String(v??""));return true}catch(_){return false}}
-  function readJson(k,f){const r=readRaw(k); if(!r) return f; try{return JSON.parse(r)??f}catch(_){return f}}
-  function writeJson(k,v,opts){try{return writeRaw(k,JSON.stringify(v),opts)}catch(_){return false}}
-  function normPhone(v){const d=String(v||"").replace(/[^\d]/g,""); if(!d) return ""; if(d.length===9) return "221"+d; return d.slice(0,15)}
-  function normSlug(v){return String(v||"").trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"").replace(/-+/g,"-").replace(/^-|-$/g,"")}
-
-  function sessionHint(){
-    let bridge={};
-    try{
-      if(window.DIGIY_MODULE_BRIDGE?.readSession) bridge=window.DIGIY_MODULE_BRIDGE.readSession()||{};
-      else if(window.DIGIY_MODULE_BRIDGE?.getSession) bridge=window.DIGIY_MODULE_BRIDGE.getSession()||{};
-    }catch(_){}
     return {
-      module: MODULE,
-      slug: normSlug(bridge.slug || bridge.workspace_slug || readRaw("digiy_build_slug") || readRaw("digiy_services_slug")),
-      phone: normPhone(bridge.phone || bridge.tel || readRaw("digiy_build_phone") || readRaw("digiy_services_phone"))
+      id,
+      module: "BUILD",
+      source: "DIGIY_GO_BUILD",
+      action_packet_version: "1.0",
+      route: kind,
+      target: kind === "pay" ? "PAY" : kind === "job" ? "BUILD_JOB" : "BUILD_NOTE",
+      status: "draft_validated_by_artisan",
+      validation_required: true,
+      requiresHumanValidation: true,
+      raw_text: raw,
+      clean_text: raw,
+      text: raw,
+      note: raw,
+      amount: amount || null,
+      currency: amount ? "XOF" : "",
+      channel,
+      payType: isExpense ? "expense" : "income",
+      category: isExpense ? "Dépense chantier" : amount ? "Acompte / recette BUILD" : "Demande service",
+      draft: {
+        client_name: "",
+        phone: "",
+        place: "",
+        trade: "",
+        problem: raw,
+        urgency: /urgence|urgent|aujourd/i.test(norm(raw)) ? "urgent" : "",
+        appointment: "",
+        materials: /materiel|matériel|ciment|sable|achat/.test(norm(raw)) ? raw : "",
+        quote_amount: amount || null,
+        payment_mode: channel,
+        message_ready: raw
+      },
+      safety: {
+        noAutoQuote: true,
+        noAutoPromise: true,
+        noAutoPayment: true,
+        humanValidationRequired: true
+      },
+      created_at: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
   }
 
-  function rememberSession(data){
-    const d=data||{};
-    const slug=normSlug(d.slug||d.workspace_slug||"");
-    const phone=normPhone(d.phone||d.tel||"");
-    if(slug){writeRaw("digiy_build_slug",slug);writeRaw("digiy_services_slug",slug);}
-    if(phone){writeRaw("digiy_build_phone",phone);writeRaw("digiy_services_phone",phone);}
-    return sessionHint();
+  function saveLegacy(key, payload, limit){
+    try{
+      const rows = JSON.parse(localStorage.getItem(key) || "[]");
+      const list = Array.isArray(rows) ? rows : [];
+      list.unshift(payload);
+      localStorage.setItem(key, JSON.stringify(list.slice(0, limit || 120)));
+    }catch(_){}
   }
 
-  function loadDraft(){return readJson(ROOT+"_draft",{})}
-  function saveDraft(v){const p={...(v||{}),updated_at:new Date().toISOString()};writeJson(ROOT+"_draft",p);return p}
-  function loadProfile(){return readJson(ROOT+"_profile",{})}
-  function saveProfile(v){const p={...(v||{}),phone:normPhone(v?.phone||""),updated_at:new Date().toISOString()};writeJson(ROOT+"_profile",p);return p}
-
-  function notes(){const a=readJson(ROOT+"_notes",[]); return Array.isArray(a)?a:[]}
-  function addNote(text,meta){
-    const t=String(text||"").trim();
-    if(!t) return null;
-    const n={id:"services_note_"+Date.now(),text:t,meta:meta||{},created_at:new Date().toISOString()};
-    const a=notes(); a.unshift(n); writeJson(ROOT+"_notes",a.slice(0,200)); return n;
+  function memory(){
+    return window.DIGIY_SERVICES_MEMORY || null;
   }
 
-  function requests(){const a=readJson(ROOT+"_requests",[]); return Array.isArray(a)?a:[]}
-  function upsertRequest(req){
-    const item={id:req?.id||("services_request_"+Date.now()),...(req||{}),updated_at:new Date().toISOString()};
-    const a=requests().filter(x=>String(x?.id)!==String(item.id)); a.unshift(item);
-    writeJson(ROOT+"_requests",a.slice(0,300)); return item;
+  function saveNoteMemory(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("note");
+
+    try{ memory()?.addNote?.(raw, {source:"action-build", packet:p}); }catch(_){}
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+
+    saveLegacy("DIGIY_BUILD_ACTION_NOTES", p, 120);
+    try{ localStorage.setItem("DIGIY_BUILD_PENDING_NOTE", JSON.stringify(p)); }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:note-saved", {detail:p})); }catch(_){}
   }
 
-  function quotes(){const a=readJson(ROOT+"_quotes",[]); return Array.isArray(a)?a:[]}
-  function upsertQuote(q){
-    const item={id:q?.id||("services_quote_"+Date.now()),...(q||{}),updated_at:new Date().toISOString()};
-    const a=quotes().filter(x=>String(x?.id)!==String(item.id)); a.unshift(item);
-    writeJson(ROOT+"_quotes",a.slice(0,300)); return item;
+  function saveJobMemory(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("job");
+
+    try{ memory()?.upsertRequest?.(p); }catch(_){}
+    try{ memory()?.upsertQuote?.(p); }catch(_){}
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+
+    saveLegacy("DIGIY_BUILD_ACTION_JOBS", p, 120);
+    try{ localStorage.setItem("DIGIY_BUILD_PENDING_JOB", JSON.stringify(p)); }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:job-saved", {detail:p})); }catch(_){}
   }
 
-  function clearLocal(){
-    [ROOT+"_draft",ROOT+"_notes",ROOT+"_requests",ROOT+"_quotes"].forEach(k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch(_){}});
-    return true;
+  function savePayBridge(){
+    const raw = text();
+    if(!raw) return;
+    const p = packet("pay");
+
+    try{ memory()?.saveDraft?.(p); }catch(_){}
+    try{ memory()?.addNote?.(raw, {source:"action-build-pay-draft", packet:p}); }catch(_){}
+
+    try{
+      localStorage.setItem("DIGIY_PAY_PENDING_MOVEMENT", JSON.stringify(p));
+      localStorage.setItem("DIGIY_BUILD_PAY_BRIDGE", JSON.stringify(p));
+      localStorage.setItem("DIGIY_BUILD_LATEST_ACTION", JSON.stringify(p));
+    }catch(_){}
+
+    try{ window.dispatchEvent(new CustomEvent("digiy:build:action:pay-bridge", {detail:p})); }catch(_){}
   }
 
-  window.DIGIY_SERVICES_MEMORY={
-    version:"services-memory-20260521",
-    sessionHint, rememberSession,
-    loadDraft, saveDraft,
-    loadProfile, saveProfile,
-    notes, addNote,
-    requests, upsertRequest,
-    quotes, upsertQuote,
-    clearLocal
-  };
+  function boot(){
+    const noteBtn = $("[data-save-note]");
+    const jobBtn = $("[data-save-job]");
+    const payBtn = $("[data-send-pay]");
+
+    if(noteBtn && noteBtn.dataset.servicesMemoryPatched !== "1"){
+      noteBtn.dataset.servicesMemoryPatched = "1";
+      noteBtn.addEventListener("click", saveNoteMemory);
+    }
+
+    if(jobBtn && jobBtn.dataset.servicesMemoryPatched !== "1"){
+      jobBtn.dataset.servicesMemoryPatched = "1";
+      jobBtn.addEventListener("click", saveJobMemory);
+    }
+
+    if(payBtn && payBtn.dataset.servicesMemoryPatched !== "1"){
+      payBtn.dataset.servicesMemoryPatched = "1";
+      payBtn.addEventListener("click", savePayBridge);
+    }
+
+    window.DIGIY_BUILD_ACTION_MEMORY_PATCH = {
+      version: VERSION,
+      packet,
+      saveNote: saveNoteMemory,
+      saveJob: saveJobMemory,
+      savePay: savePayBridge
+    };
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();
+</script>
+
+</body>
+</html>
+
