@@ -3,18 +3,50 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+
   <title>Mes services — Entrée</title>
+
   <meta name="theme-color" content="#1e7a46"/>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
   <meta name="digiy-build" content="services-build-rail-doctrine-20260521"/>
+
   <script>
     window.DIGIY_MODULE="BUILD";
     window.DIGIY_LOGIN_URL="./pin.html";
+
     (()=>{
       "use strict";
+
       const TARGET="./hub.html";
-      const SENSITIVE=["phone","tel","owner_phone","owner_id","slug","module","return","redirect","redirect_url","url","from","v","pin","token","session_token"];
-      function clean(){try{const u=new URL(location.href);let c=false;SENSITIVE.forEach(k=>{if(u.searchParams.has(k)){u.searchParams.delete(k);c=true;}});if(c)history.replaceState({},document.title,u.pathname+u.search+u.hash);}catch(_ ){}}
-      clean(); setTimeout(()=>{location.replace(TARGET+(location.hash||""));},520);
+      const SENSITIVE=[
+        "phone","tel","owner_phone","owner_id","slug","module",
+        "return","redirect","redirect_url","url","from","v",
+        "pin","token","session_token"
+      ];
+
+      function clean(){
+        try{
+          const u=new URL(location.href);
+          let c=false;
+
+          SENSITIVE.forEach(k=>{
+            if(u.searchParams.has(k)){
+              u.searchParams.delete(k);
+              c=true;
+            }
+          });
+
+          if(c){
+            history.replaceState({},document.title,u.pathname+u.search+u.hash);
+          }
+        }catch(_){}
+      }
+
+      clean();
+
+      setTimeout(()=>{
+        location.replace(TARGET+(location.hash||""));
+      },520);
     })();
   </script>
   <style>
