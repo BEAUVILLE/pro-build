@@ -149,6 +149,12 @@ label{display:block;margin:10px 0 7px;color:#fff;font-size:13px;font-weight:1000
     <div class="sectionTitle">Mémoire locale</div>
     <div id="notesList" class="help">Chargement…</div>
   </section>
+
+
+  <section class="card" id="servicesWorkMemory">
+    <div class="sectionTitle">Demandes · devis · interventions</div>
+    <div id="servicesWorkList" class="help">Chargement…</div>
+  </section>
 </main>
 <script>
 (()=>{const $=id=>document.getElementById(id);const note=$("noteText"), status=$("statusBox"), list=$("notesList");
@@ -207,8 +213,156 @@ render();})();
       boot();
     })();
   </script>
+
+<script>
+/* DIGIY BUILD — cockpit relit aussi demandes/devis de DIGIY_SERVICES_MEMORY */
+(function(){
+  "use strict";
+
+  function safe(v){
+    return String(v || "").replace(/[&<>"']/g, function(m){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m];
+    });
+  }
+
+  function readLegacyJobs(){
+    var out = [];
+    ["DIGIY_BUILD_ACTION_JOBS","DIGIY_BUILD_PENDING_JOB"].forEach(function(key){
+      try{
+        var raw = localStorage.getItem(key);
+        if(!raw) return;
+        var parsed = JSON.parse(raw);
+        if(Array.isArray(parsed)) out = out.concat(parsed);
+        else if(parsed && typeof parsed === "object") out.push(parsed);
+      }catch(_){}
+    });
+    return out;
+  }
+
+  function renderServicesWork(){
+    var box = document.getElementById("servicesWorkList");
+    if(!box) return;
+
+    var mem = window.DIGIY_SERVICES_MEMORY || {};
+    var requests = [];
+    var quotes = [];
+
+    try{ requests = typeof mem.requests === "function" ? mem.requests() : []; }catch(_){ requests = []; }
+    try{ quotes = typeof mem.quotes === "function" ? mem.quotes() : []; }catch(_){ quotes = []; }
+
+    var rows = []
+      .concat((Array.isArray(requests) ? requests : []).map(function(x){ return Object.assign({kind:"Demande"}, x || {}); }))
+      .concat((Array.isArray(quotes) ? quotes : []).map(function(x){ return Object.assign({kind:"Devis"}, x || {}); }))
+      .concat(readLegacyJobs().map(function(x){ return Object.assign({kind:"ACTION"}, x || {}); }));
+
+    var seen = {};
+    rows = rows.filter(function(r){
+      var key = String(r.id || r.created_at || r.createdAt || r.text || r.note || Math.random());
+      if(seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).sort(function(a,b){
+      return String(b.updated_at || b.created_at || b.createdAt || "").localeCompare(String(a.updated_at || a.created_at || a.createdAt || ""));
+    });
+
+    if(!rows.length){
+      box.innerHTML = "Aucune demande ou devis gardé pour le moment.";
+      return;
+    }
+
+    box.innerHTML = rows.slice(0,24).map(function(r){
+      var amount = Number(r.amount || r.draft?.quote_amount || 0);
+      var channel = r.channel || r.draft?.payment_mode || "";
+      var title = r.text || r.note || r.raw_text || r.clean_text || r.draft?.problem || "Fiche service";
+      var meta = [
+        r.kind || "BUILD",
+        r.status || "brouillon",
+        amount ? amount.toLocaleString("fr-FR") + " FCFA" : "",
+        channel || "",
+        r.created_at || r.createdAt ? new Date(r.created_at || r.createdAt).toLocaleString("fr-FR") : ""
+      ].filter(Boolean).join(" · ");
+
+      return '<div style="padding:12px;border:1px solid rgba(255,255,255,.14);border-radius:16px;margin-top:8px;background:rgba(0,0,0,.12)">' +
+        '<b style="color:#fff">' + safe(title) + '</b><br>' +
+        '<span style="font-size:12px;color:rgba(240,255,245,.65)">' + safe(meta) + '</span>' +
+      '</div>';
+    }).join("");
+  }
+
+  function boot(){
+    renderServicesWork();
+    window.addEventListener("storage", renderServicesWork);
+    window.addEventListener("digiy:build:action:job-saved", renderServicesWork);
+    window.addEventListener("digiy:build:action:note-saved", renderServicesWork);
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+
+  window.DIGIY_BUILD_COCKPIT_WORK_MEMORY = {
+    version: "build-cockpit-services-memory-20260602",
+    render: renderServicesWork
+  };
+})();
+</script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
