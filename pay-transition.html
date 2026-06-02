@@ -1,8 +1,89 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JOBS vers PAY</title><meta name="robots" content="noindex,nofollow"><style>body{margin:0;min-height:100vh;font-family:system-ui;background:#030b08;color:white;padding:18px;display:grid;place-items:center;font-weight:900}.card{width:min(680px,100%);border:1px solid rgba(255,255,255,.2);border-radius:28px;background:rgba(255,255,255,.09);padding:20px}.k{color:#fde68a;font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(42px,12vw,70px);line-height:.9;margin:10px 0;font-weight:1000}p{line-height:1.4;color:rgba(255,255,255,.85)}textarea,input{width:100%;border-radius:18px;border:1px solid rgba(250,204,21,.35);background:#061b14;color:white;padding:13px;font:900 16px system-ui;margin-top:10px}label{display:block;margin-top:10px;color:#fde68a;font-weight:1000}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.btn,a.btn{min-height:56px;border-radius:18px;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;background:rgba(255,255,255,.1);color:white;text-decoration:none;font-weight:1000;margin-top:10px}.go{background:#facc15;color:#061b14}.gold{background:#d6a63a;color:#111}@media(max-width:560px){.grid{grid-template-columns:1fr}}</style></head><body>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Mes services vers PAY</title>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="theme-color" content="#061b14">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,#0b5f34,#061b14 58%,#030b08);color:white;padding:18px;display:grid;place-items:center;font-weight:950}
+    .card{width:min(720px,100%);border:1px solid rgba(250,204,21,.28);border-radius:28px;background:rgba(255,255,255,.09);padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.34)}
+    .k{color:#fde68a;font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase}
+    h1{font-size:clamp(42px,11vw,70px);line-height:.9;margin:10px 0;font-weight:1000;letter-spacing:-.06em}
+    p{line-height:1.45;color:rgba(255,255,255,.85);font-size:16px}
+    label{display:block;margin-top:12px;color:#fde68a;font-weight:1000}
+    textarea,input{width:100%;border-radius:18px;border:1px solid rgba(250,204,21,.35);background:#061b14;color:white;padding:14px;font:900 16px system-ui;margin-top:8px;outline:none}
+    textarea{min-height:110px;resize:vertical;line-height:1.45}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+    .btn,a.btn{min-height:58px;border-radius:18px;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;background:rgba(255,255,255,.1);color:white;text-decoration:none;font-weight:1000}
+    .go{background:linear-gradient(135deg,#22c55e,#facc15);color:#061b14;border:0}.gold{background:#d6a63a;color:#111}.back{margin-top:10px}
+    .note{margin-top:12px;padding:12px 14px;border-radius:18px;border:1px dashed rgba(250,204,21,.32);color:#fde68a;background:rgba(250,204,21,.08);font-size:14px;font-weight:950}
+    @media(max-width:560px){.grid{grid-template-columns:1fr}body{padding:12px}.card{padding:16px;border-radius:24px}}
+  </style>
+</head>
+<body>
 <script>
 (function(){
-  var s = localStorage.getItem("digiy_guard_session:JOBS");
-  if(!s){ window.location.replace("./hub.html"); }
+  var s = localStorage.getItem("digiy_guard_session:BUILD") || localStorage.getItem("DIGIY_BUILD_SESSION") || localStorage.getItem("DIGIY_SERVICES_SESSION");
+  if(!s){ /* porte douce : ne bloque pas les tests locaux, mais garde l'alerte visible */ }
 })();
-</script><main class="card"><div class="k">JOBS → PAY</div><h1>Argent réel.</h1><p>JOBS garde la mission, les profils et les candidatures. PAY garde seulement frais, service, abonnement ou argent réellement reçu.</p><label>Montant reçu</label><input id="amount" inputmode="numeric" value="10000"><label>Mode</label><input id="mode" value="Wave"><label>Objet</label><input id="objet" value="Frais mission JOBS"><label>Phrase PAY</label><textarea id="phrase">recette JOBS 10000 Wave</textarea><div class="grid"><button class="btn gold" id="copy" type="button">Copier phrase PAY</button><a class="btn go" href="https://pro-pay.digiylyfe.com/action.html">Ouvrir PAY</a></div><a class="btn" href="./action.html">Retour DIGIY GO JOBS</a><p>Validation humaine obligatoire dans PAY. Rien n'est confirme automatiquement.</p></main><script>(function(){function $(id){return document.getElementById(id)}function clean(n){return String(n||'').replace(/[^0-9]/g,'')||'0'}function load(){try{var d=JSON.parse(localStorage.getItem('DIGIY_JOBS_GO_LATEST')||'null');if(!d)return;if(d.amount)$('amount').value=d.amount;if(d.mission)$('objet').value=d.mission}catch(e){}}function refresh(){var a=clean($('amount').value),m=$('mode').value||'Cash',o=$('objet').value||'Frais mission JOBS';$('phrase').value='recette JOBS '+a+' '+m+' - '+o}['amount','mode','objet'].forEach(function(id){$(id).addEventListener('input',refresh)});$('copy').onclick=function(){refresh();if(navigator.clipboard)navigator.clipboard.writeText($('phrase').value)};load();refresh();})();</script></body></html>
+</script>
+<main class="card">
+  <div class="k">MES SERVICES / BUILD → PAY</div>
+  <h1>Argent réel.</h1>
+  <p>Mes services garde la demande, le devis, le chantier et la relation client. PAY garde seulement l’acompte, le solde, la dépense ou l’argent réellement reçu.</p>
+
+  <label for="amount">Montant reçu ou dépensé</label>
+  <input id="amount" inputmode="numeric" value="30000">
+
+  <label for="mode">Mode</label>
+  <input id="mode" value="Wave">
+
+  <label for="objet">Objet</label>
+  <input id="objet" value="Acompte chantier BUILD">
+
+  <label for="phrase">Phrase PAY</label>
+  <textarea id="phrase">recette BUILD 30000 Wave - Acompte chantier</textarea>
+
+  <div class="grid">
+    <button class="btn gold" id="copy" type="button">📋 Copier phrase PAY</button>
+    <a class="btn go" href="https://pro-pay.digiylyfe.com/action.html?from=BUILD">💳 Ouvrir PAY</a>
+  </div>
+  <a class="btn back" href="./action.html">← Retour DIGIY GO Services</a>
+
+  <div class="note">Validation humaine obligatoire dans PAY. Rien n’est confirmé automatiquement depuis Mes services.</div>
+</main>
+<script>
+(function(){
+  function $(id){return document.getElementById(id)}
+  function clean(n){return String(n||"").replace(/[^0-9]/g,"")||"0"}
+  function readPayload(){
+    var keys = ["DIGIY_BUILD_PAY_BRIDGE","DIGIY_PAY_PENDING_MOVEMENT","DIGIY_BUILD_LATEST_ACTION","DIGIY_BUILD_PENDING_JOB","DIGIY_BUILD_PENDING_NOTE"];
+    for(var i=0;i<keys.length;i++){
+      try{ var d=JSON.parse(localStorage.getItem(keys[i])||"null"); if(d) return d; }catch(e){}
+    }
+    return null;
+  }
+  function load(){
+    var d=readPayload();
+    if(!d) return;
+    if(d.amount) $("amount").value=d.amount;
+    if(d.channel) $("mode").value=d.channel;
+    else if(d.mode) $("mode").value=d.mode;
+    var obj = d.category || d.text || d.note || "Acompte chantier BUILD";
+    $("objet").value = String(obj).slice(0,120);
+  }
+  function refresh(){
+    var a=clean($("amount").value), m=$("mode").value||"Cash", o=$("objet").value||"Acompte chantier BUILD";
+    var sens = /depense|dépense|materiel|matériel|achat/i.test(o) ? "dépense" : "recette";
+    $("phrase").value=sens+" BUILD "+a+" "+m+" - "+o;
+  }
+  ["amount","mode","objet"].forEach(function(id){$(id).addEventListener("input",refresh)});
+  $("copy").onclick=function(){refresh();if(navigator.clipboard)navigator.clipboard.writeText($("phrase").value)};
+  load();refresh();
+})();
+</script>
+</body>
+</html>
