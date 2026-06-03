@@ -318,7 +318,7 @@
 
       <div class="label" id="urlBox">Lien : —</div>
       <div class="note warn" id="note"></div>
-      <div class="mini" id="dbg">QR public · fiche artisan · DIGIY BUILD</div>
+      <div class="mini" id="dbg">QR neutre · fiche artisan BUILD · sans métier imposé</div>
     </div>
   </div>
 
@@ -549,9 +549,14 @@
       function publicUrlFromRow(row){
         if(!row) return "";
 
-        const direct = cleanPublicUrl(row.profile_url || row.public_url || row.fiche_url || row.url || "");
-        if(direct) return direct;
-
+        /*
+          DOCTRINE MOULE BUILD :
+          Le QR commun ne doit jamais imposer une fiche métier spécifique
+          comme solaire, hôtel, plomberie, etc.
+          Il pointe toujours vers la fiche BUILD publique du pro courant.
+          Si un pro a un site externe dédié, il peut le mettre dans sa fiche,
+          mais le QR du moule reste la porte neutre : ./fiche.html?slug=...
+        */
         const slug = normalizeSlug(row.slug_key || row.slug || "");
         if(!slug) return "";
 
