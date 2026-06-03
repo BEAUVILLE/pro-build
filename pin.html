@@ -429,7 +429,7 @@
   }
 
   function getSlugFromUrl(){
-    const names = ["slug", "s", "pro", "id", "fiche", "build", "espace BUILD"];
+    const names = ["slug", "s", "pro", "id", "fiche", "build", "batisseur"];
     const current = new URL(location.href);
     let found = pickParam(current.searchParams, names);
     if(found) return found;
@@ -472,7 +472,7 @@
         if(direct && direct !== "null" && direct !== "undefined") return direct;
 
         const parsed = readJsonFrom(storage, key);
-        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.espace BUILD_slug);
+        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.build_slug);
         if(nested) return nested;
       }
     }
@@ -702,6 +702,12 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
