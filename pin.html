@@ -5,307 +5,96 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
   <title>DIGIY PRO BUILD — Accès PIN</title>
+
+  <script>
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+    window.DIGIY_SUPABASE_URL = window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = window.DIGIY_SUPABASE_ANON_KEY || "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY;
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root{
-      --bg:#061b14;
-      --bg2:#0a2b1f;
-      --card:#0b2a1f;
-      --soft:rgba(255,255,255,.065);
-      --line:rgba(255,255,255,.15);
-      --text:#eafff1;
-      --muted:rgba(234,255,241,.74);
-      --gold:#facc15;
-      --gold2:#f97316;
-      --ok:#22c55e;
-      --bad:#fb7185;
+      --bg:#061b14; --bg2:#0a2b1f; --card:#0b2a1f; --soft:rgba(255,255,255,.065);
+      --line:rgba(255,255,255,.15); --text:#eafff1; --muted:rgba(234,255,241,.74);
+      --gold:#facc15; --gold2:#f97316; --ok:#22c55e; --bad:#fb7185;
       --shadow:0 18px 55px rgba(0,0,0,.46);
     }
-
     *{box-sizing:border-box}
     html{-webkit-text-size-adjust:100%}
-
     body{
-      margin:0;
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+      margin:0; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
       background:
         radial-gradient(circle at top left,rgba(250,204,21,.18),transparent 42%),
         radial-gradient(circle at bottom right,rgba(34,197,94,.18),transparent 40%),
         linear-gradient(135deg,var(--bg),var(--bg2));
-      color:var(--text);
-      padding:16px;
-      display:grid;
-      place-items:center;
+      color:var(--text); padding:16px; display:grid; place-items:center;
     }
-
     .card{
-      width:min(560px,100%);
-      background:linear-gradient(145deg,rgba(11,42,31,.97),rgba(6,35,25,.97));
-      border:1px solid var(--line);
-      border-radius:26px;
-      box-shadow:var(--shadow);
-      padding:18px;
-      position:relative;
-      overflow:hidden;
+      width:min(560px,100%); background:linear-gradient(145deg,rgba(11,42,31,.97),rgba(6,35,25,.97));
+      border:1px solid var(--line); border-radius:26px; box-shadow:var(--shadow); padding:18px;
+      position:relative; overflow:hidden;
     }
-
     .card::before{
-      content:"";
-      position:absolute;
-      inset:-45%;
+      content:""; position:absolute; inset:-45%;
       background:
         radial-gradient(circle at 20% 0%,rgba(250,204,21,.16),transparent 42%),
         radial-gradient(circle at 85% 95%,rgba(34,197,94,.14),transparent 42%);
       pointer-events:none;
     }
-
     .inside{position:relative;z-index:2}
-
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
     .ico{
-      width:52px;
-      height:52px;
-      border-radius:18px;
-      display:grid;
-      place-items:center;
+      width:52px;height:52px;border-radius:18px;display:grid;place-items:center;
       background:radial-gradient(circle at 30% 0%,var(--gold),var(--gold2));
-      color:#062015;
-      font-size:25px;
-      font-weight:1000;
-      border:1px solid rgba(250,204,21,.45);
-      box-shadow:0 12px 28px rgba(250,204,21,.28);
-      flex:0 0 auto;
+      color:#062015;font-size:25px;font-weight:1000;border:1px solid rgba(250,204,21,.45);
+      box-shadow:0 12px 28px rgba(250,204,21,.28);flex:0 0 auto;
     }
-
-    .eyebrow{
-      font-size:12px;
-      color:var(--gold);
-      font-weight:1000;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      margin-bottom:4px;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(24px,6vw,34px);
-      line-height:1.05;
-      font-weight:1000;
-      letter-spacing:-.03em;
-    }
-
-    .sub{
-      font-size:15px;
-      color:var(--muted);
-      margin-top:8px;
-      line-height:1.45;
-      font-weight:700;
-    }
-
+    .eyebrow{font-size:12px;color:var(--gold);font-weight:1000;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+    h1{margin:0;font-size:clamp(24px,6vw,34px);line-height:1.05;font-weight:1000;letter-spacing:-.03em}
+    .sub{font-size:15px;color:var(--muted);margin-top:8px;line-height:1.45;font-weight:700}
     .pill{
-      border:1px solid rgba(250,204,21,.35);
-      background:rgba(250,204,21,.11);
-      color:#fff7cc;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:1000;
-      white-space:nowrap;
+      border:1px solid rgba(250,204,21,.35); background:rgba(250,204,21,.11);
+      color:#fff7cc; padding:8px 10px; border-radius:999px; font-size:12px; font-weight:1000; white-space:nowrap;
     }
-
-    .doctrine{
-      margin:14px 0;
-      border:1px solid rgba(34,197,94,.35);
-      background:rgba(3,20,14,.44);
-      border-radius:20px;
-      padding:13px;
-      display:grid;
-      gap:8px;
-    }
-
+    .doctrine{margin:14px 0;border:1px solid rgba(34,197,94,.35);background:rgba(3,20,14,.44);border-radius:20px;padding:13px;display:grid;gap:8px}
     .doctrine strong{color:var(--gold)}
-
-    .doctrine-title{
-      font-size:15px;
-      font-weight:1000;
-      color:#bbf7d0;
-    }
-
-    .doctrine-text{
-      font-size:14px;
-      color:#eafff1;
-      line-height:1.5;
-      font-weight:650;
-    }
-
-    .sep{
-      height:1px;
-      background:var(--line);
-      margin:14px 0;
-    }
-
-    label{
-      display:block;
-      font-size:14px;
-      color:#d1fae5;
-      margin:8px 0 8px;
-      font-weight:900;
-    }
-
-    .pin-wrap{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      background:rgba(0,0,0,.22);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:4px 6px 4px 12px;
-    }
-
-    input{
-      width:100%;
-      min-width:0;
-      padding:14px 4px;
-      border:0;
-      background:transparent;
-      color:var(--text);
-      font-size:22px;
-      font-weight:1000;
-      letter-spacing:.22em;
-      outline:none;
-    }
-
+    .doctrine-title{font-size:15px;font-weight:1000;color:#bbf7d0}
+    .doctrine-text{font-size:14px;color:#eafff1;line-height:1.5;font-weight:650}
+    .sep{height:1px;background:var(--line);margin:14px 0}
+    label{display:block;font-size:14px;color:#d1fae5;margin:8px 0 8px;font-weight:900}
+    .pin-wrap{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:18px;padding:4px 6px 4px 12px}
+    input{width:100%;min-width:0;padding:14px 4px;border:0;background:transparent;color:var(--text);font-size:22px;font-weight:1000;letter-spacing:.22em;outline:none}
     .toggle{
-      width:auto;
-      margin:0;
-      padding:10px 11px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      font-size:13px;
-      font-weight:1000;
-      cursor:pointer;
-      flex:0 0 auto;
+      width:auto;margin:0;padding:10px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.07);color:var(--text);font-size:13px;font-weight:1000;cursor:pointer;flex:0 0 auto;
     }
-
     .primary{
-      width:100%;
-      margin-top:13px;
-      padding:16px 14px;
-      border-radius:18px;
-      border:none;
-      background:linear-gradient(90deg,var(--ok),var(--gold));
-      color:#062015;
-      font-weight:1000;
-      font-size:17px;
-      cursor:pointer;
-      min-height:54px;
-      box-shadow:0 12px 26px rgba(34,197,94,.22);
+      width:100%;margin-top:13px;padding:16px 14px;border-radius:18px;border:none;
+      background:linear-gradient(90deg,var(--ok),var(--gold));color:#062015;font-weight:1000;font-size:17px;
+      cursor:pointer;min-height:54px;box-shadow:0 12px 26px rgba(34,197,94,.22);
     }
-
     .primary:disabled{opacity:.62;cursor:not-allowed}
-
-    .msg{
-      margin-top:12px;
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.55;
-      font-weight:700;
-      min-height:22px;
-    }
-
+    .msg{margin-top:12px;font-size:14px;color:var(--muted);line-height:1.55;font-weight:700;min-height:22px}
     .ok{color:var(--ok);font-weight:1000}
     .bad{color:var(--bad);font-weight:1000}
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .link,.small-btn{
-      text-align:center;
-      border:1px solid var(--line);
-      background:var(--soft);
-      padding:12px 10px;
-      border-radius:16px;
-      font-weight:1000;
-      color:var(--text);
-      text-decoration:none;
-      min-height:48px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      font-size:14px;
+      text-align:center;border:1px solid var(--line);background:var(--soft);padding:12px 10px;border-radius:16px;
+      font-weight:1000;color:var(--text);text-decoration:none;min-height:48px;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:14px;
     }
-
-    .small-btn{
-      width:100%;
-      margin:0;
-      font-family:inherit;
-    }
-
-    .open-btn{
-      display:none;
-      margin-top:12px;
-      border-color:rgba(250,204,21,.45);
-      background:rgba(250,204,21,.12);
-      color:#fef3c7;
-    }
-
-    .trust{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px;
-    }
-
-    .trust-item{
-      border:1px solid rgba(255,255,255,.11);
-      background:rgba(255,255,255,.045);
-      border-radius:16px;
-      padding:10px;
-      font-size:12px;
-      line-height:1.35;
-      color:var(--muted);
-      font-weight:800;
-    }
-
-    .trust-item b{
-      display:block;
-      color:#eafff1;
-      font-size:13px;
-      margin-bottom:3px;
-    }
-
+    .small-btn{width:100%;margin:0;font-family:inherit}
+    .open-btn{display:none;margin-top:12px;border-color:rgba(250,204,21,.45);background:rgba(250,204,21,.12);color:#fef3c7}
+    .trust{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .trust-item{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.045);border-radius:16px;padding:10px;font-size:12px;line-height:1.35;color:var(--muted);font-weight:800}
+    .trust-item b{display:block;color:#eafff1;font-size:13px;margin-bottom:3px}
     @media(max-width:560px){
       body{padding:0}
-      .card{
-        min-height:100vh;
-        border-radius:0;
-        border-left:0;
-        border-right:0;
-        display:flex;
-        align-items:center;
-      }
+      .card{min-height:100vh;border-radius:0;border-left:0;border-right:0;display:flex;align-items:center}
       .inside{width:100%}
       .pill{display:none}
       .row,.trust{grid-template-columns:1fr}
@@ -324,14 +113,14 @@
           <div>
             <div class="eyebrow">DIGIY PRO BUILD</div>
             <h1 id="pageTitle">Entrer dans mon espace</h1>
-            <div class="sub" id="subtitle">Porte sécurisée · PIN requis · session 8h</div>
+            <div class="sub" id="subtitle">Porte simple · PIN requis · session 8h</div>
           </div>
         </div>
         <div class="pill">Accès pro</div>
       </div>
 
       <section class="doctrine" aria-label="Doctrine DIGIY">
-        <div class="doctrine-title">Ici, on protège l’artisan tout corps de métiers.</div>
+        <div class="doctrine-title">Ici, on protège l’artisan.</div>
         <div class="doctrine-text">
           L’artisan garde <strong>son nom</strong>, <strong>son client</strong>, <strong>son argent</strong> et
           <strong>sa relation</strong>. DIGIY ouvre la porte, le pro valide.
@@ -372,44 +161,27 @@
 (async () => {
   "use strict";
 
+  const MODULE = "BUILD";
   const PIN_MODULE = "pro_build";
-  const MODULE_CANDIDATES = ["pro_build", "BUILD", "build", "PRO_BUILD", "pro-build", "BATISSEUR", "batisseur", "BÂTISSEUR", "pro_batisseur"];
-  const PAY_MODULE = "BUILD";
-  const NEXT_URL   = "./hub.html";
+  const MODULE_CANDIDATES = ["BUILD", "pro_build", "PRO_BUILD", "build", "pro-build", "BATISSEUR", "batisseur", "BÂTISSEUR", "pro_batisseur"];
+  const NEXT_URL = "./hub.html";
   const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
-  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+  const SUPABASE_URL = window.DIGIY_SUPABASE_URL;
+  const SUPABASE_ANON_KEY = window.DIGIY_SUPABASE_ANON_KEY || window.DIGIY_SUPABASE_ANON;
 
   const $ = (id) => document.getElementById(id);
   const setMsg = (html) => { $("msg").innerHTML = html || ""; };
 
-  const SESSION_KEYS = [
-    "DIGIY_BUILD_ACCESS",
-    "DIGIY_ACCESS",
-    "DIGIY_PRO_BUILD_ACCESS",
-    "DIGIY_MODULE_ACCESS"
-  ];
-
-  const SLUG_KEYS = [
-    "DIGIY_BUILD_SLUG",
-    "DIGIY_CURRENT_SLUG",
-    "DIGIY_PRO_SLUG",
-    "DIGIY_SLUG",
-    "digiy_build_slug",
-    "digiy_slug",
-    "slug"
-  ];
+  const SESSION_KEYS = ["DIGIY_BUILD_ACCESS", "DIGIY_ACCESS", "DIGIY_PRO_BUILD_ACCESS", "DIGIY_MODULE_ACCESS"];
+  const SLUG_KEYS = ["DIGIY_BUILD_SLUG", "DIGIY_CURRENT_SLUG", "DIGIY_PRO_SLUG", "DIGIY_SLUG", "digiy_build_slug", "digiy_slug", "slug"];
 
   function readRaw(storage, key){
-    try{ return storage.getItem(key); }
-    catch(_){ return null; }
+    try{ return storage.getItem(key); }catch(_){ return null; }
   }
 
   function readJsonFrom(storage, key){
-    try{ return JSON.parse(readRaw(storage, key) || "null"); }
-    catch(_){ return null; }
+    try{ return JSON.parse(readRaw(storage, key) || "null"); }catch(_){ return null; }
   }
 
   function normalizeSlug(value){
@@ -418,6 +190,11 @@
       .replace(/^['"]+|['"]+$/g, "")
       .replace(/\s+/g, "-")
       .replace(/[^a-zA-Z0-9._-]/g, "");
+  }
+
+  function moduleLooksBuild(v){
+    const m = String(v || "").trim().toUpperCase().replace(/[-\s]/g, "_");
+    return m === "BUILD" || m === "PRO_BUILD" || m === "BATISSEUR" || m === "BÂTISSEUR" || m === "PRO_BATISSEUR";
   }
 
   function pickParam(params, names){
@@ -444,7 +221,7 @@
     }
 
     const lastPath = normalizeSlug(location.pathname.split("/").filter(Boolean).pop() || "");
-    if(lastPath && !/^(pin|pin\.html|pin-build|pin-build\.html|index|index\.html|go-pin|go-pin\.html|go-pin-build|go-pin-build\.html)$/i.test(lastPath)){
+    if(lastPath && !/^(pin|pin\.html|index|index\.html|go-pin|go-pin\.html)$/i.test(lastPath)){
       return lastPath;
     }
     return "";
@@ -454,7 +231,7 @@
     for(const storage of [localStorage, sessionStorage]){
       for(const key of SESSION_KEYS){
         const value = readJsonFrom(storage, key);
-        if(value && normalizeSlug(value.slug)) return value;
+        if(value && normalizeSlug(value.slug) && moduleLooksBuild(value.module || value.pin_module)) return value;
       }
     }
     return null;
@@ -495,24 +272,20 @@
 
   function isFreshSession(session){
     const ts = Number(session?.ts || session?.verified_at || 0);
-    return Boolean(normalizeSlug(session?.slug) && ts && (Date.now() - ts) < SESSION_TTL_MS);
+    return Boolean(normalizeSlug(session?.slug) && moduleLooksBuild(session?.module || session?.pin_module) && ts && (Date.now() - ts) < SESSION_TTL_MS);
   }
 
   function cleanVisibleUrl(){
-    try{
-      history.replaceState(null, "", location.pathname);
-    }catch(_){}
+    try{ history.replaceState(null, "", location.pathname); }catch(_){}
   }
 
   const slugFromUrl = getSlugFromUrl();
   const storedSession = getStoredSession();
   const slug = rememberSlug(slugFromUrl || getStoredSlug());
 
-  if(slugFromUrl){
-    cleanVisibleUrl();
-  }
+  if(slugFromUrl) cleanVisibleUrl();
 
-  function goCockpit(){
+  function goHub(){
     const next = new URL(NEXT_URL, location.href);
     next.search = "";
     next.hash = "";
@@ -523,23 +296,24 @@
     return Array.isArray(data) ? (data[0] || {}) : (data || {});
   }
 
-  function saveAccessSession(payload){
+  function saveAccessSession(payload, acceptedModule){
     const now = Date.now();
     const session = {
       slug: normalizeSlug(payload.slug) || slug,
-      phone: payload.phone || null,
+      phone: payload.phone || payload.owner_phone || null,
       owner_id: payload.owner_id || payload.owner || null,
-      module: PAY_MODULE,
-      pin_module: PIN_MODULE,
+      module: MODULE,
+      pin_module: acceptedModule || PIN_MODULE,
       ts: now,
       verified_at: now,
       expires_at: now + SESSION_TTL_MS
     };
 
-    localStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-    localStorage.setItem("DIGIY_BUILD_ACCESS", JSON.stringify(session));
-    localStorage.setItem("DIGIY_PRO_BUILD_ACCESS", JSON.stringify(session));
-    localStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
+    const json = JSON.stringify(session);
+    localStorage.setItem("DIGIY_ACCESS", json);
+    localStorage.setItem("DIGIY_BUILD_ACCESS", json);
+    localStorage.setItem("DIGIY_PRO_BUILD_ACCESS", json);
+    localStorage.setItem("DIGIY_MODULE_ACCESS", json);
     localStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
     localStorage.setItem("DIGIY_BUILD_SLUG", session.slug);
     localStorage.setItem("digiy_build_slug", session.slug);
@@ -549,10 +323,10 @@
     }
 
     try{
-      sessionStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-      sessionStorage.setItem("DIGIY_BUILD_ACCESS", JSON.stringify(session));
-      sessionStorage.setItem("DIGIY_PRO_BUILD_ACCESS", JSON.stringify(session));
-      sessionStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_ACCESS", json);
+      sessionStorage.setItem("DIGIY_BUILD_ACCESS", json);
+      sessionStorage.setItem("DIGIY_PRO_BUILD_ACCESS", json);
+      sessionStorage.setItem("DIGIY_MODULE_ACCESS", json);
       sessionStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
       sessionStorage.setItem("DIGIY_BUILD_SLUG", session.slug);
       sessionStorage.setItem("digiy_build_slug", session.slug);
@@ -566,39 +340,65 @@
   }
 
   const pay = new URL("https://commencer-a-payer.digiylyfe.com/");
-  pay.searchParams.set("module", PAY_MODULE);
+  pay.searchParams.set("module", MODULE);
   $("payLink").href = pay.toString();
 
   if(isFreshSession(storedSession)){
     $("openSpace").style.display = "flex";
-    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans ton espace BUILD.");
+    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans BUILD.");
   }
 
   if(!slug){
     $("go").disabled = true;
-    $("subtitle").textContent = "Accès incomplet · QR ou lien pro requis";
-    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>L’espace BUILD n’a pas encore été reconnu. Reviens depuis ton QR / GO PIN avec le slug, ou contacte le support. Aucun identifiant sensible n’est affiché ici.");
+    $("subtitle").textContent = "Accès incomplet · slug requis";
+    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>BUILD n’a pas encore été reconnu. Reviens depuis ton lien GO PIN avec le slug.");
   }else{
-    $("subtitle").textContent = "Espace BUILD reconnu · PIN requis · session 8h";
-    setMsg("<span class='ok'>✅ Espace BUILD reconnu.</span> Entre ton PIN BUILD pour ouvrir l’espace.");
+    $("subtitle").textContent = "BUILD reconnu · PIN requis · session 8h";
+    setMsg("<span class='ok'>✅ BUILD reconnu.</span> Entre ton PIN pour ouvrir l’espace.");
     setTimeout(() => $("pin").focus(), 140);
   }
 
-  if(!window.supabase){
+  if(!window.supabase || !SUPABASE_URL || !SUPABASE_ANON_KEY){
     $("go").disabled = true;
     setMsg("<span class='bad'>❌ Connexion Supabase indisponible.</span><br>Vérifie internet puis recharge la page.");
     return;
   }
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth:{ persistSession:false }
+    auth: { persistSession:false, autoRefreshToken:false }
   });
+
+  async function verifyByRpc(pin){
+    let lastError = null;
+
+    for(const moduleName of MODULE_CANDIDATES){
+      const { data, error } = await sb.rpc("digiy_verify_access", {
+        p_slug: slug,
+        p_pin: pin,
+        p_module: moduleName
+      });
+
+      if(error){
+        lastError = error;
+        break;
+      }
+
+      const candidate = normalizeResult(data);
+      const ok = candidate?.ok === true || candidate?.ok === 1 || candidate?.status === "ok" || candidate?.access === true || candidate?.access_ok === true;
+      if(ok){
+        return { ok:true, payload:candidate, moduleName };
+      }
+    }
+
+    if(lastError) return { ok:false, error:lastError };
+    return { ok:false };
+  }
 
   async function enter(){
     const pin = $("pin").value.trim();
 
     if(!slug){
-      setMsg("<span class='bad'>❌ Accès incomplet.</span> Reviens depuis ton QR ou ton GO PIN.");
+      setMsg("<span class='bad'>❌ Accès incomplet.</span> Reviens depuis ton GO PIN BUILD.");
       return;
     }
 
@@ -611,51 +411,24 @@
     setMsg("⏳ Vérification de ton accès BUILD…");
 
     try{
-      let result = null;
-      let lastError = null;
-      let acceptedModule = PIN_MODULE;
+      const result = await verifyByRpc(pin);
 
-      for(const moduleName of MODULE_CANDIDATES){
-        const { data, error } = await sb.rpc("digiy_verify_access", {
-          p_slug: slug,
-          p_pin: pin,
-          p_module: moduleName
-        });
-
-        if(error){
-          lastError = error;
-          break;
-        }
-
-        const candidate = normalizeResult(data);
-        const ok = candidate?.ok === true || candidate?.ok === 1 || candidate?.status === "ok";
-        if(ok){
-          result = candidate;
-          acceptedModule = moduleName;
-          break;
-        }
-      }
-
-      if(lastError){
+      if(result.error){
         $("go").disabled = false;
-        const rawMsg = String(lastError.message || "Réessaie dans un instant.");
-        const cleanMsg = /api key/i.test(rawMsg)
-          ? "Clé Supabase refusée. Le fichier doit garder la clé officielle du projet."
-          : rawMsg;
-        setMsg("<span class='bad'>❌ Erreur serveur.</span><br>" + cleanMsg);
+        const rawMsg = String(result.error.message || "Réessaie dans un instant.");
+        setMsg("<span class='bad'>❌ Erreur serveur.</span><br>" + rawMsg);
         return;
       }
 
-      if(!result){
+      if(!result.ok){
         $("go").disabled = false;
-        setMsg("<span class='bad'>❌ PIN non validé.</span><br>L’espace BUILD est reconnu, mais le couple fiche BUILD + PIN ne correspond pas encore. Vérifie le code, le slug BUILD ou l’activation BUILD.");
+        setMsg("<span class='bad'>❌ PIN non validé.</span><br>BUILD est reconnu, mais le couple slug + PIN + module ne correspond pas encore dans la fonction d’accès.");
         return;
       }
 
-      result.accepted_module = acceptedModule;
-      saveAccessSession(result);
-      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de ton espace BUILD, URL propre.");
-      setTimeout(goCockpit, 420);
+      saveAccessSession(result.payload, result.moduleName);
+      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de BUILD, URL propre.");
+      setTimeout(goHub, 420);
 
     }catch(err){
       $("go").disabled = false;
@@ -666,10 +439,11 @@
   function speakHelp(){
     const text = [
       "Accès Pro BUILD.",
+      "BUILD veut dire artisans tout corps de métiers.",
       "Entre ton code PIN.",
-      "La session BUILD reste ouverte huit heures.",
+      "La session reste ouverte huit heures.",
       "L'adresse reste propre : aucun identifiant sensible n'est affiché après la lecture.",
-      "L’espace BUILD garde son nom, son client, son argent et sa relation.",
+      "L'artisan garde son nom, son client, son argent et sa relation.",
       "diji i ouvre la porte, le pro valide."
     ].join(" ");
 
@@ -683,7 +457,7 @@
   }
 
   $("go").addEventListener("click", enter);
-  $("openSpace").addEventListener("click", goCockpit);
+  $("openSpace").addEventListener("click", goHub);
   $("pin").addEventListener("keydown", (e) => { if(e.key === "Enter") enter(); });
 
   $("togglePin").addEventListener("click", () => {
