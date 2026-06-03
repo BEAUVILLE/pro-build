@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY PRO LOC — Accès PIN</title>
+  <title>DIGIY PRO BUILD — Accès PIN</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{
@@ -320,9 +320,9 @@
     <div class="inside">
       <div class="top">
         <div class="brand">
-          <div class="ico" aria-hidden="true">🏠</div>
+          <div class="ico" aria-hidden="true">🧰</div>
           <div>
-            <div class="eyebrow">DIGIY PRO LOC</div>
+            <div class="eyebrow">DIGIY PRO BUILD</div>
             <h1 id="pageTitle">Entrer dans mon espace</h1>
             <div class="sub" id="subtitle">Porte sécurisée · PIN requis · session 8h</div>
           </div>
@@ -331,9 +331,9 @@
       </div>
 
       <section class="doctrine" aria-label="Doctrine DIGIY">
-        <div class="doctrine-title">Ici, on protège le logement.</div>
+        <div class="doctrine-title">Ici, on protège l’artisan tout corps de métiers.</div>
         <div class="doctrine-text">
-          Le propriétaire garde <strong>son nom</strong>, <strong>son client</strong>, <strong>son argent</strong> et
+          L’artisan garde <strong>son nom</strong>, <strong>son client</strong>, <strong>son argent</strong> et
           <strong>sa relation</strong>. DIGIY ouvre la porte, le pro valide.
         </div>
       </section>
@@ -345,19 +345,19 @@
 
       <div class="sep"></div>
 
-      <label for="pin">Ton PIN LOC</label>
+      <label for="pin">Ton PIN BUILD</label>
       <div class="pin-wrap">
         <input id="pin" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="••••" maxlength="8"/>
         <button class="toggle" type="button" id="togglePin" aria-label="Afficher ou masquer le PIN">Voir</button>
       </div>
 
       <button id="go" class="primary" type="button">🚀 Entrer dans mon espace</button>
-      <button id="openSpace" class="link open-btn" type="button">Ouvrir mon espace LOC</button>
+      <button id="openSpace" class="link open-btn" type="button">Ouvrir mon espace BUILD</button>
 
       <div class="msg" id="msg"></div>
 
       <div class="row" id="linksRow">
-        <a class="link" id="payLink" href="https://commencer-a-payer.digiylyfe.com/?module=LOC" target="_blank" rel="noopener">💳 Activer LOC</a>
+        <a class="link" id="payLink" href="https://commencer-a-payer.digiylyfe.com/?module=BUILD" target="_blank" rel="noopener">💳 Activer BUILD</a>
         <a class="link" href="https://wa.me/221771342889" target="_blank" rel="noopener">🛟 Support WhatsApp</a>
       </div>
 
@@ -372,10 +372,10 @@
 (async () => {
   "use strict";
 
-  const PIN_MODULE = "pro_loc";
-  const MODULE_CANDIDATES = ["pro_loc", "LOC", "loc", "PRO_LOC", "pro-loc"];
-  const PAY_MODULE = "LOC";
-  const NEXT_URL   = "./app.html";
+  const PIN_MODULE = "pro_build";
+  const MODULE_CANDIDATES = ["pro_build", "BUILD", "build", "PRO_BUILD", "pro-build", "BATISSEUR", "batisseur", "BÂTISSEUR", "pro_batisseur"];
+  const PAY_MODULE = "BUILD";
+  const NEXT_URL   = "./hub.html";
   const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -386,18 +386,18 @@
   const setMsg = (html) => { $("msg").innerHTML = html || ""; };
 
   const SESSION_KEYS = [
-    "DIGIY_LOC_ACCESS",
+    "DIGIY_BUILD_ACCESS",
     "DIGIY_ACCESS",
-    "DIGIY_PRO_LOC_ACCESS",
+    "DIGIY_PRO_BUILD_ACCESS",
     "DIGIY_MODULE_ACCESS"
   ];
 
   const SLUG_KEYS = [
-    "DIGIY_LOC_SLUG",
+    "DIGIY_BUILD_SLUG",
     "DIGIY_CURRENT_SLUG",
     "DIGIY_PRO_SLUG",
     "DIGIY_SLUG",
-    "digiy_loc_slug",
+    "digiy_build_slug",
     "digiy_slug",
     "slug"
   ];
@@ -429,7 +429,7 @@
   }
 
   function getSlugFromUrl(){
-    const names = ["slug", "s", "pro", "id", "fiche", "loc", "logement"];
+    const names = ["slug", "s", "pro", "id", "fiche", "build", "espace BUILD"];
     const current = new URL(location.href);
     let found = pickParam(current.searchParams, names);
     if(found) return found;
@@ -444,7 +444,7 @@
     }
 
     const lastPath = normalizeSlug(location.pathname.split("/").filter(Boolean).pop() || "");
-    if(lastPath && !/^(pin|pin\.html|pin-loc|pin-loc\.html|index|index\.html|go-pin|go-pin\.html|go-pin-loc|go-pin-loc\.html)$/i.test(lastPath)){
+    if(lastPath && !/^(pin|pin\.html|pin-build|pin-build\.html|index|index\.html|go-pin|go-pin\.html|go-pin-build|go-pin-build\.html)$/i.test(lastPath)){
       return lastPath;
     }
     return "";
@@ -472,7 +472,7 @@
         if(direct && direct !== "null" && direct !== "undefined") return direct;
 
         const parsed = readJsonFrom(storage, key);
-        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.logement_slug);
+        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.espace BUILD_slug);
         if(nested) return nested;
       }
     }
@@ -483,10 +483,12 @@
     const clean = normalizeSlug(value);
     if(!clean) return "";
     try{
-      localStorage.setItem("DIGIY_LOC_SLUG", clean);
+      localStorage.setItem("DIGIY_BUILD_SLUG", clean);
       localStorage.setItem("DIGIY_CURRENT_SLUG", clean);
-      sessionStorage.setItem("DIGIY_LOC_SLUG", clean);
+      localStorage.setItem("digiy_build_slug", clean);
+      sessionStorage.setItem("DIGIY_BUILD_SLUG", clean);
       sessionStorage.setItem("DIGIY_CURRENT_SLUG", clean);
+      sessionStorage.setItem("digiy_build_slug", clean);
     }catch(_){}
     return clean;
   }
@@ -535,26 +537,28 @@
     };
 
     localStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-    localStorage.setItem("DIGIY_LOC_ACCESS", JSON.stringify(session));
+    localStorage.setItem("DIGIY_BUILD_ACCESS", JSON.stringify(session));
+    localStorage.setItem("DIGIY_PRO_BUILD_ACCESS", JSON.stringify(session));
     localStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
     localStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
-    localStorage.setItem("DIGIY_LOC_SLUG", session.slug);
-    localStorage.setItem("digiy_loc_slug", session.slug);
+    localStorage.setItem("DIGIY_BUILD_SLUG", session.slug);
+    localStorage.setItem("digiy_build_slug", session.slug);
     if(session.phone){
-      localStorage.setItem("DIGIY_LOC_PHONE", String(session.phone));
-      localStorage.setItem("digiy_loc_phone", String(session.phone));
+      localStorage.setItem("DIGIY_BUILD_PHONE", String(session.phone));
+      localStorage.setItem("digiy_build_phone", String(session.phone));
     }
 
     try{
       sessionStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-      sessionStorage.setItem("DIGIY_LOC_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_BUILD_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_PRO_BUILD_ACCESS", JSON.stringify(session));
       sessionStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
       sessionStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
-      sessionStorage.setItem("DIGIY_LOC_SLUG", session.slug);
-      sessionStorage.setItem("digiy_loc_slug", session.slug);
+      sessionStorage.setItem("DIGIY_BUILD_SLUG", session.slug);
+      sessionStorage.setItem("digiy_build_slug", session.slug);
       if(session.phone){
-        sessionStorage.setItem("DIGIY_LOC_PHONE", String(session.phone));
-        sessionStorage.setItem("digiy_loc_phone", String(session.phone));
+        sessionStorage.setItem("DIGIY_BUILD_PHONE", String(session.phone));
+        sessionStorage.setItem("digiy_build_phone", String(session.phone));
       }
     }catch(_){}
 
@@ -567,16 +571,16 @@
 
   if(isFreshSession(storedSession)){
     $("openSpace").style.display = "flex";
-    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans ton espace LOC.");
+    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans ton espace BUILD.");
   }
 
   if(!slug){
     $("go").disabled = true;
     $("subtitle").textContent = "Accès incomplet · QR ou lien pro requis";
-    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>Le logement n’a pas encore été reconnu. Reviens depuis ton QR / GO PIN avec le slug, ou contacte le support. Aucun identifiant sensible n’est affiché ici.");
+    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>L’espace BUILD n’a pas encore été reconnu. Reviens depuis ton QR / GO PIN avec le slug, ou contacte le support. Aucun identifiant sensible n’est affiché ici.");
   }else{
-    $("subtitle").textContent = "Logement reconnu · PIN requis · session 8h";
-    setMsg("<span class='ok'>✅ Logement reconnu.</span> Entre ton PIN LOC pour ouvrir l’espace.");
+    $("subtitle").textContent = "Espace BUILD reconnu · PIN requis · session 8h";
+    setMsg("<span class='ok'>✅ Espace BUILD reconnu.</span> Entre ton PIN BUILD pour ouvrir l’espace.");
     setTimeout(() => $("pin").focus(), 140);
   }
 
@@ -599,12 +603,12 @@
     }
 
     if(pin.length < 3){
-      setMsg("<span class='bad'>❌ PIN trop court.</span> Entre ton PIN LOC.");
+      setMsg("<span class='bad'>❌ PIN trop court.</span> Entre ton PIN BUILD.");
       return;
     }
 
     $("go").disabled = true;
-    setMsg("⏳ Vérification de ton accès LOC…");
+    setMsg("⏳ Vérification de ton accès BUILD…");
 
     try{
       let result = null;
@@ -644,13 +648,13 @@
 
       if(!result){
         $("go").disabled = false;
-        setMsg("<span class='bad'>❌ PIN non validé.</span><br>Le logement est reconnu, mais le couple logement + PIN ne correspond pas encore. Vérifie le code, le slug LOC ou l’activation LOC.");
+        setMsg("<span class='bad'>❌ PIN non validé.</span><br>L’espace BUILD est reconnu, mais le couple fiche BUILD + PIN ne correspond pas encore. Vérifie le code, le slug BUILD ou l’activation BUILD.");
         return;
       }
 
       result.accepted_module = acceptedModule;
       saveAccessSession(result);
-      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de ton espace LOC, URL propre.");
+      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de ton espace BUILD, URL propre.");
       setTimeout(goCockpit, 420);
 
     }catch(err){
@@ -661,11 +665,11 @@
 
   function speakHelp(){
     const text = [
-      "Accès Pro LOC.",
+      "Accès Pro BUILD.",
       "Entre ton code PIN.",
-      "La session reste ouverte huit heures.",
+      "La session BUILD reste ouverte huit heures.",
       "L'adresse reste propre : aucun identifiant sensible n'est affiché après la lecture.",
-      "Le logement garde son nom, son client, son argent et sa relation.",
+      "L’espace BUILD garde son nom, son client, son argent et sa relation.",
       "diji i ouvre la porte, le pro valide."
     ].join(" ");
 
@@ -698,6 +702,12 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
