@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#1e7a46"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
   <meta name="description" content="DIGIY Mes services PRO — HUB mobile terrain : demandes, devis, oreille, fiche, argent et session."/>
-  <meta name="digiy-build" content="build-hub-fiche-qr-20260603"/>
+  <meta name="digiy-build" content="build-hub-profile-qr-neutre-20260603"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -23,7 +23,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
-  <script src="./guard.js?v=build-guard-hub-20260531"></script>
+  <script src="./guard.js?v=build-guard-simple-20260603"></script>
   <script src="./assets/js/digiy-module-bridge.js?v=bridge-20260520" defer></script>
   <style>
     :root{--bg:#1e7a46;--bg2:#155a34;--bg3:#0e4226;--bar:rgba(8,50,24,.96);--gold:#c4973f;--gold2:#fff0a8;--green:#22c55e;--line:rgba(255,255,255,.18);--text:#f0fff5;--muted:rgba(240,255,245,.76);--shadow:0 16px 40px rgba(0,0,0,.22);--r:18px;--max:980px;--hdrH:52px;--barH:78px}
@@ -38,31 +38,34 @@
 <body>
 <header class="topHeader"><a class="hdrBack" href="https://digiy-hub.digiylyfe.com/">← HUB général</a><div class="hdrTitle">MES SERVICES</div><div class="hdrPill" id="sessionPill">session…</div></header>
 <main class="wrap">
-  <section><div class="eyebrow">DIGIY PRO · MES SERVICES</div><h1>Ton service, clair et direct.</h1><div class="lead">Demandes, devis, notes, fiche, argent, session et Oreille : tout est rangé en gestes simples.</div><div class="rule"><b>Doctrine :</b> le pro clique ou parle. DIGIY prépare les mots du service. Le terrain corrige, confirme et garde sa vérité.</div></section>
+  <section><div class="eyebrow">DIGIY PRO · MES SERVICES</div><h1>Ton service, clair et direct.</h1><div class="lead">Profil, demande, service, QR, argent, session et Oreille : chaque geste reste simple et neutre.</div><div class="rule"><b>Doctrine :</b> le pro clique ou parle. DIGIY prépare une base claire. Le terrain corrige, confirme et garde sa vérité.</div></section>
 
   <section><div class="sectionTitle">Action immédiate</div><div class="grid">
-    <a class="tile voice" href="./action.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">GO</div></div><div><b>DIGIY GO Services</b><span>Le client ou le pro parle. Mes services prépare.</span></div></a>
-    <a class="tile primary" href="./cockpit.html#quickService"><div class="tileTop"><div class="ico">✍️</div><div class="tag">Note</div></div><div><b>Noter une demande</b><span>Client, besoin, prix, urgence : DIGIY range.</span></div></a>
-    <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">Oreille</div></div><div><b>Oreille Mes services</b><span>Parler, formuler, valider.</span></div></a>
-    <a class="tile gold" href="./cockpit.html"><div class="tileTop"><div class="ico">🧰</div><div class="tag">Service</div></div><div><b>Mon service</b><span>Demandes, devis, chantier, suivi.</span></div></a>
-    <a class="tile blue" href="./fiche.html"><div class="tileTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div><div><b>Ma fiche artisan</b><span>Métier, zone, contact, présentation publique.</span></div></a>
-    <a class="tile blue" href="./qr.html"><div class="tileTop"><div class="ico">🔳</div><div class="tag">QR</div></div><div><b>Mon QR fiche</b><span>QR public pour WhatsApp, affiche, vitrine ou chantier.</span></div></a>
-    <a class="tile pay" href="./pay-transition.html"><div class="tileTop"><div class="ico">💳</div><div class="tag">PAY</div></div><div><b>Acompte vers PAY</b><span>Argent réel seulement. PAY valide.</span></div></a>
-    <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD"><div class="tileTop"><div class="ico">💰</div><div class="tag">PAY</div></div><div><b>Mon argent</b><span>Arrhes, acompte, dépense, solde.</span></div></a>
+    <a class="tile voice" href="./action.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">GO</div></div><div><b>DIGIY GO Services</b><span>Le pro parle. DIGIY prépare une action claire.</span></div></a>
+    <a class="tile primary" href="./cockpit.html#quickService"><div class="tileTop"><div class="ico">✍️</div><div class="tag">Note</div></div><div><b>Noter une demande</b><span>La demande est notée, classée et retrouvable.</span></div></a>
+    <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">Oreille</div></div><div><b>Oreille Mes services</b><span>Parler, préparer, valider.</span></div></a>
+    <a class="tile gold" href="./cockpit.html"><div class="tileTop"><div class="ico">🧰</div><div class="tag">Service</div></div><div><b>Mon service</b><span>Services, demandes, suivi et organisation.</span></div></a>
+    <a class="tile blue" href="./profile.html"><div class="tileTop"><div class="ico">🪪</div><div class="tag">Profil</div></div><div><b>Mon profil artisan</b><span>Nom, métier, zone, contact et présentation.</span></div></a>
+    <a class="tile blue" href="./qr.html"><div class="tileTop"><div class="ico">🔳</div><div class="tag">QR</div></div><div><b>Mon QR profil</b><span>QR public vers le profil du professionnel.</span></div></a>
+    <a class="tile pay" href="./pay-transition.html"><div class="tileTop"><div class="ico">💳</div><div class="tag">PAY</div></div><div><b>Acompte vers PAY</b><span>Préparer un passage propre vers PAY.</span></div></a>
+    <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD"><div class="tileTop"><div class="ico">💰</div><div class="tag">PAY</div></div><div><b>Mon argent</b><span>Lecture et suivi de l’argent du service.</span></div></a>
   </div></section>
 
   <section><div class="sectionTitle">Coffre · accès</div><div class="grid">
     <a class="tile" href="./session.html"><div class="tileTop"><div class="ico">🛡️</div><div class="tag">Session</div></div><div><b>Ma session</b><span>Accès local, nettoyage, sécurité.</span></div></a>
     <a class="tile" href="./pin.html"><div class="tileTop"><div class="ico">🔐</div><div class="tag">PIN</div></div><div><b>Mon accès</b><span>Ouvrir ou renouveler Mes services.</span></div></a>
-    <a class="tile" href="./cockpit.html#notes"><div class="tileTop"><div class="ico">🗂️</div><div class="tag">Mémoire</div></div><div><b>Mes notes</b><span>Brouillons et demandes gardés localement.</span></div></a>
+    <a class="tile" href="./cockpit.html#notes"><div class="tileTop"><div class="ico">🗂️</div><div class="tag">Mémoire</div></div><div><b>Mes notes</b><span>Notes utiles gardées localement.</span></div></a>
     <a class="tile gold" href="https://digiylyfe.com/"><div class="tileTop"><div class="ico">🦅</div><div class="tag">DIGIY</div></div><div><b>Métiers pro</b><span>Retour à la maison DIGIYLYFE.</span></div></a>
   </div></section>
 </main>
-<nav class="bottomBar" aria-label="Navigation Mes services"><div class="bottomInner"><a class="active" href="./hub.html"><span>🧭</span><span>HUB</span></a><a href="./action.html"><span>🎙️</span><span>GO</span></a><a href="./cockpit.html"><span>🧰</span><span>Service</span></a><a href="./fiche.html"><span>🪪</span><span>Fiche</span></a><a href="./qr.html"><span>🔳</span><span>QR</span></a></div></nav>
+<nav class="bottomBar" aria-label="Navigation Mes services"><div class="bottomInner"><a class="active" href="./hub.html"><span>🧭</span><span>HUB</span></a><a href="./action.html"><span>🎙️</span><span>GO</span></a><a href="./cockpit.html"><span>🧰</span><span>Service</span></a><a href="./profile.html"><span>🪪</span><span>Profil</span></a><a href="./qr.html"><span>🔳</span><span>QR</span></a></div></nav>
 <script>
 (()=>{try{if(window.DIGIY_MODULE_BRIDGE&&typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl==='function')window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();}catch(_){}const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));p.textContent=ok?'session ouverte':'accès à vérifier';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
 </script>
 </body>
 </html>
+
+
+
 
 
