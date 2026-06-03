@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#1e7a46"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
   <meta name="description" content="DIGIY Mes services PRO — HUB mobile terrain : demandes, devis, oreille, fiche, argent et session."/>
-  <meta name="digiy-build" content="services-hub-go-pay-20260528"/>
+  <meta name="digiy-build" content="build-hub-fiche-qr-20260603"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -45,7 +45,8 @@
     <a class="tile primary" href="./cockpit.html#quickService"><div class="tileTop"><div class="ico">✍️</div><div class="tag">Note</div></div><div><b>Noter une demande</b><span>Client, besoin, prix, urgence : DIGIY range.</span></div></a>
     <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="ico">🎙️</div><div class="tag">Oreille</div></div><div><b>Oreille Mes services</b><span>Parler, formuler, valider.</span></div></a>
     <a class="tile gold" href="./cockpit.html"><div class="tileTop"><div class="ico">🧰</div><div class="tag">Service</div></div><div><b>Mon service</b><span>Demandes, devis, chantier, suivi.</span></div></a>
-    <a class="tile blue" href="./profile.html"><div class="tileTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div><div><b>Ma fiche service</b><span>Métier, zone, contact, présentation.</span></div></a>
+    <a class="tile blue" href="./fiche.html"><div class="tileTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div><div><b>Ma fiche artisan</b><span>Métier, zone, contact, présentation publique.</span></div></a>
+    <a class="tile blue" href="./qr.html"><div class="tileTop"><div class="ico">🔳</div><div class="tag">QR</div></div><div><b>Mon QR fiche</b><span>QR public pour WhatsApp, affiche, vitrine ou chantier.</span></div></a>
     <a class="tile pay" href="./pay-transition.html"><div class="tileTop"><div class="ico">💳</div><div class="tag">PAY</div></div><div><b>Acompte vers PAY</b><span>Argent réel seulement. PAY valide.</span></div></a>
     <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD"><div class="tileTop"><div class="ico">💰</div><div class="tag">PAY</div></div><div><b>Mon argent</b><span>Arrhes, acompte, dépense, solde.</span></div></a>
   </div></section>
@@ -57,10 +58,11 @@
     <a class="tile gold" href="https://digiylyfe.com/"><div class="tileTop"><div class="ico">🦅</div><div class="tag">DIGIY</div></div><div><b>Métiers pro</b><span>Retour à la maison DIGIYLYFE.</span></div></a>
   </div></section>
 </main>
-<nav class="bottomBar" aria-label="Navigation Mes services"><div class="bottomInner"><a class="active" href="./hub.html"><span>🧭</span><span>HUB</span></a><a href="./action.html"><span>🎙️</span><span>GO</span></a><a href="./cockpit.html"><span>🧰</span><span>Service</span></a><a href="./oreille.html"><span>🎙️</span><span>Oreille</span></a><a href="./session.html"><span>🛡️</span><span>Session</span></a></div></nav>
+<nav class="bottomBar" aria-label="Navigation Mes services"><div class="bottomInner"><a class="active" href="./hub.html"><span>🧭</span><span>HUB</span></a><a href="./action.html"><span>🎙️</span><span>GO</span></a><a href="./cockpit.html"><span>🧰</span><span>Service</span></a><a href="./fiche.html"><span>🪪</span><span>Fiche</span></a><a href="./qr.html"><span>🔳</span><span>QR</span></a></div></nav>
 <script>
 (()=>{try{if(window.DIGIY_MODULE_BRIDGE&&typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl==='function')window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();}catch(_){}const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));p.textContent=ok?'session ouverte':'accès à vérifier';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
 </script>
 </body>
 </html>
+
 
