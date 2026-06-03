@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY PRO RESTO — Accès PIN</title>
+  <title>DIGIY PRO LOC — Accès PIN</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{
@@ -320,9 +320,9 @@
     <div class="inside">
       <div class="top">
         <div class="brand">
-          <div class="ico" aria-hidden="true">🍽️</div>
+          <div class="ico" aria-hidden="true">🏠</div>
           <div>
-            <div class="eyebrow">DIGIY PRO RESTO</div>
+            <div class="eyebrow">DIGIY PRO LOC</div>
             <h1 id="pageTitle">Entrer dans mon espace</h1>
             <div class="sub" id="subtitle">Porte sécurisée · PIN requis · session 8h</div>
           </div>
@@ -331,9 +331,9 @@
       </div>
 
       <section class="doctrine" aria-label="Doctrine DIGIY">
-        <div class="doctrine-title">Ici, on protège le restaurant.</div>
+        <div class="doctrine-title">Ici, on protège le logement.</div>
         <div class="doctrine-text">
-          Le pro garde <strong>son nom</strong>, <strong>son client</strong>, <strong>son argent</strong> et
+          Le propriétaire garde <strong>son nom</strong>, <strong>son client</strong>, <strong>son argent</strong> et
           <strong>sa relation</strong>. DIGIY ouvre la porte, le pro valide.
         </div>
       </section>
@@ -345,19 +345,19 @@
 
       <div class="sep"></div>
 
-      <label for="pin">Ton PIN RESTO</label>
+      <label for="pin">Ton PIN LOC</label>
       <div class="pin-wrap">
         <input id="pin" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="••••" maxlength="8"/>
         <button class="toggle" type="button" id="togglePin" aria-label="Afficher ou masquer le PIN">Voir</button>
       </div>
 
       <button id="go" class="primary" type="button">🚀 Entrer dans mon espace</button>
-      <button id="openSpace" class="link open-btn" type="button">Ouvrir mon espace RESTO</button>
+      <button id="openSpace" class="link open-btn" type="button">Ouvrir mon espace LOC</button>
 
       <div class="msg" id="msg"></div>
 
       <div class="row" id="linksRow">
-        <a class="link" id="payLink" href="https://commencer-a-payer.digiylyfe.com/?module=RESTO" target="_blank" rel="noopener">💳 Activer RESTO</a>
+        <a class="link" id="payLink" href="https://commencer-a-payer.digiylyfe.com/?module=LOC" target="_blank" rel="noopener">💳 Activer LOC</a>
         <a class="link" href="https://wa.me/221771342889" target="_blank" rel="noopener">🛟 Support WhatsApp</a>
       </div>
 
@@ -372,10 +372,10 @@
 (async () => {
   "use strict";
 
-  const PIN_MODULE = "pro_resto";
-  const MODULE_CANDIDATES = ["pro_resto", "RESTO", "resto", "PRO_RESTO", "pro-resto"];
-  const PAY_MODULE = "RESTO";
-  const NEXT_URL   = "./cockpit-resto.html";
+  const PIN_MODULE = "pro_loc";
+  const MODULE_CANDIDATES = ["pro_loc", "LOC", "loc", "PRO_LOC", "pro-loc"];
+  const PAY_MODULE = "LOC";
+  const NEXT_URL   = "./app.html";
   const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
   const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -386,17 +386,18 @@
   const setMsg = (html) => { $("msg").innerHTML = html || ""; };
 
   const SESSION_KEYS = [
-    "DIGIY_RESTO_ACCESS",
+    "DIGIY_LOC_ACCESS",
     "DIGIY_ACCESS",
-    "DIGIY_PRO_RESTO_ACCESS",
+    "DIGIY_PRO_LOC_ACCESS",
     "DIGIY_MODULE_ACCESS"
   ];
 
   const SLUG_KEYS = [
-    "DIGIY_RESTO_SLUG",
+    "DIGIY_LOC_SLUG",
     "DIGIY_CURRENT_SLUG",
     "DIGIY_PRO_SLUG",
     "DIGIY_SLUG",
+    "digiy_loc_slug",
     "digiy_slug",
     "slug"
   ];
@@ -428,7 +429,7 @@
   }
 
   function getSlugFromUrl(){
-    const names = ["slug", "s", "pro", "id", "fiche", "resto", "restaurant"];
+    const names = ["slug", "s", "pro", "id", "fiche", "loc", "logement"];
     const current = new URL(location.href);
     let found = pickParam(current.searchParams, names);
     if(found) return found;
@@ -443,7 +444,7 @@
     }
 
     const lastPath = normalizeSlug(location.pathname.split("/").filter(Boolean).pop() || "");
-    if(lastPath && !/^(pin|pin\.html|pin-resto|pin-resto\.html|index|index\.html|go-pin|go-pin\.html|go-pin-resto|go-pin-resto\.html)$/i.test(lastPath)){
+    if(lastPath && !/^(pin|pin\.html|pin-loc|pin-loc\.html|index|index\.html|go-pin|go-pin\.html|go-pin-loc|go-pin-loc\.html)$/i.test(lastPath)){
       return lastPath;
     }
     return "";
@@ -471,7 +472,7 @@
         if(direct && direct !== "null" && direct !== "undefined") return direct;
 
         const parsed = readJsonFrom(storage, key);
-        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.restaurant_slug);
+        const nested = normalizeSlug(parsed?.slug || parsed?.pro_slug || parsed?.logement_slug);
         if(nested) return nested;
       }
     }
@@ -482,9 +483,9 @@
     const clean = normalizeSlug(value);
     if(!clean) return "";
     try{
-      localStorage.setItem("DIGIY_RESTO_SLUG", clean);
+      localStorage.setItem("DIGIY_LOC_SLUG", clean);
       localStorage.setItem("DIGIY_CURRENT_SLUG", clean);
-      sessionStorage.setItem("DIGIY_RESTO_SLUG", clean);
+      sessionStorage.setItem("DIGIY_LOC_SLUG", clean);
       sessionStorage.setItem("DIGIY_CURRENT_SLUG", clean);
     }catch(_){}
     return clean;
@@ -534,11 +535,27 @@
     };
 
     localStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-    localStorage.setItem("DIGIY_RESTO_ACCESS", JSON.stringify(session));
+    localStorage.setItem("DIGIY_LOC_ACCESS", JSON.stringify(session));
+    localStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
+    localStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
+    localStorage.setItem("DIGIY_LOC_SLUG", session.slug);
+    localStorage.setItem("digiy_loc_slug", session.slug);
+    if(session.phone){
+      localStorage.setItem("DIGIY_LOC_PHONE", String(session.phone));
+      localStorage.setItem("digiy_loc_phone", String(session.phone));
+    }
 
     try{
       sessionStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-      sessionStorage.setItem("DIGIY_RESTO_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_LOC_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_MODULE_ACCESS", JSON.stringify(session));
+      sessionStorage.setItem("DIGIY_CURRENT_SLUG", session.slug);
+      sessionStorage.setItem("DIGIY_LOC_SLUG", session.slug);
+      sessionStorage.setItem("digiy_loc_slug", session.slug);
+      if(session.phone){
+        sessionStorage.setItem("DIGIY_LOC_PHONE", String(session.phone));
+        sessionStorage.setItem("digiy_loc_phone", String(session.phone));
+      }
     }catch(_){}
 
     return session;
@@ -550,16 +567,16 @@
 
   if(isFreshSession(storedSession)){
     $("openSpace").style.display = "flex";
-    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans ton espace RESTO.");
+    setMsg("<span class='ok'>✅ Session déjà ouverte.</span> Tu peux entrer directement dans ton espace LOC.");
   }
 
   if(!slug){
     $("go").disabled = true;
     $("subtitle").textContent = "Accès incomplet · QR ou lien pro requis";
-    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>Le restaurant n’a pas encore été reconnu. Reviens depuis ton QR / GO PIN avec le slug, ou contacte le support. Aucun identifiant sensible n’est affiché ici.");
+    setMsg("<span class='bad'>❌ Accès incomplet.</span><br>Le logement n’a pas encore été reconnu. Reviens depuis ton QR / GO PIN avec le slug, ou contacte le support. Aucun identifiant sensible n’est affiché ici.");
   }else{
-    $("subtitle").textContent = "Restaurant reconnu · PIN requis · session 8h";
-    setMsg("<span class='ok'>✅ Restaurant reconnu.</span> Entre ton PIN RESTO pour ouvrir l’espace.");
+    $("subtitle").textContent = "Logement reconnu · PIN requis · session 8h";
+    setMsg("<span class='ok'>✅ Logement reconnu.</span> Entre ton PIN LOC pour ouvrir l’espace.");
     setTimeout(() => $("pin").focus(), 140);
   }
 
@@ -582,12 +599,12 @@
     }
 
     if(pin.length < 3){
-      setMsg("<span class='bad'>❌ PIN trop court.</span> Entre ton PIN RESTO.");
+      setMsg("<span class='bad'>❌ PIN trop court.</span> Entre ton PIN LOC.");
       return;
     }
 
     $("go").disabled = true;
-    setMsg("⏳ Vérification de ton accès RESTO…");
+    setMsg("⏳ Vérification de ton accès LOC…");
 
     try{
       let result = null;
@@ -627,13 +644,13 @@
 
       if(!result){
         $("go").disabled = false;
-        setMsg("<span class='bad'>❌ PIN non validé.</span><br>Le restaurant est reconnu, mais le couple fiche + PIN ne correspond pas encore. Vérifie le code ou l’activation RESTO.");
+        setMsg("<span class='bad'>❌ PIN non validé.</span><br>Le logement est reconnu, mais le couple logement + PIN ne correspond pas encore. Vérifie le code, le slug LOC ou l’activation LOC.");
         return;
       }
 
       result.accepted_module = acceptedModule;
       saveAccessSession(result);
-      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de ton espace RESTO, URL propre.");
+      setMsg("<span class='ok'>✅ PIN OK.</span> Ouverture de ton espace LOC, URL propre.");
       setTimeout(goCockpit, 420);
 
     }catch(err){
@@ -644,11 +661,11 @@
 
   function speakHelp(){
     const text = [
-      "Accès Pro Resto.",
+      "Accès Pro LOC.",
       "Entre ton code PIN.",
       "La session reste ouverte huit heures.",
       "L'adresse reste propre : aucun identifiant sensible n'est affiché après la lecture.",
-      "Le restaurant garde son nom, son client, son argent et sa relation.",
+      "Le logement garde son nom, son client, son argent et sa relation.",
       "diji i ouvre la porte, le pro valide."
     ].join(" ");
 
@@ -681,6 +698,11 @@
 </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
