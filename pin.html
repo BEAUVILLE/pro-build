@@ -152,6 +152,7 @@ const MODULE_ICON=window.DIGIY_MODULE_ICON||"∞";
 const INDEX_URL=window.DIGIY_INDEX_URL||"./index.html";
 const SLUG_PREFIX=(window.DIGIY_SLUG_PREFIX||MODULE.toLowerCase()).replace(/_/g,"-");
 const MAX_AGE=8*60*60*1000;
+const MODULE_ALIASES=Array.from(new Set([MODULE,"BUILD","BUILD_PRO","MES_SERVICES","SERVICES"].filter(Boolean)));
 const mod=MODULE.toLowerCase();
 const SKEYS=[`digiy_${mod}_session`,`digiy_${mod}_guard_session`,`digiy_guard_${mod}_session`];
 const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"DIGIY_LOC_HUB_PHONE","digiy_phone"];
@@ -167,6 +168,16 @@ let pin="",confirmedPhone="";
 function norm(p){return String(p||"").replace(/\D/g,"")}
 function fmt(d){if(d.length===12&&d.startsWith("221"))return`${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`;return d}
 function slug(p){return SLUG_PREFIX&&p?`${SLUG_PREFIX}-${p}`:""}
+function phoneVariants(p){
+  const d=norm(p);
+  const out=[];
+  function add(v){v=norm(v);if(v&&!out.includes(v))out.push(v)}
+  add(d);
+  if(d.length===9)add("221"+d);
+  if(d.length===12&&d.startsWith("221"))add(d.slice(3));
+  if(d.length===10&&d.startsWith("0")){add(d.slice(1));add("221"+d.slice(1));}
+  return out;
+}
 function qp(n){try{return new URL(location.href).searchParams.get(n)||""}catch(_){return""}}
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k)||"";localStorage.setItem(k,v)}catch(_){}}
 function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k)||"";sessionStorage.setItem(k,v)}catch(_){}}
@@ -281,27 +292,41 @@ document.addEventListener("keydown",e=>{
 
 $("btnEnter").addEventListener("click",doLogin);
 
+async function verifyPinFlexible(sb, phone, code){
+  let lastError=null;
+  const phones=phoneVariants(phone);
+  for(const p of phones){
+    for(const m of MODULE_ALIASES){
+      const {data,error}=await sb.rpc("digiy_verify_pin",{p_phone:p,p_module:m,p_pin:code});
+      if(error){lastError=error;continue;}
+      const row=Array.isArray(data)?data[0]:data;
+      const ok=row===true||row?.ok===true||row?.access===true||row?.status==="ok";
+      if(ok)return {ok:true,row:row||{},phone:p,module:m};
+    }
+  }
+  if(lastError)throw new Error(lastError.message||"Erreur serveur");
+  return {ok:false,row:null,phone:phones[0]||phone,module:MODULE};
+}
+
 async function doLogin(){
   if(pin.length!==4)return;
   $("btnEnter").disabled=true;
   showSt("status2","⏳ Vérification du code…","spin");
   try{
     const sb=getSb();
-    const{data,error}=await sb.rpc("digiy_verify_pin",{p_phone:confirmedPhone,p_module:MODULE,p_pin:pin});
-    if(error)throw new Error(error.message||"Erreur serveur");
-    /* Le RPC retourne un tableau → on prend la première ligne */
-    const row=Array.isArray(data)?data[0]:data;
-    const ok=row===true||row?.ok===true||row?.access===true||row?.status==="ok";
-    if(!ok){
+    const verified=await verifyPinFlexible(sb,confirmedPhone,pin);
+    if(!verified.ok){
       pin="";updateDots();updateEnterBtn();
       for(let i=0;i<4;i++)$("d"+i).classList.add("err");
       shake($("pinDots"));
-      showSt("status2","❌ Code incorrect.\nVérifie tes 4 chiffres et réessaie.","err");
+      showSt("status2","❌ Code non reconnu pour ce numéro.\nRéessaie les 4 chiffres ou vérifie le numéro saisi.","err");
       return;
     }
+    const row=verified.row||{};
     const rpcSlug=row?.slug||row?.identifiant||"";
-    const finalSlug=rpcSlug||slug(confirmedPhone);
-    writeSession(confirmedPhone,finalSlug,row?.session_token||"");
+    const finalPhone=verified.phone||confirmedPhone;
+    const finalSlug=rpcSlug||slug(finalPhone);
+    writeSession(finalPhone,finalSlug,row?.session_token||"");
     showSt("status2","✅ Accès ouvert. Redirection…","ok");
     setTimeout(()=>redirect(finalSlug),700);
   }catch(err){
@@ -314,50 +339,3 @@ async function doLogin(){
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
