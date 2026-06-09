@@ -167,6 +167,18 @@
     <div class="sectionTitle">Présentation & services</div>
     <div class="grid">
       <div class="field full">
+        <label for="presetFiche">Exemples rapides</label>
+        <select id="presetFiche">
+          <option value="">Choisir un exemple métier déjà cadré</option>
+          <option value="batisseur">Bâtisseur · Entrepreneur constructeur · Saly</option>
+          <option value="macon">Maçon · Saly</option>
+          <option value="plombier">Plombier · Saly</option>
+          <option value="electricien">Électricien · Saly</option>
+          <option value="nettoyage">Service de nettoyage · Hôtel · Résidence · Particulier · Saly</option>
+        </select>
+        <div class="hint">Ces exemples remplissent le métier, la présentation et les services. Le pro garde la main et peut tout modifier avant sauvegarde.</div>
+      </div>
+      <div class="field full">
         <label for="description">Présentation</label>
         <textarea id="description" placeholder="Explique ton activité simplement : ce que tu fais, pour qui, comment tu travailles, ce que le client doit savoir."></textarea>
       </div>
@@ -228,6 +240,44 @@
   const TABLE = "digiy_build_public_profiles";
   const DEFAULT_LOGO = "https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png";
   const $ = (id)=>document.getElementById(id);
+
+  const PRESETS = {
+    batisseur: {
+      metier: "Bâtisseur · Entrepreneur constructeur",
+      city: "Saly",
+      zone: "Saly",
+      description: "Bâtisseur entrepreneur constructeur à Saly pour construction, rénovation, extension et aménagement.\n\nParlez-moi de votre besoin, je vous aide à organiser le chantier simplement.\n\nContactez-moi directement pour en discuter.",
+      servicesText: "construction · rénovation · extension · aménagement · organisation de chantier"
+    },
+    macon: {
+      metier: "Maçon",
+      city: "Saly",
+      zone: "Saly",
+      description: "Maçon à Saly pour petits travaux : réparation, construction et aménagement.\n\nExpliquez votre besoin, je vous aide à organiser le chantier simplement.\n\nContactez-moi directement pour en discuter.",
+      servicesText: "réparation · construction · aménagement · petits travaux"
+    },
+    plombier: {
+      metier: "Plombier",
+      city: "Saly",
+      zone: "Saly",
+      description: "Plombier à Saly pour petits travaux : fuite, robinetterie, évacuation et installation.\n\nParlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.\n\nContactez-moi directement pour en discuter.",
+      servicesText: "fuite · robinetterie · évacuation · installation"
+    },
+    electricien: {
+      metier: "Électricien",
+      city: "Saly",
+      zone: "Saly",
+      description: "Électricien à Saly pour petits travaux : panne, prise, éclairage et installation.\n\nParlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.\n\nContactez-moi directement pour en discuter.",
+      servicesText: "panne · prise · éclairage · installation"
+    },
+    nettoyage: {
+      metier: "Service de nettoyage",
+      city: "Saly",
+      zone: "Saly",
+      description: "Service de nettoyage à Saly pour hôtel, résidence, maison de particulier, boutique, bureau et local professionnel.\n\nParlez-moi de votre besoin, je vous aide à organiser la prestation simplement.\n\nContactez-moi directement pour en discuter.",
+      servicesText: "nettoyage hôtel · résidence · particulier · maison · boutique · bureau · local professionnel"
+    }
+  };
 
   let session = null;
   let slug = "";
@@ -301,6 +351,20 @@
     return window.supabase.createClient(url,key,{
       auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
     });
+  }
+
+  function applyPreset(key){
+    const preset = PRESETS[key];
+    if(!preset) return;
+
+    $("metier").value = preset.metier || "";
+    if(!$("city").value) $("city").value = preset.city || "Saly";
+    if(!$("zone").value) $("zone").value = preset.zone || "Saly";
+    $("description").value = preset.description || "";
+    $("servicesText").value = preset.servicesText || "";
+
+    preview();
+    setMsg("✅ Exemple métier posé. Le pro peut corriger chaque mot avant sauvegarde.", "ok");
   }
 
   function servicesArray(){
@@ -496,6 +560,10 @@
     $(id).addEventListener("input", preview);
   });
 
+  $("presetFiche").addEventListener("change", function(){
+    applyPreset(this.value);
+  });
+
   $("btnPreview").addEventListener("click", preview);
   $("btnSave").addEventListener("click", save);
   $("btnOpenPublic").addEventListener("click", openPublic);
@@ -505,5 +573,8 @@
 </script>
 </body>
 </html>
+
+
+
 
 
