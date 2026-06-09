@@ -146,19 +146,19 @@
       </div>
       <div class="field">
         <label for="phone">Téléphone</label>
-        <input id="phone" inputmode="tel" placeholder="Ex : 221 77 XXX XX XX">
+        <input id="phone" inputmode="tel" placeholder="Numéro du professionnel">
       </div>
       <div class="field">
         <label for="whatsapp">WhatsApp</label>
-        <input id="whatsapp" inputmode="tel" placeholder="Ex : 221 77 XXX XX XX">
+        <input id="whatsapp" inputmode="tel" placeholder="WhatsApp du professionnel">
       </div>
       <div class="field">
         <label for="city">Ville</label>
-        <input id="city" placeholder="Ex : Saly, Mbour, Dakar...">
+        <input id="city" placeholder="Ville du professionnel">
       </div>
       <div class="field">
         <label for="zone">Zone d’intervention</label>
-        <input id="zone" placeholder="Ex : Saly · Mbour · Dakar · Petite-Côte">
+        <input id="zone" placeholder="Zone d’intervention du professionnel">
       </div>
     </div>
   </section>
@@ -170,11 +170,11 @@
         <label for="presetFiche">Exemples rapides</label>
         <select id="presetFiche">
           <option value="">Choisir un exemple métier déjà cadré</option>
-          <option value="batisseur">Bâtisseur · Entrepreneur constructeur · Saly</option>
-          <option value="macon">Maçon · Saly</option>
-          <option value="plombier">Plombier · Saly</option>
-          <option value="electricien">Électricien · Saly</option>
-          <option value="nettoyage">Service de nettoyage · Hôtel · Résidence · Particulier · Saly</option>
+          <option value="batisseur">Entrepreneur bâtisseur · coordination chantier</option>
+          <option value="macon">Maçon</option>
+          <option value="plombier">Plombier</option>
+          <option value="electricien">Électricien</option>
+          <option value="nettoyage">Service de nettoyage · Hôtel · Résidence · Particulier</option>
         </select>
         <div class="hint">Ces exemples remplissent le métier, la présentation et les services. Le pro garde la main et peut tout modifier avant sauvegarde.</div>
       </div>
@@ -197,7 +197,7 @@
       </div>
       <div class="field full">
         <label for="publicUrl">Lien public spécifique, si tu as une fiche dédiée</label>
-        <input id="publicUrl" placeholder="Ex : https://mon-service.digiylyfe.com/">
+        <input id="publicUrl" placeholder="Lien public de la fiche, si besoin">
         <div class="hint">Optionnel. À utiliser seulement si ce pro a une fiche externe dédiée. Sinon laisse vide.</div>
       </div>
     </div>
@@ -244,38 +244,58 @@
 
   const PRESETS = {
     batisseur: {
-      metier: "Bâtisseur · Entrepreneur constructeur",
-      city: "Saly",
-      zone: "Saly",
-      description: "Bâtisseur entrepreneur constructeur à Saly pour construction, rénovation, extension et aménagement.\n\nParlez-moi de votre besoin, je vous aide à organiser le chantier simplement.\n\nContactez-moi directement pour en discuter.",
+      metier: "Entrepreneur bâtisseur",
+      city: "",
+      zone: "",
+      description: "Entrepreneur bâtisseur pour construction, rénovation, extension et aménagement.
+
+Parlez-moi de votre besoin, je vous aide à organiser le chantier simplement.
+
+Contactez-moi directement pour en discuter.",
       servicesText: "construction · rénovation · extension · aménagement · organisation de chantier"
     },
     macon: {
       metier: "Maçon",
-      city: "Saly",
-      zone: "Saly",
-      description: "Maçon à Saly pour petits travaux : réparation, construction et aménagement.\n\nExpliquez votre besoin, je vous aide à organiser le chantier simplement.\n\nContactez-moi directement pour en discuter.",
+      city: "",
+      zone: "",
+      description: "Maçon pour petits travaux : réparation, construction et aménagement.
+
+Expliquez votre besoin, je vous aide à organiser le chantier simplement.
+
+Contactez-moi directement pour en discuter.",
       servicesText: "réparation · construction · aménagement · petits travaux"
     },
     plombier: {
       metier: "Plombier",
-      city: "Saly",
-      zone: "Saly",
-      description: "Plombier à Saly pour petits travaux : fuite, robinetterie, évacuation et installation.\n\nParlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.\n\nContactez-moi directement pour en discuter.",
+      city: "",
+      zone: "",
+      description: "Plombier pour petits travaux : fuite, robinetterie, évacuation et installation.
+
+Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.
+
+Contactez-moi directement pour en discuter.",
       servicesText: "fuite · robinetterie · évacuation · installation"
     },
     electricien: {
       metier: "Électricien",
-      city: "Saly",
-      zone: "Saly",
-      description: "Électricien à Saly pour petits travaux : panne, prise, éclairage et installation.\n\nParlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.\n\nContactez-moi directement pour en discuter.",
+      city: "",
+      zone: "",
+      description: "Électricien pour petits travaux : panne, prise, éclairage et installation.
+
+Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.
+
+Contactez-moi directement pour en discuter.",
       servicesText: "panne · prise · éclairage · installation"
     },
     nettoyage: {
       metier: "Service de nettoyage",
-      city: "Saly",
-      zone: "Saly",
-      description: "Service de nettoyage à Saly pour hôtel, résidence, maison de particulier, boutique, bureau et local professionnel.\n\nParlez-moi de votre besoin, je vous aide à organiser la prestation simplement.\n\nContactez-moi directement pour en discuter.",
+      city: "",
+      zone: "",
+      description: "Service de nettoyage pour hôtel, résidence, maison de particulier, boutique, bureau et local professionnel.
+
+Parlez-moi de votre besoin, je vous aide à organiser la prestation simplement.
+
+Contactez-moi directement pour en discuter.",
       servicesText: "nettoyage hôtel · résidence · particulier · maison · boutique · bureau · local professionnel"
     }
   };
@@ -359,8 +379,8 @@
     if(!preset) return;
 
     $("metier").value = preset.metier || "";
-    if(!$("city").value) $("city").value = preset.city || "Saly";
-    if(!$("zone").value) $("zone").value = preset.zone || "Saly";
+    if(preset.city && !$("city").value) $("city").value = preset.city;
+    if(preset.zone && !$("zone").value) $("zone").value = preset.zone;
     $("description").value = preset.description || "";
     $("servicesText").value = preset.servicesText || "";
 
@@ -574,6 +594,11 @@
 </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
