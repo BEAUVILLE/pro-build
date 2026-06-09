@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>DIGIY BUILD · Choisir un métier</title>
+  <meta name="description" content="DIGIY BUILD : choisir un métier, garder les exemples dans une bande déroulante et préparer une fiche terrain propre." />
+  <style>
+    :root{
+      --bg:#120d08;
+      --card:#1c140c;
+      --card2:#26190e;
+      --gold:#f2c45b;
+      --gold2:#d9a536;
+      --text:#fff7e8;
+      --muted:#dbc9aa;
+      --line:rgba(242,196,91,.28);
+      --soft:rgba(242,196,91,.12);
+      --ok:#b9f6cf;
+      --shadow:0 18px 55px rgba(0,0,0,.36);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left,rgba(242,196,91,.18),transparent 34%),
+        radial-gradient(circle at bottom right,rgba(255,255,255,.08),transparent 28%),
+        var(--bg);
+    }
+    a{color:inherit}
+    .wrap{width:min(1120px,100%);margin:auto;padding:18px 14px 92px}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:24px;
+      background:linear-gradient(135deg,rgba(242,196,91,.16),rgba(255,255,255,.05));
+      box-shadow:var(--shadow);
+    }
+    .hero:after{
+      content:"";
+      position:absolute;
+      right:-90px;
+      top:-90px;
+      width:230px;
+      height:230px;
+      border-radius:50%;
+      background:rgba(242,196,91,.12);
+      pointer-events:none;
+    }
+    .eyebrow{
+      margin:0 0 8px;
+      color:var(--gold);
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:.78rem;
+    }
+    h1{
+      margin:0 0 14px;
+      max-width:820px;
+      font-size:clamp(2rem,7vw,4.4rem);
+      line-height:.96;
+      letter-spacing:-.05em;
+    }
+    .lead{
+      max-width:820px;
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:1.06rem;
+    }
+    .pillbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.22);
+      border-radius:999px;
+      padding:8px 11px;
+      font-weight:850;
+      font-size:.88rem;
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media(min-width:900px){
+      .layout{grid-template-columns:390px 1fr}
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(0,0,0,.16));
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.20);
+    }
+    .card h2,.card h3{margin:0 0 10px}
+    .card p{color:var(--muted);line-height:1.48}
+    label{display:block;margin:12px 0 7px;font-weight:900}
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--line);
+      background:#0f0a06;
+      color:var(--text);
+      border-radius:16px;
+      padding:13px 13px;
+      font:inherit;
+      outline:none;
+    }
+    textarea{min-height:116px;resize:vertical;line-height:1.45}
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(242,196,91,.13);
+    }
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:620px){.row.two{grid-template-columns:1fr 1fr}}
+    .btns{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+    button,.btn{
+      appearance:none;
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 15px;
+      background:var(--gold);
+      color:#1a1006;
+      font:inherit;
+      font-weight:950;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      box-shadow:0 10px 24px rgba(0,0,0,.22);
+      transition:transform .12s ease,filter .12s ease,opacity .12s ease;
+    }
+    button:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+    button.secondary,.btn.secondary{
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    button.small{padding:9px 11px;font-size:.9rem}
+    .metierGrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media(min-width:660px){.metierGrid{grid-template-columns:1fr 1fr}}
+    @media(min-width:1040px){.metierGrid{grid-template-columns:1fr 1fr 1fr}}
+    .metier{
+      border:1px solid rgba(242,196,91,.20);
+      background:rgba(255,255,255,.052);
+      border-radius:18px;
+      padding:12px;
+    }
+    .metier strong{display:block;font-size:1rem}
+    .metier span{display:block;color:var(--muted);font-size:.88rem;margin:5px 0 10px;line-height:1.35}
+    .preview{
+      background:#0d0905;
+      border:1px dashed rgba(242,196,91,.48);
+      border-radius:18px;
+      padding:14px;
+      white-space:pre-wrap;
+      line-height:1.5;
+      min-height:170px;
+      color:#fff4da;
+    }
+    .note{
+      border:1px solid rgba(185,246,207,.22);
+      background:rgba(185,246,207,.08);
+      border-radius:18px;
+      padding:12px;
+      color:#e3ffed;
+      font-weight:800;
+      line-height:1.42;
+    }
+    .warning{
+      border:1px solid rgba(255,214,151,.25);
+      background:rgba(255,214,151,.08);
+      border-radius:18px;
+      padding:12px;
+      color:#ffe7bc;
+      line-height:1.42;
+    }
+    .exampleBox{
+      border:1px solid rgba(242,196,91,.20);
+      border-radius:20px;
+      background:rgba(0,0,0,.18);
+      padding:12px;
+      margin-top:12px;
+    }
+    .exampleBox h3{margin:0 0 8px;color:var(--gold)}
+    .exampleList{margin:0;padding-left:18px;color:var(--muted);line-height:1.55}
+    .hidden{display:none!important}
+    .sticky{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      z-index:20;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+    }
+    .sticky .inner{
+      pointer-events:auto;
+      width:min(920px,100%);
+      display:flex;
+      gap:8px;
+      padding:8px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(18,13,8,.92);
+      backdrop-filter:blur(10px);
+      box-shadow:0 18px 50px rgba(0,0,0,.40);
+    }
+    .sticky button{flex:1;padding:11px 10px}
+    .toast{
+      position:fixed;
+      top:14px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:50;
+      background:#111;
+      color:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease,top .2s ease;
+      font-weight:900;
+    }
+    .toast.show{opacity:1;top:22px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">DIGIY BUILD · métiers terrain</p>
+      <h1>Choisir un métier, préparer une fiche propre.</h1>
+      <p class="lead">
+        La base reste simple : Entrepreneur bâtisseur mène le mouvement, les artisans suivent par métier,
+        les exemples restent dans la bande déroulante, puis on sort un texte court prêt à copier.
+      </p>
+      <div class="pillbar">
+        <span class="pill">Entrepreneur bâtisseur en tête</span>
+        <span class="pill">Métiers validés</span>
+        <span class="pill">Exemples déroulants</span>
+        <span class="pill">Recherche rapide</span>
+        <span class="pill">Copie en 1 clic</span>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="card">
+        <h2>Préparer la fiche</h2>
+        <p>Choisis un exemple, un métier, ou tape directement. Le texte reste court, terrain, publiable après vérification.</p>
+
+        <label for="quickExample">Bande déroulante · exemples déjà prêts</label>
+        <select id="quickExample">
+          <option value="">Choisir un exemple…</option>
+          <option value="Entrepreneur bâtisseur|Saly|coordination de chantier, suivi des travaux, organisation des corps de métier et accompagnement du client|chantier maison, rénovation ou construction">Entrepreneur bâtisseur · locomotive BUILD</option>
+          <option value="Plombier|Saly|fuite, robinetterie, évacuation et installation|petits travaux">Plombier · Saly</option>
+          <option value="Électricien|Mbour|prise, éclairage, panne et petite installation|maison ou commerce">Électricien · Mbour</option>
+          <option value="Maçon|Saly|rénovation, réparation et aménagement|travaux maison">Maçon · Saly</option>
+          <option value="Menuisier|Mbour|portes, meubles simples, réparation et ajustement|bois ou aluminium">Menuisier · Mbour</option>
+          <option value="Soudeur métal|Mbour|portail, grille, réparation métal et petite fabrication|métal terrain">Soudeur métal · Mbour</option>
+          <option value="Soudeur aluminium|Dakar|fenêtre, porte, cadre aluminium et réparation simple|aluminium maison ou boutique">Soudeur aluminium · Dakar</option>
+          <option value="Mécanicien|Saly|diagnostic simple, réparation, entretien et dépannage|voiture ou moto">Mécanicien · Saly</option>
+          <option value="Peintre|Dakar|peinture intérieure, finition et rafraîchissement|maison ou local">Peintre · Dakar</option>
+          <option value="Carreleur|Saly|pose, réparation et finition de carrelage|sols et murs">Carreleur · Saly</option>
+          <option value="Frigoriste|Dakar|réfrigérateur, congélateur, chambre froide et diagnostic|froid maison ou commerce">Frigoriste · Dakar</option>
+          <option value="Climatisation|Dakar|installation, entretien, nettoyage et diagnostic climatisation|maison, bureau ou commerce">Climatisation · Dakar</option>
+          <option value="Solaire / Énergie|Petite Côte|installation simple, contrôle et entretien énergie solaire|maison ou commerce">Solaire / Énergie · Petite Côte</option>
+          <option value="Entretien|Saly|petites réparations, suivi maison et entretien régulier|maison ou résidence">Entretien · Saly</option>
+          <option value="Nettoyage|Saly|ménage, remise propre et entretien régulier|maison, bureau ou commerce">Nettoyage · Saly</option>
+          <option value="Manœuvre|Mbour|aide chantier, manutention, préparation et nettoyage|chantier">Manœuvre · Mbour</option>
+          <option value="Aide chantier|Saly|appui chantier, rangement, transport léger et préparation|chantier maison">Aide chantier · Saly</option>
+          <option value="Polyvalent|Saly|petits travaux, dépannage simple et aide terrain|besoin à préciser">Polyvalent · Saly</option>
+        </select>
+
+        <label for="search">Recherche rapide</label>
+        <input id="search" type="search" placeholder="Ex : plombier, solaire, nettoyage…" autocomplete="off" />
+
+        <div class="row two">
+          <div>
+            <label for="metier">Métier</label>
+            <input id="metier" placeholder="Ex : Plombier" />
+          </div>
+          <div>
+            <label for="zone">Zone</label>
+            <input id="zone" placeholder="Ex : Saly" />
+          </div>
+        </div>
+
+        <label for="services">Services principaux</label>
+        <textarea id="services" placeholder="Ex : fuite, robinetterie, évacuation et installation"></textarea>
+
+        <label for="contexte">Contexte terrain</label>
+        <input id="contexte" placeholder="Ex : petits travaux, maison, commerce…" />
+
+        <div class="btns">
+          <button id="buildBtn" type="button">Préparer le texte</button>
+          <button id="resetBtn" class="secondary" type="button">Vider</button>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="warning">
+          Règle propre : français publiable si clair. Wolof ou langue locale = brouillon à valider par une personne du terrain avant publication.
+        </div>
+      </aside>
+
+      <section class="card">
+        <h2>Liste BUILD validée</h2>
+        <p>La liste reste courte. Entrepreneur bâtisseur est la locomotive : il organise, coordonne et entraîne les corps de métier du terrain.</p>
+
+        <div id="metierGrid" class="metierGrid"></div>
+
+        <div class="exampleBox">
+          <h3>Exemples gardés</h3>
+          <ul class="exampleList">
+            <li>Entrepreneur bâtisseur à Saly pour coordination de chantier, suivi des travaux et organisation des corps de métier.</li>
+            <li>Plombier à Saly pour fuite, robinetterie, évacuation et installation.</li>
+            <li>Maçon à Saly pour rénovation, réparation et aménagement.</li>
+            <li>Électricien à Mbour pour prise, éclairage, panne et petite installation.</li>
+          </ul>
+        </div>
+      </section>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Texte généré</h2>
+      <p>Copie ce bloc dans la fiche BUILD, WhatsApp, ou ton fichier HTML.</p>
+      <div id="preview" class="preview">Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.</div>
+      <div class="btns">
+        <button id="copyBtn" type="button">Copier le texte</button>
+        <button id="waBtn" class="secondary" type="button">Ouvrir WhatsApp</button>
+      </div>
+      <div style="height:12px"></div>
+      <div class="note">
+        Doctrine DIGIY : le pro garde son client, son nom, son argent et sa décision. DIGIY prépare, structure et protège.
+      </div>
+    </section>
+  </main>
+
+  <div class="sticky">
+    <div class="inner">
+      <button id="goTop" class="secondary" type="button">Haut</button>
+      <button id="goPreview" type="button">Voir texte</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copié</div>
+
+  <script>
+    const METIERS = [
+      ["Entrepreneur bâtisseur","Coordination de chantier, suivi des travaux, organisation des corps de métier, accompagnement client."],
+      ["Plombier","Fuite, robinetterie, évacuation, installation."],
+      ["Électricien","Prise, éclairage, panne, petite installation."],
+      ["Maçon","Rénovation, réparation, mur, dalle, aménagement."],
+      ["Menuisier","Porte, meuble simple, réparation, ajustement."],
+      ["Soudeur métal","Portail, grille, réparation métal, fabrication simple."],
+      ["Soudeur aluminium","Porte, fenêtre, cadre aluminium, réparation simple."],
+      ["Mécanicien","Diagnostic simple, réparation, entretien, dépannage."],
+      ["Peintre","Peinture intérieure, finition, rafraîchissement."],
+      ["Carreleur","Pose, réparation, finition carrelage."],
+      ["Frigoriste","Réfrigérateur, congélateur, froid commerce."],
+      ["Climatisation","Installation, entretien, nettoyage, diagnostic climatisation."],
+      ["Solaire / Énergie","Installation simple, contrôle, entretien énergie solaire."],
+      ["Entretien","Petites réparations, suivi maison, entretien régulier."],
+      ["Nettoyage","Ménage, remise propre, entretien maison ou commerce."],
+      ["Manœuvre","Aide chantier, manutention, préparation, nettoyage."],
+      ["Aide chantier","Appui chantier, rangement, transport léger, préparation."],
+      ["Polyvalent","Petits travaux, dépannage simple, aide terrain."]
+    ];
+
+    const DEFAULT_ZONE = "Saly";
+
+    const $ = (id) => document.getElementById(id);
+    const grid = $("metierGrid");
+    const quickExample = $("quickExample");
+    const search = $("search");
+    const metier = $("metier");
+    const zone = $("zone");
+    const services = $("services");
+    const contexte = $("contexte");
+    const preview = $("preview");
+    const toast = $("toast");
+
+    function showToast(text){
+      toast.textContent = text || "OK";
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function setForm(m, z, s, c){
+      metier.value = m || "";
+      zone.value = z || zone.value || DEFAULT_ZONE;
+      services.value = s || "";
+      contexte.value = c || "";
+      buildText();
+    }
+
+    function buildText(){
+      const m = metier.value.trim();
+      const z = zone.value.trim();
+      const s = services.value.trim();
+      const c = contexte.value.trim();
+
+      if(!m){
+        preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.";
+        return "";
+      }
+
+      const line1 = z ? `${m} à ${z} pour ${s || "travaux et intervention terrain"}.` : `${m} pour ${s || "travaux et intervention terrain"}.`;
+      const line2 = c ? `Intervention possible selon le besoin : ${c}.` : "Intervention possible selon le besoin du client.";
+      const line3 = "Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.";
+      const line4 = "Contactez-moi directement pour en discuter.";
+
+      const text = `${line1}\n${line2}\n${line3}\n${line4}`;
+      preview.textContent = text;
+      return text;
+    }
+
+    function render(filter=""){
+      const needle = filter.trim().toLowerCase();
+      grid.innerHTML = "";
+      METIERS
+        .filter(([name, desc]) => !needle || name.toLowerCase().includes(needle) || desc.toLowerCase().includes(needle))
+        .forEach(([name, desc]) => {
+          const card = document.createElement("article");
+          card.className = "metier";
+          card.innerHTML = `
+            <strong>${name}</strong>
+            <span>${desc}</span>
+            <button class="small" type="button">Choisir</button>
+          `;
+          card.querySelector("button").addEventListener("click", () => {
+            setForm(name, zone.value || DEFAULT_ZONE, desc.replace(/\.$/,"").toLowerCase(), "besoin à préciser");
+            window.scrollTo({top:0,behavior:"smooth"});
+            showToast(`${name} choisi`);
+          });
+          grid.appendChild(card);
+        });
+
+      if(!grid.children.length){
+        grid.innerHTML = `<div class="warning">Aucun métier trouvé. Tape le métier manuellement dans le formulaire.</div>`;
+      }
+    }
+
+    quickExample.addEventListener("change", () => {
+      if(!quickExample.value) return;
+      const [m,z,s,c] = quickExample.value.split("|");
+      setForm(m,z,s,c);
+      showToast("Exemple chargé");
+    });
+
+    search.addEventListener("input", () => render(search.value));
+
+    $("buildBtn").addEventListener("click", () => {
+      buildText();
+      document.querySelector("#preview").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+
+    $("resetBtn").addEventListener("click", () => {
+      quickExample.value = "";
+      search.value = "";
+      metier.value = "";
+      zone.value = "";
+      services.value = "";
+      contexte.value = "";
+      preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.";
+      render("");
+      showToast("Formulaire vidé");
+    });
+
+    $("copyBtn").addEventListener("click", async () => {
+      const text = buildText();
+      if(!text || !metier.value.trim()){
+        showToast("Rien à copier");
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Texte copié");
+      }catch(e){
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        showToast("Texte copié");
+      }
+    });
+
+    $("waBtn").addEventListener("click", () => {
+      const text = buildText();
+      if(!text || !metier.value.trim()){
+        showToast("Prépare le texte d’abord");
+        return;
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
+    });
+
+    $("goTop").addEventListener("click", () => window.scrollTo({top:0,behavior:"smooth"}));
+    $("goPreview").addEventListener("click", () => document.querySelector("#preview").scrollIntoView({behavior:"smooth",block:"center"}));
+
+    render("");
+  </script>
+</body>
+</html>
