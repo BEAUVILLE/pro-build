@@ -1,524 +1,481 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>DIGIY BUILD · Choisir un métier</title>
-  <meta name="description" content="DIGIY BUILD : choisir un métier, garder les exemples dans une bande déroulante et préparer une fiche terrain propre." />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#1e7a46"/>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
+
+  <title>Métiers BUILD — DIGIY BUILD PRO</title>
+  <meta name="description" content="DIGIY BUILD PRO — Outil métier pour choisir un métier BUILD, préparer une présentation courte et revenir vers la fiche artisan."/>
+
   <style>
     :root{
-      --bg:#120d08;
-      --card:#1c140c;
-      --card2:#26190e;
-      --gold:#f2c45b;
-      --gold2:#d9a536;
-      --text:#fff7e8;
-      --muted:#dbc9aa;
-      --line:rgba(242,196,91,.28);
-      --soft:rgba(242,196,91,.12);
-      --ok:#b9f6cf;
-      --shadow:0 18px 55px rgba(0,0,0,.36);
-      --radius:22px;
+      --bg:#1e7a46;
+      --bg2:#155a34;
+      --bg3:#0e4226;
+      --bar:rgba(8,50,24,.96);
+      --gold:#c4973f;
+      --gold2:#fff0a8;
+      --green:#22c55e;
+      --blue:#38bdf8;
+      --red:#fb7185;
+      --line:rgba(255,255,255,.18);
+      --text:#f0fff5;
+      --muted:rgba(240,255,245,.76);
+      --shadow:0 16px 40px rgba(0,0,0,.22);
+      --r:18px;
+      --max:980px;
+      --hdrH:52px;
+      --barH:78px;
     }
+
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
     body{
       margin:0;
-      min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      min-height:100dvh;
       color:var(--text);
-      background:
-        radial-gradient(circle at top left,rgba(242,196,91,.18),transparent 34%),
-        radial-gradient(circle at bottom right,rgba(255,255,255,.08),transparent 28%),
-        var(--bg);
-    }
-    a{color:inherit}
-    .wrap{width:min(1120px,100%);margin:auto;padding:18px 14px 92px}
-    .hero{
-      position:relative;
-      overflow:hidden;
-      border:1px solid var(--line);
-      border-radius:30px;
-      padding:24px;
-      background:linear-gradient(135deg,rgba(242,196,91,.16),rgba(255,255,255,.05));
-      box-shadow:var(--shadow);
-    }
-    .hero:after{
-      content:"";
-      position:absolute;
-      right:-90px;
-      top:-90px;
-      width:230px;
-      height:230px;
-      border-radius:50%;
-      background:rgba(242,196,91,.12);
-      pointer-events:none;
-    }
-    .eyebrow{
-      margin:0 0 8px;
-      color:var(--gold);
-      font-weight:950;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      font-size:.78rem;
-    }
-    h1{
-      margin:0 0 14px;
-      max-width:820px;
-      font-size:clamp(2rem,7vw,4.4rem);
-      line-height:.96;
-      letter-spacing:-.05em;
-    }
-    .lead{
-      max-width:820px;
-      margin:0;
-      color:var(--muted);
-      line-height:1.55;
-      font-size:1.06rem;
-    }
-    .pillbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-    .pill{
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.22);
-      border-radius:999px;
-      padding:8px 11px;
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-size:18px;
       font-weight:850;
-      font-size:.88rem;
+      background:
+        radial-gradient(620px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
+        radial-gradient(430px 280px at 92% 8%,rgba(196,151,63,.16),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
+      padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px);
     }
-    .layout{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-      margin-top:14px;
+
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+    button{-webkit-tap-highlight-color:transparent}
+
+    .topHeader{
+      position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(196,151,63,.26);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     }
-    @media(min-width:900px){
-      .layout{grid-template-columns:390px 1fr}
-    }
-    .card{
+    .hdrBack{color:rgba(240,255,245,.72);font-size:14px;font-weight:1000;white-space:nowrap}
+    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);white-space:nowrap}
+    .hdrPill{padding:6px 10px;border-radius:999px;border:1px solid rgba(245,158,11,.38);background:rgba(245,158,11,.12);color:#fde68a;font-size:12px;font-weight:1000}
+
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}
+    .hero,.card{
       border:1px solid var(--line);
-      border-radius:var(--radius);
-      background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(0,0,0,.16));
-      padding:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.20);
-    }
-    .card h2,.card h3{margin:0 0 10px}
-    .card p{color:var(--muted);line-height:1.48}
-    label{display:block;margin:12px 0 7px;font-weight:900}
-    input,select,textarea{
-      width:100%;
-      border:1px solid var(--line);
-      background:#0f0a06;
-      color:var(--text);
-      border-radius:16px;
-      padding:13px 13px;
-      font:inherit;
-      outline:none;
-    }
-    textarea{min-height:116px;resize:vertical;line-height:1.45}
-    input:focus,select:focus,textarea:focus{
-      border-color:var(--gold);
-      box-shadow:0 0 0 3px rgba(242,196,91,.13);
-    }
-    .row{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:620px){.row.two{grid-template-columns:1fr 1fr}}
-    .btns{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
-    button,.btn{
-      appearance:none;
-      border:0;
-      cursor:pointer;
-      border-radius:999px;
-      padding:12px 15px;
-      background:var(--gold);
-      color:#1a1006;
-      font:inherit;
-      font-weight:950;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:7px;
-      box-shadow:0 10px 24px rgba(0,0,0,.22);
-      transition:transform .12s ease,filter .12s ease,opacity .12s ease;
-    }
-    button:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
-    button.secondary,.btn.secondary{
+      border-radius:var(--r);
       background:rgba(255,255,255,.08);
-      color:var(--text);
-      border:1px solid var(--line);
-      box-shadow:none;
-    }
-    button.small{padding:9px 11px;font-size:.9rem}
-    .metierGrid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-    @media(min-width:660px){.metierGrid{grid-template-columns:1fr 1fr}}
-    @media(min-width:1040px){.metierGrid{grid-template-columns:1fr 1fr 1fr}}
-    .metier{
-      border:1px solid rgba(242,196,91,.20);
-      background:rgba(255,255,255,.052);
-      border-radius:18px;
-      padding:12px;
-    }
-    .metier strong{display:block;font-size:1rem}
-    .metier span{display:block;color:var(--muted);font-size:.88rem;margin:5px 0 10px;line-height:1.35}
-    .preview{
-      background:#0d0905;
-      border:1px dashed rgba(242,196,91,.48);
-      border-radius:18px;
-      padding:14px;
-      white-space:pre-wrap;
-      line-height:1.5;
-      min-height:170px;
-      color:#fff4da;
-    }
-    .note{
-      border:1px solid rgba(185,246,207,.22);
-      background:rgba(185,246,207,.08);
-      border-radius:18px;
-      padding:12px;
-      color:#e3ffed;
-      font-weight:800;
-      line-height:1.42;
-    }
-    .warning{
-      border:1px solid rgba(255,214,151,.25);
-      background:rgba(255,214,151,.08);
-      border-radius:18px;
-      padding:12px;
-      color:#ffe7bc;
-      line-height:1.42;
-    }
-    .exampleBox{
-      border:1px solid rgba(242,196,91,.20);
-      border-radius:20px;
-      background:rgba(0,0,0,.18);
-      padding:12px;
-      margin-top:12px;
-    }
-    .exampleBox h3{margin:0 0 8px;color:var(--gold)}
-    .exampleList{margin:0;padding-left:18px;color:var(--muted);line-height:1.55}
-    .hidden{display:none!important}
-    .sticky{
-      position:fixed;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      z-index:20;
-      display:flex;
-      justify-content:center;
-      pointer-events:none;
-    }
-    .sticky .inner{
-      pointer-events:auto;
-      width:min(920px,100%);
-      display:flex;
-      gap:8px;
-      padding:8px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:rgba(18,13,8,.92);
-      backdrop-filter:blur(10px);
-      box-shadow:0 18px 50px rgba(0,0,0,.40);
-    }
-    .sticky button{flex:1;padding:11px 10px}
-    .toast{
-      position:fixed;
-      top:14px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:50;
-      background:#111;
-      color:#fff;
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:10px 14px;
       box-shadow:var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .2s ease,top .2s ease;
+      padding:16px;
+    }
+    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+    h1{margin:0 0 8px;font-size:clamp(34px,8vw,54px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
+    .lead{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.42;max-width:780px}
+    .rule{margin-top:12px;padding:14px 15px;border:1px dashed var(--line);border-radius:var(--r);background:rgba(5,31,17,.34);color:rgba(240,255,245,.92);font-size:15px;font-weight:1000;line-height:1.42}
+    .rule b{color:var(--gold2)}
+
+    .sectionTitle{font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,255,245,.62);margin:0 0 10px}
+    .layout{display:grid;grid-template-columns:380px 1fr;gap:16px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .field{display:grid;gap:7px}
+    .field.full{grid-column:1 / -1}
+    label{font-size:13px;font-weight:1000;text-transform:uppercase;letter-spacing:.07em;color:#dcfce7}
+
+    input,textarea,select{
+      width:100%;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:17px;
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      padding:13px 14px;
+      min-height:56px;
+      outline:none;
       font-weight:900;
     }
-    .toast.show{opacity:1;top:22px}
+    textarea{min-height:126px;resize:vertical;line-height:1.45}
+    input:focus,textarea:focus,select:focus{
+      border-color:rgba(255,240,168,.55);
+      box-shadow:0 0 0 4px rgba(255,240,168,.10);
+    }
+    select option{background:#0e4226;color:#f0fff5}
+    .hint{font-size:13px;color:rgba(240,255,245,.62);font-weight:800;line-height:1.35}
+
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+    .btn{
+      min-height:58px;border-radius:18px;border:1px solid rgba(255,255,255,.17);
+      background:rgba(255,255,255,.08);color:var(--text);font-weight:1000;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;
+      cursor:pointer;padding:13px 14px;
+    }
+    .btn.green{background:linear-gradient(135deg,var(--green),var(--gold));color:#102014;border:none}
+    .btn.gold{background:rgba(196,151,63,.16);border-color:rgba(196,151,63,.42);color:#fff0a8}
+    .btn.blue{background:rgba(56,189,248,.13);border-color:rgba(56,189,248,.32);color:#bae6fd}
+    .btn.red{background:rgba(251,113,133,.10);border-color:rgba(251,113,133,.30);color:#fecaca}
+
+    .metierGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .tile{
+      min-height:142px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:12px;
+      padding:15px;
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      background:rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+    }
+    .tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .ico{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);font-size:25px;flex:0 0 auto}
+    .tag{min-height:28px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+    .tile b{display:block;font-size:21px;font-weight:1000;line-height:1.05;letter-spacing:-.025em;color:#fff}
+    .tile span{display:block;margin-top:6px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.30}
+    .tile.primary{border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.14)}
+    .tile.gold{border-color:rgba(196,151,63,.42);background:rgba(196,151,63,.13)}
+
+    .smallBtn{
+      min-height:42px;
+      border-radius:15px;
+      padding:10px 12px;
+      font-size:14px;
+      background:rgba(196,151,63,.16);
+      border:1px solid rgba(196,151,63,.42);
+      color:#fff0a8;
+      font-weight:1000;
+      cursor:pointer;
+    }
+    .preview{
+      border:1px solid rgba(255,240,168,.26);
+      background:rgba(5,31,17,.34);
+      border-radius:22px;
+      padding:16px;
+      min-height:170px;
+      white-space:pre-wrap;
+      line-height:1.48;
+      font-weight:900;
+      color:#f8ffe9;
+    }
+    .msg{
+      display:none;margin-top:12px;padding:13px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.14);font-size:15px;font-weight:900;line-height:1.45;white-space:pre-wrap;
+    }
+    .msg.show{display:block}
+    .msg.ok{color:#bbf7d0;border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.09)}
+    .msg.bad{color:#fecaca;border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.09)}
+
+    .bottomBar{
+      position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(8,50,24,.97);
+      border-top:1px solid rgba(196,151,63,.20);
+      backdrop-filter:blur(18px);
+    }
+    .bottomInner{width:min(760px,100%);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(240,255,245,.68);font-size:11px;font-weight:1000;text-align:center;background:rgba(255,255,255,.05);border:1px solid transparent}
+    .bottomInner a.active{color:#102014;background:linear-gradient(135deg,var(--green),var(--gold));border-color:rgba(34,197,94,.24)}
+
+    @media(max-width:860px){
+      .layout{grid-template-columns:1fr}
+      .metierGrid{grid-template-columns:1fr}
+    }
+    @media(max-width:720px){
+      .grid,.actions{grid-template-columns:1fr}
+      h1{font-size:39px}
+      .hero,.card{padding:14px}
+      .hdrTitle{display:none}
+    }
   </style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <p class="eyebrow">DIGIY BUILD · métiers terrain</p>
-      <h1>Choisir un métier, préparer une fiche propre.</h1>
-      <p class="lead">
-        La base reste simple : Entrepreneur bâtisseur mène le mouvement, les artisans suivent par métier,
-        les exemples restent dans la bande déroulante, puis on sort un texte court prêt à copier.
-      </p>
-      <div class="pillbar">
-        <span class="pill">Entrepreneur bâtisseur en tête</span>
-        <span class="pill">Métiers validés</span>
-        <span class="pill">Exemples déroulants</span>
-        <span class="pill">Recherche rapide</span>
-        <span class="pill">Copie en 1 clic</span>
-      </div>
-    </section>
+<header class="topHeader">
+  <a class="hdrBack" href="./hub.html">← HUB</a>
+  <div class="hdrTitle">MÉTIERS BUILD</div>
+  <div class="hdrPill">outil pro</div>
+</header>
 
-    <section class="layout">
-      <aside class="card">
-        <h2>Préparer la fiche</h2>
-        <p>Choisis un exemple, un métier, ou tape directement. Le texte reste court, terrain, publiable après vérification.</p>
-
-        <label for="quickExample">Bande déroulante · exemples déjà prêts</label>
-        <select id="quickExample">
-          <option value="">Choisir un exemple…</option>
-          <option value="Entrepreneur bâtisseur||coordination de chantier, suivi des travaux, organisation des corps de métier et accompagnement du client|chantier maison, rénovation ou construction">Entrepreneur bâtisseur · locomotive BUILD</option>
-          <option value="Plombier||fuite, robinetterie, évacuation et installation|petits travaux">Plombier</option>
-          <option value="Électricien||prise, éclairage, panne et petite installation|maison ou commerce">Électricien</option>
-          <option value="Maçon||rénovation, réparation et aménagement|travaux maison">Maçon</option>
-          <option value="Menuisier||portes, meubles simples, réparation et ajustement|bois ou aluminium">Menuisier</option>
-          <option value="Soudeur métal||portail, grille, réparation métal et petite fabrication|métal terrain">Soudeur métal</option>
-          <option value="Soudeur aluminium||fenêtre, porte, cadre aluminium et réparation simple|aluminium maison ou boutique">Soudeur aluminium</option>
-          <option value="Mécanicien||diagnostic simple, réparation, entretien et dépannage|voiture ou moto">Mécanicien</option>
-          <option value="Peintre||peinture intérieure, finition et rafraîchissement|maison ou local">Peintre</option>
-          <option value="Carreleur||pose, réparation et finition de carrelage|sols et murs">Carreleur</option>
-          <option value="Frigoriste||réfrigérateur, congélateur, chambre froide et diagnostic|froid maison ou commerce">Frigoriste</option>
-          <option value="Climatisation||installation, entretien, nettoyage et diagnostic climatisation|maison, bureau ou commerce">Climatisation</option>
-          <option value="Solaire / Énergie||installation simple, contrôle et entretien énergie solaire|maison ou commerce">Solaire / Énergie</option>
-          <option value="Entretien||petites réparations, suivi maison et entretien régulier|maison ou résidence">Entretien</option>
-          <option value="Nettoyage||ménage, remise propre et entretien régulier|maison, bureau ou commerce">Nettoyage</option>
-          <option value="Manœuvre||aide chantier, manutention, préparation et nettoyage|chantier">Manœuvre</option>
-          <option value="Aide chantier||appui chantier, rangement, transport léger et préparation|chantier maison">Aide chantier</option>
-          <option value="Polyvalent||petits travaux, dépannage simple et aide terrain|besoin à préciser">Polyvalent</option>
-        </select>
-
-        <label for="search">Recherche rapide</label>
-        <input id="search" type="search" placeholder="Ex : plombier, solaire, nettoyage…" autocomplete="off" />
-
-        <div class="row two">
-          <div>
-            <label for="metier">Métier</label>
-            <input id="metier" placeholder="Ex : Plombier" />
-          </div>
-          <div>
-            <label for="zone">Zone</label>
-            <input id="zone" placeholder="Zone du professionnel" />
-          </div>
-        </div>
-
-        <label for="services">Services principaux</label>
-        <textarea id="services" placeholder="Ex : fuite, robinetterie, évacuation et installation"></textarea>
-
-        <label for="contexte">Contexte terrain</label>
-        <input id="contexte" placeholder="Ex : petits travaux, maison, commerce…" />
-
-        <div class="btns">
-          <button id="buildBtn" type="button">Préparer le texte</button>
-          <button id="resetBtn" class="secondary" type="button">Vider</button>
-        </div>
-
-        <div style="height:12px"></div>
-        <div class="warning">
-          Règle propre : français publiable si clair. Wolof ou langue locale = brouillon à valider par une personne du terrain avant publication.
-        </div>
-      </aside>
-
-      <section class="card">
-        <h2>Liste BUILD validée</h2>
-        <p>La liste reste courte. Entrepreneur bâtisseur est la locomotive : il organise, coordonne et entraîne les corps de métier du terrain.</p>
-
-        <div id="metierGrid" class="metierGrid"></div>
-
-        <div class="exampleBox">
-          <h3>Exemples gardés</h3>
-          <ul class="exampleList">
-            <li>Entrepreneur bâtisseur pour coordination de chantier, suivi des travaux et organisation des corps de métier.</li>
-            <li>Plombier pour fuite, robinetterie, évacuation et installation.</li>
-            <li>Maçon pour rénovation, réparation et aménagement.</li>
-            <li>Électricien pour prise, éclairage, panne et petite installation.</li>
-          </ul>
-        </div>
-      </section>
-    </section>
-
-    <section class="card" style="margin-top:14px">
-      <h2>Texte généré</h2>
-      <p>Copie ce bloc dans la fiche BUILD, WhatsApp, ou ton fichier HTML.</p>
-      <div id="preview" class="preview">Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.</div>
-      <div class="btns">
-        <button id="copyBtn" type="button">Copier le texte</button>
-        <button id="waBtn" class="secondary" type="button">Ouvrir WhatsApp</button>
-      </div>
-      <div style="height:12px"></div>
-      <div class="note">
-        Doctrine DIGIY : le pro garde son client, son nom, son argent et sa décision. DIGIY prépare, structure et protège.
-      </div>
-    </section>
-  </main>
-
-  <div class="sticky">
-    <div class="inner">
-      <button id="goTop" class="secondary" type="button">Haut</button>
-      <button id="goPreview" type="button">Voir texte</button>
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">DIGIY PRO · MES SERVICES</div>
+    <h1>Choisir le métier juste.</h1>
+    <div class="lead">
+      Cette page aide le professionnel à choisir son métier BUILD et à préparer un texte court pour sa fiche artisan.
+      Rien n’est imposé : le pro corrige, valide et garde la main.
     </div>
+    <div class="rule">
+      <b>Doctrine :</b> Entrepreneur bâtisseur ouvre la marche. Les artisans terrain suivent par métier.
+      La fiche reste propre : pas de coordonnées ni de ville en dur dans le moule.
+    </div>
+  </section>
+
+  <section class="layout">
+    <aside class="card">
+      <div class="sectionTitle">Préparation rapide</div>
+
+      <div class="grid">
+        <div class="field full">
+          <label for="quickExample">Exemples rapides</label>
+          <select id="quickExample">
+            <option value="">Choisir un exemple métier déjà cadré</option>
+            <option value="Entrepreneur bâtisseur||coordination de chantier, suivi des travaux, organisation des corps de métier et accompagnement du client|chantier maison, rénovation ou construction">Entrepreneur bâtisseur · coordination chantier</option>
+            <option value="Plombier||fuite, robinetterie, évacuation et installation|petits travaux">Plombier</option>
+            <option value="Électricien||prise, éclairage, panne et petite installation|maison ou commerce">Électricien</option>
+            <option value="Maçon||rénovation, réparation et aménagement|travaux maison">Maçon</option>
+            <option value="Menuisier||portes, meubles simples, réparation et ajustement|bois ou aluminium">Menuisier</option>
+            <option value="Soudeur métal||portail, grille, réparation métal et petite fabrication|métal terrain">Soudeur métal</option>
+            <option value="Soudeur aluminium||fenêtre, porte, cadre aluminium et réparation simple|aluminium maison ou boutique">Soudeur aluminium</option>
+            <option value="Mécanicien||diagnostic simple, réparation, entretien et dépannage|voiture ou moto">Mécanicien</option>
+            <option value="Peintre||peinture intérieure, finition et rafraîchissement|maison ou local">Peintre</option>
+            <option value="Carreleur||pose, réparation et finition de carrelage|sols et murs">Carreleur</option>
+            <option value="Frigoriste||réfrigérateur, congélateur, chambre froide et diagnostic|froid maison ou commerce">Frigoriste</option>
+            <option value="Climatisation||installation, entretien, nettoyage et diagnostic climatisation|maison, bureau ou commerce">Climatisation</option>
+            <option value="Solaire / Énergie||installation simple, contrôle et entretien énergie solaire|maison ou commerce">Solaire / Énergie</option>
+            <option value="Entretien||petites réparations, suivi maison et entretien régulier|maison ou résidence">Entretien</option>
+            <option value="Nettoyage||ménage, remise propre et entretien régulier|maison, bureau ou commerce">Nettoyage</option>
+            <option value="Manœuvre||aide chantier, manutention, préparation et nettoyage|chantier">Manœuvre</option>
+            <option value="Aide chantier||appui chantier, rangement, transport léger et préparation|chantier maison">Aide chantier</option>
+            <option value="Polyvalent||petits travaux, dépannage simple et aide terrain|besoin à préciser">Polyvalent</option>
+          </select>
+          <div class="hint">Les exemples remplissent le métier, les services et le contexte. Le pro peut tout modifier.</div>
+        </div>
+
+        <div class="field full">
+          <label for="search">Recherche métier</label>
+          <input id="search" type="search" placeholder="Ex : plombier, solaire, nettoyage…" autocomplete="off"/>
+        </div>
+
+        <div class="field">
+          <label for="metier">Métier</label>
+          <input id="metier" placeholder="Métier du professionnel"/>
+        </div>
+
+        <div class="field">
+          <label for="zone">Zone</label>
+          <input id="zone" placeholder="Zone du professionnel"/>
+        </div>
+
+        <div class="field full">
+          <label for="services">Services principaux</label>
+          <textarea id="services" placeholder="Ex : fuite, robinetterie, évacuation et installation"></textarea>
+        </div>
+
+        <div class="field full">
+          <label for="contexte">Contexte terrain</label>
+          <input id="contexte" placeholder="Ex : petits travaux, maison, commerce…"/>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn green" id="buildBtn" type="button">Préparer</button>
+        <button class="btn red" id="resetBtn" type="button">Vider</button>
+        <button class="btn blue" id="copyBtn" type="button">Copier</button>
+        <a class="btn gold" href="./fiche.html">← Retour fiche</a>
+      </div>
+
+      <div class="msg ok show">
+        Outil PRO : cette page sert à préparer le texte. La publication reste dans la fiche artisan.
+      </div>
+    </aside>
+
+    <section class="card">
+      <div class="sectionTitle">Liste BUILD validée</div>
+      <div id="metierGrid" class="metierGrid"></div>
+    </section>
+  </section>
+
+  <section class="card" id="resultat">
+    <div class="sectionTitle">Texte préparé</div>
+    <div id="preview" class="preview">Choisis un métier ou un exemple, puis clique sur “Préparer”.</div>
+    <div class="actions">
+      <button class="btn blue" id="copyBtn2" type="button">Copier le texte</button>
+      <a class="btn green" href="./fiche.html">Coller dans ma fiche</a>
+    </div>
+    <div class="rule">
+      <b>Rappel :</b> français publiable si le texte est propre. Wolof ou autre langue locale = brouillon à valider humainement avant publication.
+    </div>
+  </section>
+</main>
+
+<nav class="bottomBar" aria-label="Navigation Mes services">
+  <div class="bottomInner">
+    <a href="./hub.html"><span>🧭</span><span>HUB</span></a>
+    <a href="./action.html"><span>🎙️</span><span>GO</span></a>
+    <a href="./cockpit.html"><span>🧰</span><span>Service</span></a>
+    <a class="active" href="./fiche.html"><span>🪪</span><span>Fiche</span></a>
+    <a href="./qr.html"><span>🔳</span><span>QR</span></a>
   </div>
+</nav>
 
-  <div id="toast" class="toast">Copié</div>
+<script>
+(function(){
+  "use strict";
 
-  <script>
-    const METIERS = [
-      ["Entrepreneur bâtisseur","Coordination de chantier, suivi des travaux, organisation des corps de métier, accompagnement client."],
-      ["Plombier","Fuite, robinetterie, évacuation, installation."],
-      ["Électricien","Prise, éclairage, panne, petite installation."],
-      ["Maçon","Rénovation, réparation, mur, dalle, aménagement."],
-      ["Menuisier","Porte, meuble simple, réparation, ajustement."],
-      ["Soudeur métal","Portail, grille, réparation métal, fabrication simple."],
-      ["Soudeur aluminium","Porte, fenêtre, cadre aluminium, réparation simple."],
-      ["Mécanicien","Diagnostic simple, réparation, entretien, dépannage."],
-      ["Peintre","Peinture intérieure, finition, rafraîchissement."],
-      ["Carreleur","Pose, réparation, finition carrelage."],
-      ["Frigoriste","Réfrigérateur, congélateur, froid commerce."],
-      ["Climatisation","Installation, entretien, nettoyage, diagnostic climatisation."],
-      ["Solaire / Énergie","Installation simple, contrôle, entretien énergie solaire."],
-      ["Entretien","Petites réparations, suivi maison, entretien régulier."],
-      ["Nettoyage","Ménage, remise propre, entretien maison ou commerce."],
-      ["Manœuvre","Aide chantier, manutention, préparation, nettoyage."],
-      ["Aide chantier","Appui chantier, rangement, transport léger, préparation."],
-      ["Polyvalent","Petits travaux, dépannage simple, aide terrain."]
-    ];
+  const METIERS = [
+    ["Entrepreneur bâtisseur","Coordination de chantier, suivi des travaux, organisation des corps de métier, accompagnement client.","🧱","Locomotive"],
+    ["Plombier","Fuite, robinetterie, évacuation, installation.","🚰","Métier"],
+    ["Électricien","Prise, éclairage, panne, petite installation.","💡","Métier"],
+    ["Maçon","Rénovation, réparation, mur, dalle, aménagement.","🧱","Métier"],
+    ["Menuisier","Porte, meuble simple, réparation, ajustement.","🪵","Métier"],
+    ["Soudeur métal","Portail, grille, réparation métal, fabrication simple.","⚙️","Métier"],
+    ["Soudeur aluminium","Porte, fenêtre, cadre aluminium, réparation simple.","🪟","Métier"],
+    ["Mécanicien","Diagnostic simple, réparation, entretien, dépannage.","🔧","Métier"],
+    ["Peintre","Peinture intérieure, finition, rafraîchissement.","🎨","Métier"],
+    ["Carreleur","Pose, réparation, finition carrelage.","⬜","Métier"],
+    ["Frigoriste","Réfrigérateur, congélateur, froid commerce.","❄️","Métier"],
+    ["Climatisation","Installation, entretien, nettoyage, diagnostic climatisation.","🌬️","Métier"],
+    ["Solaire / Énergie","Installation simple, contrôle, entretien énergie solaire.","☀️","Métier"],
+    ["Entretien","Petites réparations, suivi maison, entretien régulier.","🧹","Métier"],
+    ["Nettoyage","Ménage, remise propre, entretien maison ou commerce.","✨","Métier"],
+    ["Manœuvre","Aide chantier, manutention, préparation, nettoyage.","💪","Métier"],
+    ["Aide chantier","Appui chantier, rangement, transport léger, préparation.","👷","Métier"],
+    ["Polyvalent","Petits travaux, dépannage simple, aide terrain.","🛠️","Métier"]
+  ];
 
-    const DEFAULT_ZONE = "";
+  const $ = (id) => document.getElementById(id);
+  const grid = $("metierGrid");
+  const quickExample = $("quickExample");
+  const search = $("search");
+  const metier = $("metier");
+  const zone = $("zone");
+  const services = $("services");
+  const contexte = $("contexte");
+  const preview = $("preview");
 
-    const $ = (id) => document.getElementById(id);
-    const grid = $("metierGrid");
-    const quickExample = $("quickExample");
-    const search = $("search");
-    const metier = $("metier");
-    const zone = $("zone");
-    const services = $("services");
-    const contexte = $("contexte");
-    const preview = $("preview");
-    const toast = $("toast");
+  function clean(v){ return String(v || "").trim(); }
 
-    function showToast(text){
-      toast.textContent = text || "OK";
-      toast.classList.add("show");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+  function setMsg(text, type){
+    let el = document.getElementById("liveMsg");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "liveMsg";
+      el.className = "msg";
+      preview.parentElement.appendChild(el);
+    }
+    el.className = "msg show " + (type || "ok");
+    el.textContent = text || "";
+    clearTimeout(window.__msgTimer);
+    window.__msgTimer = setTimeout(() => { el.className = "msg"; }, 1600);
+  }
+
+  function setForm(m,z,s,c){
+    metier.value = m || "";
+    if(z) zone.value = z;
+    services.value = s || "";
+    contexte.value = c || "";
+    buildText();
+  }
+
+  function buildText(){
+    const m = clean(metier.value);
+    const z = clean(zone.value);
+    const s = clean(services.value);
+    const c = clean(contexte.value);
+
+    if(!m){
+      preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer”.";
+      return "";
     }
 
-    function setForm(m, z, s, c){
-      metier.value = m || "";
-      zone.value = z || zone.value || DEFAULT_ZONE;
-      services.value = s || "";
-      contexte.value = c || "";
-      buildText();
-    }
+    const baseService = s || "travaux et intervention terrain";
+    const line1 = z ? `${m} · ${z} · ${baseService}.` : `${m} pour ${baseService}.`;
+    const line2 = c ? `Intervention possible selon le besoin : ${c}.` : "Intervention possible selon le besoin du client.";
+    const line3 = "Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.";
+    const line4 = "Contactez-moi directement pour en discuter.";
 
-    function buildText(){
-      const m = metier.value.trim();
-      const z = zone.value.trim();
-      const s = services.value.trim();
-      const c = contexte.value.trim();
+    const text = `${line1}\n\n${line2}\n\n${line3}\n\n${line4}`;
+    preview.textContent = text;
+    return text;
+  }
 
-      if(!m){
-        preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.";
-        return "";
-      }
+  function render(filter){
+    const needle = clean(filter).toLowerCase();
+    grid.innerHTML = "";
 
-      const line1 = z ? `${m} · ${z} · ${s || "travaux et intervention terrain"}.` : `${m} pour ${s || "travaux et intervention terrain"}.`;
-      const line2 = c ? `Intervention possible selon le besoin : ${c}.` : "Intervention possible selon le besoin du client.";
-      const line3 = "Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.";
-      const line4 = "Contactez-moi directement pour en discuter.";
-
-      const text = `${line1}\n${line2}\n${line3}\n${line4}`;
-      preview.textContent = text;
-      return text;
-    }
-
-    function render(filter=""){
-      const needle = filter.trim().toLowerCase();
-      grid.innerHTML = "";
-      METIERS
-        .filter(([name, desc]) => !needle || name.toLowerCase().includes(needle) || desc.toLowerCase().includes(needle))
-        .forEach(([name, desc]) => {
-          const card = document.createElement("article");
-          card.className = "metier";
-          card.innerHTML = `
-            <strong>${name}</strong>
-            <span>${desc}</span>
-            <button class="small" type="button">Choisir</button>
-          `;
-          card.querySelector("button").addEventListener("click", () => {
-            setForm(name, zone.value || DEFAULT_ZONE, desc.replace(/\.$/,"").toLowerCase(), "besoin à préciser");
-            window.scrollTo({top:0,behavior:"smooth"});
-            showToast(`${name} choisi`);
-          });
-          grid.appendChild(card);
+    METIERS
+      .filter(([name,desc]) => !needle || name.toLowerCase().includes(needle) || desc.toLowerCase().includes(needle))
+      .forEach(([name, desc, ico, tag], index) => {
+        const card = document.createElement("article");
+        card.className = "tile " + (index === 0 ? "primary" : "");
+        card.innerHTML = `
+          <div class="tileTop">
+            <div class="ico">${ico}</div>
+            <div class="tag">${tag}</div>
+          </div>
+          <div>
+            <b>${escapeHtml(name)}</b>
+            <span>${escapeHtml(desc)}</span>
+          </div>
+          <button class="smallBtn" type="button">Choisir</button>
+        `;
+        card.querySelector("button").addEventListener("click", () => {
+          setForm(name, "", desc.replace(/\.$/,"").toLowerCase(), "besoin à préciser");
+          document.querySelector("#resultat").scrollIntoView({behavior:"smooth",block:"center"});
+          setMsg(name + " choisi.", "ok");
         });
+        grid.appendChild(card);
+      });
 
-      if(!grid.children.length){
-        grid.innerHTML = `<div class="warning">Aucun métier trouvé. Tape le métier manuellement dans le formulaire.</div>`;
-      }
+    if(!grid.children.length){
+      grid.innerHTML = '<div class="msg show bad">Aucun métier trouvé. Tape le métier manuellement dans le formulaire.</div>';
     }
+  }
 
-    quickExample.addEventListener("change", () => {
-      if(!quickExample.value) return;
-      const [m,z,s,c] = quickExample.value.split("|");
-      setForm(m,z,s,c);
-      showToast("Exemple chargé");
-    });
+  function escapeHtml(v){
+    return String(v||"").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
 
-    search.addEventListener("input", () => render(search.value));
+  async function copyText(){
+    const text = buildText();
+    if(!clean(metier.value)){
+      setMsg("Rien à copier pour le moment.", "bad");
+      return;
+    }
+    try{
+      await navigator.clipboard.writeText(text);
+      setMsg("Texte copié.", "ok");
+    }catch(e){
+      const area = document.createElement("textarea");
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+      setMsg("Texte copié.", "ok");
+    }
+  }
 
-    $("buildBtn").addEventListener("click", () => {
-      buildText();
-      document.querySelector("#preview").scrollIntoView({behavior:"smooth",block:"center"});
-    });
+  quickExample.addEventListener("change", function(){
+    if(!this.value) return;
+    const [m,z,s,c] = this.value.split("|");
+    setForm(m,z,s,c);
+    document.querySelector("#resultat").scrollIntoView({behavior:"smooth",block:"center"});
+    setMsg("Exemple chargé.", "ok");
+  });
 
-    $("resetBtn").addEventListener("click", () => {
-      quickExample.value = "";
-      search.value = "";
-      metier.value = "";
-      zone.value = "";
-      services.value = "";
-      contexte.value = "";
-      preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer le texte”.";
-      render("");
-      showToast("Formulaire vidé");
-    });
-
-    $("copyBtn").addEventListener("click", async () => {
-      const text = buildText();
-      if(!text || !metier.value.trim()){
-        showToast("Rien à copier");
-        return;
-      }
-      try{
-        await navigator.clipboard.writeText(text);
-        showToast("Texte copié");
-      }catch(e){
-        const area = document.createElement("textarea");
-        area.value = text;
-        document.body.appendChild(area);
-        area.select();
-        document.execCommand("copy");
-        area.remove();
-        showToast("Texte copié");
-      }
-    });
-
-    $("waBtn").addEventListener("click", () => {
-      const text = buildText();
-      if(!text || !metier.value.trim()){
-        showToast("Prépare le texte d’abord");
-        return;
-      }
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
-    });
-
-    $("goTop").addEventListener("click", () => window.scrollTo({top:0,behavior:"smooth"}));
-    $("goPreview").addEventListener("click", () => document.querySelector("#preview").scrollIntoView({behavior:"smooth",block:"center"}));
-
+  search.addEventListener("input", () => render(search.value));
+  $("buildBtn").addEventListener("click", () => {
+    buildText();
+    document.querySelector("#resultat").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  $("resetBtn").addEventListener("click", () => {
+    quickExample.value = "";
+    search.value = "";
+    metier.value = "";
+    zone.value = "";
+    services.value = "";
+    contexte.value = "";
+    preview.textContent = "Choisis un métier ou un exemple, puis clique sur “Préparer”.";
     render("");
-  </script>
+    setMsg("Formulaire vidé.", "ok");
+  });
+  $("copyBtn").addEventListener("click", copyText);
+  $("copyBtn2").addEventListener("click", copyText);
+
+  render("");
+})();
+</script>
 </body>
 </html>
+
