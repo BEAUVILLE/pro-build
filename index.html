@@ -4,66 +4,575 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
-  <title>Mes services — Entrée</title>
+  <title>Mes services — Menu PRO</title>
 
   <meta name="theme-color" content="#1e7a46"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <meta name="digiy-build" content="services-build-rail-doctrine-20260521"/>
+  <meta name="description" content="DIGIY Mes services PRO — menu compact terrain : parler, noter, gérer son service, fiche, QR, PAY et accès."/>
+  <meta name="digiy-build" content="build-menu-compact-plus-20260612"/>
 
   <script>
-    window.DIGIY_MODULE="BUILD";
-    window.DIGIY_LOGIN_URL="./pin.html";
-
-    (()=>{
-      "use strict";
-
-      const TARGET="./hub.html";
-      const SENSITIVE=[
-        "phone","tel","owner_phone","owner_id","slug","module",
-        "return","redirect","redirect_url","url","from","v",
-        "pin","token","session_token"
-      ];
-
-      function clean(){
-        try{
-          const u=new URL(location.href);
-          let c=false;
-
-          SENSITIVE.forEach(k=>{
-            if(u.searchParams.has(k)){
-              u.searchParams.delete(k);
-              c=true;
-            }
-          });
-
-          if(c){
-            history.replaceState({},document.title,u.pathname+u.search+u.hash);
-          }
-        }catch(_){}
-      }
-
-      clean();
-
-      setTimeout(()=>{
-        location.replace(TARGET+(location.hash||""));
-      },520);
-    })();
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_SUPABASE_KEY = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_ABOS_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+    window.DIGIY_PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
   </script>
+
   <style>
-    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1e7a46;color:#f0fff5;font-family:system-ui;padding:18px}
-    main{width:min(720px,100%);border:1px solid rgba(255,255,255,.20);border-radius:28px;padding:22px;background:rgba(255,255,255,.08);box-shadow:0 18px 44px rgba(0,0,0,.24);text-align:center}
-    h1{font-size:clamp(38px,8vw,58px);line-height:.95;margin:10px 0;font-weight:1000}
-    p{font-size:18px;font-weight:850;line-height:1.5;color:rgba(240,255,245,.78)}
-    a{display:inline-flex;align-items:center;justify-content:center;min-height:62px;border-radius:20px;padding:12px 18px;background:linear-gradient(135deg,#22c55e,#c4973f);color:#102014;text-decoration:none;font-weight:1000}
+    :root{
+      --bg:#1e7a46;
+      --bg2:#155a34;
+      --bg3:#0e4226;
+      --bar:rgba(8,50,24,.96);
+      --gold:#c4973f;
+      --gold2:#fff0a8;
+      --green:#22c55e;
+      --line:rgba(255,255,255,.18);
+      --text:#f0fff5;
+      --muted:rgba(240,255,245,.76);
+      --soft:rgba(240,255,245,.56);
+      --shadow:0 14px 34px rgba(0,0,0,.20);
+      --r:18px;
+      --max:760px;
+      --hdrH:52px;
+      --barH:74px;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;
+      min-height:100dvh;
+      color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size:18px;
+      font-weight:950;
+      background:
+        radial-gradient(620px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
+        radial-gradient(430px 280px at 92% 8%,rgba(196,151,63,.16),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
+      padding:
+        calc(var(--hdrH) + 12px)
+        12px
+        calc(var(--barH) + env(safe-area-inset-bottom,0px) + 14px);
+    }
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;cursor:pointer}
+    .topHeader{
+      position:fixed;
+      top:0;left:0;right:0;
+      height:var(--hdrH);
+      z-index:100;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:0 12px;
+      background:var(--bar);
+      border-bottom:1px solid rgba(196,151,63,.26);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+    .hdrBack{
+      color:rgba(240,255,245,.72);
+      font-size:13px;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+    .hdrTitle{
+      font-size:12px;
+      font-weight:1000;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      color:var(--gold2);
+      white-space:nowrap;
+    }
+    .hdrPill{
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(245,158,11,.38);
+      background:rgba(245,158,11,.12);
+      color:#fde68a;
+      font-size:11px;
+      font-weight:1000;
+      white-space:nowrap;
+      max-width:34vw;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .hdrPill.ok{
+      color:#bbf7d0;
+      border-color:rgba(34,197,94,.38);
+      background:rgba(34,197,94,.12);
+    }
+    .wrap{
+      width:min(var(--max),100%);
+      margin:0 auto;
+      display:grid;
+      gap:11px;
+    }
+    .hero{
+      display:grid;
+      gap:6px;
+      padding:4px 2px 0;
+    }
+    .eyebrow{
+      color:var(--gold2);
+      font-size:12px;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      font-weight:1000;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(30px,7vw,46px);
+      font-weight:1000;
+      line-height:.95;
+      letter-spacing:-.05em;
+    }
+    .lead{
+      margin:0;
+      color:rgba(240,255,245,.86);
+      font-size:15px;
+      font-weight:1000;
+      line-height:1.32;
+    }
+    .panel{
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:21px;
+      background:rgba(255,255,255,.075);
+      box-shadow:var(--shadow);
+      padding:11px;
+    }
+    .sectionTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin:0 0 9px;
+      color:rgba(240,255,245,.58);
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .sectionTitle b{color:#fff0a8}
+    .quickGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+    }
+    .quick{
+      min-height:86px;
+      padding:10px;
+      border-radius:18px;
+      display:grid;
+      align-content:center;
+      justify-items:start;
+      gap:5px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.07));
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+    }
+    .quick.hot{
+      border-color:rgba(250,204,21,.42);
+      background:linear-gradient(180deg,rgba(250,204,21,.22),rgba(34,197,94,.12));
+    }
+    .quick .qico{font-size:25px;line-height:1}
+    .quick b{
+      display:block;
+      font-size:16px;
+      font-weight:1000;
+      line-height:1.02;
+      letter-spacing:-.02em;
+    }
+    .quick span{
+      display:block;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:1000;
+      line-height:1.18;
+    }
+    .tileGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+    .tile{
+      min-height:126px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:8px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      -webkit-tap-highlight-color:transparent;
+    }
+    .tileTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+    }
+    .ico{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:23px;
+      flex:0 0 auto;
+    }
+    .tag{
+      min-height:24px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:4px 7px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      color:var(--gold2);
+      font-size:9px;
+      font-weight:1000;
+      letter-spacing:.07em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .tile b{
+      display:block;
+      color:#fff;
+      font-size:20px;
+      font-weight:1000;
+      line-height:1.03;
+      letter-spacing:-.025em;
+    }
+    .tile span{
+      display:block;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:1000;
+      line-height:1.22;
+    }
+    .primary{border-color:rgba(34,197,94,.38)!important;background:rgba(34,197,94,.14)!important}
+    .gold{border-color:rgba(196,151,63,.42)!important;background:rgba(196,151,63,.13)!important}
+    .blue{border-color:rgba(139,140,255,.34)!important;background:rgba(139,140,255,.13)!important}
+    .pay{border-color:rgba(250,204,21,.45)!important;background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(196,151,63,.25))!important}
+    .bottomBar{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      height:var(--barH);
+      z-index:100;
+      padding:7px 9px calc(7px + env(safe-area-inset-bottom,0px));
+      background:rgba(8,50,24,.97);
+      border-top:1px solid rgba(196,151,63,.20);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+    .bottomInner{
+      width:min(680px,100%);
+      height:100%;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+    .bottomInner a,
+    .bottomInner button{
+      min-height:56px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      align-content:center;
+      gap:2px;
+      color:rgba(240,255,245,.70);
+      font-size:11px;
+      font-weight:1000;
+      text-align:center;
+      background:rgba(255,255,255,.05);
+      border:1px solid transparent;
+    }
+    .bottomInner .active{
+      color:#102014;
+      background:linear-gradient(135deg,var(--green),var(--gold));
+      border-color:rgba(34,197,94,.24);
+    }
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:220;
+      display:none;
+      background:rgba(4,24,13,.98);
+      overflow:auto;
+      padding:calc(var(--hdrH) + 12px) 12px calc(var(--barH) + 18px);
+    }
+    .overlay.open{display:block}
+    .plusBox{
+      width:min(var(--max),100%);
+      margin:0 auto;
+      display:grid;
+      gap:10px;
+    }
+    .plusHead{
+      min-height:88px;
+      border-radius:22px;
+      border:1px solid rgba(196,151,63,.34);
+      background:
+        radial-gradient(420px 160px at 100% 0%,rgba(196,151,63,.18),transparent 70%),
+        rgba(255,255,255,.07);
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .plusHead h2{
+      margin:0;
+      font-size:30px;
+      line-height:.95;
+      letter-spacing:-.05em;
+    }
+    .close{
+      width:40px;height:40px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      font-weight:1000;
+    }
+    .plusList{
+      display:grid;
+      gap:8px;
+    }
+    .plusLink{
+      min-height:64px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.075);
+      padding:12px 13px;
+      display:flex;
+      align-items:center;
+      gap:11px;
+    }
+    .plusLink .mini{
+      width:38px;height:38px;border-radius:13px;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.08);
+      font-size:21px;
+    }
+    .plusLink b{
+      display:block;
+      font-size:17px;
+      font-weight:1000;
+      line-height:1.1;
+    }
+    .plusLink span{
+      display:block;
+      margin-top:2px;
+      color:var(--soft);
+      font-size:12px;
+      font-weight:950;
+      line-height:1.2;
+    }
+    @media(max-width:420px){
+      body{padding-left:10px;padding-right:10px}
+      .quick{min-height:82px;padding:9px}
+      .quick b{font-size:15px}
+      .quick span{font-size:10.5px}
+      .tile{min-height:118px;padding:11px}
+      .tile b{font-size:18px}
+      .tile span{font-size:12px}
+      .ico{width:40px;height:40px;font-size:22px}
+      .tag{font-size:8.5px}
+    }
   </style>
 </head>
+
 <body>
-  <main>
-    <div style="font-weight:1000;color:#fff0a8;letter-spacing:.14em;text-transform:uppercase">DIGIY PRO · MES SERVICES</div>
-    <h1>Ouverture du HUB.</h1>
-    <p>Index est une porte courte. Le vrai départ de Mes services est le HUB.</p>
-    <a href="./hub.html">🧭 Ouvrir Mes services</a>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
+  <script src="./guard.js?v=build-guard-simple-20260603"></script>
+  <script src="./assets/js/digiy-module-bridge.js?v=bridge-20260520" defer></script>
+
+  <header class="topHeader">
+    <a class="hdrBack" href="https://digiy-hub.digiylyfe.com/">← HUB général</a>
+    <div class="hdrTitle">MES SERVICES</div>
+    <div class="hdrPill" id="sessionPill">session…</div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">DIGIY PRO · BUILD</div>
+      <h1>Que veux-tu faire ?</h1>
+      <p class="lead">Le pro parle, note ou pilote son service. Les détails restent derrière les portes.</p>
+    </section>
+
+    <section class="panel" aria-label="Départ rapide Mes services">
+      <div class="sectionTitle"><b>Départ rapide</b><span>3 gestes</span></div>
+      <div class="quickGrid">
+        <a class="quick hot" id="quickTalk" href="./oreille.html?mode=demande">
+          <span class="qico">🎙️</span>
+          <b>Parler</b>
+          <span>Demande, chantier, client.</span>
+        </a>
+        <a class="quick" id="quickNote" href="./oreille.html?mode=note">
+          <span class="qico">✍️</span>
+          <b>Note</b>
+          <span>Trace rapide service.</span>
+        </a>
+        <a class="quick" id="quickService" href="./cockpit.html">
+          <span class="qico">🧰</span>
+          <b>Service</b>
+          <span>Suivi et demandes.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Portes principales Mes services">
+      <div class="sectionTitle"><b>Portes utiles</b><span>sans catalogue</span></div>
+      <div class="tileGrid">
+        <a class="tile primary" id="doorService" href="./cockpit.html">
+          <div class="tileTop"><div class="ico">🧰</div><div class="tag">Service</div></div>
+          <div><b>Service</b><span>Demandes, suivi, organisation.</span></div>
+        </a>
+
+        <a class="tile blue" id="doorFiche" href="./fiche.html">
+          <div class="tileTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div>
+          <div><b>Fiche</b><span>Métier, zone, contact, présentation.</span></div>
+        </a>
+
+        <a class="tile gold" id="doorQr" href="./qr.html">
+          <div class="tileTop"><div class="ico">🔳</div><div class="tag">QR</div></div>
+          <div><b>QR</b><span>Partager la porte du pro.</span></div>
+        </a>
+
+        <a class="tile gold" id="doorMetiers" href="./metiers.html">
+          <div class="tileTop"><div class="ico">🧱</div><div class="tag">Métiers</div></div>
+          <div><b>Métiers</b><span>Artisans, services, exemples.</span></div>
+        </a>
+
+        <a class="tile pay" id="doorPay" href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD">
+          <div class="tileTop"><div class="ico">💳</div><div class="tag">PAY</div></div>
+          <div><b>PAY</b><span>Argent réel du service.</span></div>
+        </a>
+
+        <a class="tile gold" id="doorWolof" href="https://build.digiylyfe.com/lexique-build.html?v=lexique-build-v2-mobile-20260607">
+          <div class="tileTop"><div class="ico">🇸🇳</div><div class="tag">Wolof</div></div>
+          <div><b>Wolof</b><span>Besoin, devis, acompte.</span></div>
+        </a>
+      </div>
+    </section>
   </main>
+
+  <nav class="bottomBar" aria-label="Navigation Mes services">
+    <div class="bottomInner">
+      <a class="active" href="./index.html"><span>🏠</span><span>Menu</span></a>
+      <a href="./oreille.html?mode=demande"><span>🎙️</span><span>Parler</span></a>
+      <a href="./cockpit.html"><span>🧰</span><span>Service</span></a>
+      <a href="./fiche.html"><span>🪪</span><span>Fiche</span></a>
+      <button type="button" id="openPlus"><span>☰</span><span>Plus</span></button>
+    </div>
+  </nav>
+
+  <section class="overlay" id="plusOverlay" aria-label="Plus Mes services">
+    <div class="plusBox">
+      <div class="plusHead">
+        <div>
+          <div class="eyebrow">PLUS · BUILD</div>
+          <h2>Tout le reste.</h2>
+        </div>
+        <button class="close" id="closePlus" type="button" aria-label="Fermer">×</button>
+      </div>
+
+      <div class="plusList">
+        <a class="plusLink" href="./oreille.html?mode=note">
+          <span class="mini">✍️</span>
+          <span><b>Note rapide</b><span>Client à rappeler, chantier, idée, frais.</span></span>
+        </a>
+        <a class="plusLink" href="./cockpit.html#notes">
+          <span class="mini">🗂️</span>
+          <span><b>Mes notes</b><span>Notes utiles gardées localement.</span></span>
+        </a>
+        <a class="plusLink" href="./pay-transition.html">
+          <span class="mini">💰</span>
+          <span><b>Acompte vers PAY</b><span>Préparer un passage propre vers PAY.</span></span>
+        </a>
+        <a class="plusLink" href="./session.html">
+          <span class="mini">🛡️</span>
+          <span><b>Ma session</b><span>Accès local, nettoyage, sécurité.</span></span>
+        </a>
+        <a class="plusLink" href="./pin.html">
+          <span class="mini">🔐</span>
+          <span><b>Mon accès</b><span>Ouvrir ou renouveler Mes services.</span></span>
+        </a>
+        <a class="plusLink" href="https://digiylyfe.com/">
+          <span class="mini">🦅</span>
+          <span><b>Métiers pro</b><span>Retour à la maison DIGIYLYFE.</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      "use strict";
+
+      try{
+        if(window.DIGIY_MODULE_BRIDGE && typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl === "function"){
+          window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();
+        }
+      }catch(_){}
+
+      const $ = (id) => document.getElementById(id);
+      const pill = $("sessionPill");
+      const overlay = $("plusOverlay");
+
+      function setPlus(open){
+        if(!overlay) return;
+        overlay.classList.toggle("open", !!open);
+      }
+
+      $("openPlus")?.addEventListener("click", () => setPlus(true));
+      $("closePlus")?.addEventListener("click", () => setPlus(false));
+      overlay?.addEventListener("click", (e) => {
+        if(e.target === overlay) setPlus(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if(e.key === "Escape") setPlus(false);
+      });
+
+      async function boot(){
+        let st = {};
+        try{
+          if(window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function"){
+            const out = window.DIGIY_GUARD.ready({
+              redirect:false,
+              preserve_validation:true,
+              allow_soft_session:true
+            });
+            if(out && typeof out.then === "function") await out;
+          }
+          st = (window.DIGIY_GUARD && (window.DIGIY_GUARD.getSession?.() || window.DIGIY_GUARD.state)) || {};
+        }catch(_){}
+
+        if(pill){
+          const ok = !!(st && (st.access_ok || st.access || st.ok || st.has_access || st.pin_session_ok));
+          pill.textContent = ok ? "session ouverte" : "accès à vérifier";
+          pill.className = "hdrPill " + (ok ? "ok" : "");
+        }
+      }
+
+      boot();
+    })();
+  </script>
 </body>
 </html>
 
