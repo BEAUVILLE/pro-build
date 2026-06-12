@@ -64,7 +64,6 @@
 <script>
 (()=>{try{if(window.DIGIY_MODULE_BRIDGE&&typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl==='function')window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();}catch(_){}const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));p.textContent=ok?'session ouverte':'accès à vérifier';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
 </script>
-  <script src="./assets/js/action-digiy-pro-orient.js?v=action-digiy-pro-orient-20260606" defer></script>
 </body>
 </html>
 
