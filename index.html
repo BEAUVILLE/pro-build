@@ -3,13 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-
-  <title>Mes services — Menu PRO</title>
-
+  <title>DIGIY BUILD PRO — Cockpit services</title>
   <meta name="theme-color" content="#1e7a46"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <meta name="description" content="DIGIY Mes services PRO — menu compact terrain : parler, noter, gérer son service, fiche, QR, PAY et accès."/>
-  <meta name="digiy-build" content="build-menu-compact-liens-uniques-20260612"/>
+  <meta name="description" content="DIGIY BUILD PRO V2 — cockpit mono-fichier : Oreille, note, service, PAY, fiche, QR et Plus."/>
+  <meta name="digiy-build" content="build-pro-mono-fichier-oreille-v2-20260613"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -24,537 +22,215 @@
 
   <style>
     :root{
-      --bg:#1e7a46;
-      --bg2:#155a34;
-      --bg3:#0e4226;
-      --bar:rgba(8,50,24,.96);
-      --gold:#c4973f;
-      --gold2:#fff0a8;
-      --green:#22c55e;
-      --line:rgba(255,255,255,.18);
-      --text:#f0fff5;
-      --muted:rgba(240,255,245,.76);
-      --soft:rgba(240,255,245,.56);
-      --shadow:0 14px 34px rgba(0,0,0,.20);
-      --r:18px;
-      --max:760px;
-      --hdrH:52px;
-      --barH:66px;
+      --bg:#f4efe2;--paper:#fffaf0;--ink:#10251c;--muted:#66746e;
+      --green:#1e7a46;--green2:#155a34;--green3:#0e4226;--gold:#c4973f;--gold2:#fff0a8;
+      --danger:#b42318;--ok:#15803d;--line:rgba(16,37,28,.13);--shadow:0 22px 62px rgba(6,59,43,.17);
+      --max:1080px;
     }
-    *{box-sizing:border-box}
-    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-    body{
-      margin:0;
-      min-height:100dvh;
-      color:var(--text);
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-      font-size:18px;
-      font-weight:950;
-      background:
-        radial-gradient(620px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
-        radial-gradient(430px 280px at 92% 8%,rgba(196,151,63,.16),transparent 52%),
-        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
-      padding:
-        calc(var(--hdrH) + 12px)
-        12px
-        calc(var(--barH) + env(safe-area-inset-bottom,0px) + 14px);
-    }
-    a{color:inherit;text-decoration:none}
-    button{font:inherit;color:inherit;cursor:pointer}
-    .topHeader{
-      position:fixed;
-      top:0;left:0;right:0;
-      height:var(--hdrH);
-      z-index:100;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:0 12px;
-      background:var(--bar);
-      border-bottom:1px solid rgba(196,151,63,.26);
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-    }
-    .hdrBack{
-      color:rgba(240,255,245,.72);
-      font-size:13px;
-      font-weight:1000;
-      white-space:nowrap;
-    }
-    .hdrTitle{
-      font-size:12px;
-      font-weight:1000;
-      letter-spacing:.15em;
-      text-transform:uppercase;
-      color:var(--gold2);
-      white-space:nowrap;
-    }
-    .hdrPill{
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(245,158,11,.38);
-      background:rgba(245,158,11,.12);
-      color:#fde68a;
-      font-size:11px;
-      font-weight:1000;
-      white-space:nowrap;
-      max-width:34vw;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .hdrPill.ok{
-      color:#bbf7d0;
-      border-color:rgba(34,197,94,.38);
-      background:rgba(34,197,94,.12);
-    }
-    .wrap{
-      width:min(var(--max),100%);
-      margin:0 auto;
-      display:grid;
-      gap:11px;
-    }
-    .hero{
-      display:grid;
-      gap:6px;
-      padding:4px 2px 0;
-    }
-    .eyebrow{
-      color:var(--gold2);
-      font-size:12px;
-      letter-spacing:.15em;
-      text-transform:uppercase;
-      font-weight:1000;
-    }
-    h1{
-      margin:0;
-      font-size:clamp(30px,7vw,46px);
-      font-weight:1000;
-      line-height:.95;
-      letter-spacing:-.05em;
-    }
-    .lead{
-      margin:0;
-      color:rgba(240,255,245,.86);
-      font-size:15px;
-      font-weight:1000;
-      line-height:1.32;
-    }
-    .panel{
-      border:1px solid rgba(255,255,255,.15);
-      border-radius:21px;
-      background:rgba(255,255,255,.075);
-      box-shadow:var(--shadow);
-      padding:11px;
-    }
-    .sectionTitle{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin:0 0 9px;
-      color:rgba(240,255,245,.58);
-      font-size:11px;
-      font-weight:1000;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-    }
-    .sectionTitle b{color:#fff0a8}
-    .quickGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:8px;
-    }
-    .quick{
-      min-height:86px;
-      padding:10px;
-      border-radius:18px;
-      display:grid;
-      align-content:center;
-      justify-items:start;
-      gap:5px;
-      border:1px solid rgba(255,255,255,.16);
-      background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.07));
-      box-shadow:0 8px 18px rgba(0,0,0,.12);
-    }
-    .quick.hot{
-      border-color:rgba(250,204,21,.42);
-      background:linear-gradient(180deg,rgba(250,204,21,.22),rgba(34,197,94,.12));
-    }
-    .quick .qico{font-size:25px;line-height:1}
-    .quick b{
-      display:block;
-      font-size:16px;
-      font-weight:1000;
-      line-height:1.02;
-      letter-spacing:-.02em;
-    }
-    .quick span{
-      display:block;
-      color:var(--muted);
-      font-size:11px;
-      font-weight:1000;
-      line-height:1.18;
-    }
-    .tileGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:9px;
-    }
-    .tile{
-      min-height:126px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:8px;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:rgba(255,255,255,.08);
-      box-shadow:var(--shadow);
-      -webkit-tap-highlight-color:transparent;
-    }
-    .tileTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:8px;
-    }
-    .ico{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:rgba(255,255,255,.09);
-      border:1px solid rgba(255,255,255,.14);
-      font-size:23px;
-      flex:0 0 auto;
-    }
-    .tag{
-      min-height:24px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:4px 7px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.08);
-      color:var(--gold2);
-      font-size:9px;
-      font-weight:1000;
-      letter-spacing:.07em;
-      text-transform:uppercase;
-      white-space:nowrap;
-    }
-    .tile b{
-      display:block;
-      color:#fff;
-      font-size:20px;
-      font-weight:1000;
-      line-height:1.03;
-      letter-spacing:-.025em;
-    }
-    .tile span{
-      display:block;
-      margin-top:5px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:1000;
-      line-height:1.22;
-    }
-    .primary{border-color:rgba(34,197,94,.38)!important;background:rgba(34,197,94,.14)!important}
-    .gold{border-color:rgba(196,151,63,.42)!important;background:rgba(196,151,63,.13)!important}
-    .blue{border-color:rgba(139,140,255,.34)!important;background:rgba(139,140,255,.13)!important}
-    .pay{border-color:rgba(250,204,21,.45)!important;background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(196,151,63,.25))!important}
-    .bottomBar{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      height:var(--barH);
-      z-index:100;
-      padding:7px 9px calc(7px + env(safe-area-inset-bottom,0px));
-      background:rgba(8,50,24,.97);
-      border-top:1px solid rgba(196,151,63,.20);
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-    }
-    .bottomInner{
-      width:min(680px,100%);
-      height:100%;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:6px;
-    }
-    .bottomInner a,
-    .bottomInner button{
-      min-height:56px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      align-content:center;
-      gap:2px;
-      color:rgba(240,255,245,.70);
-      font-size:11px;
-      font-weight:1000;
-      text-align:center;
-      background:rgba(255,255,255,.05);
-      border:1px solid transparent;
-    }
-    .bottomInner .active{
-      color:#102014;
-      background:linear-gradient(135deg,var(--green),var(--gold));
-      border-color:rgba(34,197,94,.24);
-    }
-    .overlay{
-      position:fixed;
-      inset:0;
-      z-index:220;
-      display:none;
-      background:rgba(4,24,13,.98);
-      overflow:auto;
-      padding:calc(var(--hdrH) + 12px) 12px calc(var(--barH) + 18px);
-    }
-    .overlay.open{display:block}
-    .plusBox{
-      width:min(var(--max),100%);
-      margin:0 auto;
-      display:grid;
-      gap:10px;
-    }
-    .plusHead{
-      min-height:88px;
-      border-radius:22px;
-      border:1px solid rgba(196,151,63,.34);
-      background:
-        radial-gradient(420px 160px at 100% 0%,rgba(196,151,63,.18),transparent 70%),
-        rgba(255,255,255,.07);
-      padding:16px;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-    }
-    .plusHead h2{
-      margin:0;
-      font-size:30px;
-      line-height:.95;
-      letter-spacing:-.05em;
-    }
-    .close{
-      width:40px;height:40px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      font-weight:1000;
-    }
-    .plusList{
-      display:grid;
-      gap:8px;
-    }
-    .plusLink{
-      min-height:64px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.15);
-      background:rgba(255,255,255,.075);
-      padding:12px 13px;
-      display:flex;
-      align-items:center;
-      gap:11px;
-    }
-    .plusLink .mini{
-      width:38px;height:38px;border-radius:13px;
-      display:grid;place-items:center;
-      background:rgba(255,255,255,.08);
-      font-size:21px;
-    }
-    .plusLink b{
-      display:block;
-      font-size:17px;
-      font-weight:1000;
-      line-height:1.1;
-    }
-    .plusLink span{
-      display:block;
-      margin-top:2px;
-      color:var(--soft);
-      font-size:12px;
-      font-weight:950;
-      line-height:1.2;
-    }
-    @media(max-width:420px){
-      body{padding-left:10px;padding-right:10px}
-      .quick{min-height:82px;padding:9px}
-      .quick b{font-size:15px}
-      .quick span{font-size:10.5px}
-      .tile{min-height:118px;padding:11px}
-      .tile b{font-size:18px}
-      .tile span{font-size:12px}
-      .ico{width:40px;height:40px;font-size:22px}
-      .tag{font-size:8.5px}
-    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:radial-gradient(900px 520px at 6% -8%,rgba(196,151,63,.22),transparent 58%),radial-gradient(900px 520px at 105% 0%,rgba(30,122,70,.16),transparent 54%),linear-gradient(180deg,#fff8ea 0%,#f3ecd9 55%,#eadfc8 100%);font-size:18px;font-weight:780;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+    a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit} button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .wrap{width:min(var(--max),calc(100% - 24px));margin:0 auto}.topbar{position:sticky;top:0;z-index:90;background:rgba(255,248,234,.93);border-bottom:1px solid rgba(16,37,28,.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+    .top-inner{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0}.brand{min-width:0}.brand-title{font-size:1.15rem;font-weight:1000;letter-spacing:-.03em;line-height:1.03}.brand-sub{margin-top:4px;color:var(--muted);font-size:.84rem;font-weight:880;line-height:1.22}.session-pill{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;border-radius:999px;background:rgba(30,122,70,.08);border:1px solid rgba(30,122,70,.12);color:var(--green);font-size:.82rem;font-weight:1000;white-space:nowrap}
+    .btn{border:1px solid rgba(30,122,70,.13);display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 16px;border-radius:999px;font-weight:1000;background:#fff;color:var(--green);box-shadow:0 12px 30px rgba(6,59,43,.10);text-align:center}.btn-main{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:0}.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2d2308;border:0}.btn-soft{background:rgba(255,255,255,.78);box-shadow:none}.btn-danger{background:rgba(180,35,24,.09);color:var(--danger);box-shadow:none}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .hero{padding:18px 0 10px}.hero-card{position:relative;overflow:hidden;border-radius:34px;padding:24px;color:#fff;box-shadow:var(--shadow);background:radial-gradient(circle at 88% 12%,rgba(196,151,63,.34),transparent 25%),linear-gradient(135deg,#104024,#1e7a46 58%,#22a663)}.kicker{display:inline-flex;align-items:center;gap:8px;width:max-content;max-width:100%;padding:9px 13px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);font-size:.8rem;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}.hero h1{margin:14px 0 8px;font-size:clamp(2.05rem,6vw,4.3rem);line-height:.96;letter-spacing:-.055em;font-weight:1000}.hero p{margin:0;color:rgba(255,255,255,.87);line-height:1.6;font-weight:780;max-width:72ch}
+    .stats{margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{padding:13px;border-radius:20px;background:rgba(255,255,255,.90);border:1px solid rgba(16,37,28,.08);color:var(--ink)}.stat b{display:block;color:var(--green);font-size:1.42rem;font-weight:1000;line-height:1}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:.78rem;font-weight:900;line-height:1.25}
+    .tabs{position:sticky;top:82px;z-index:80;background:rgba(255,248,234,.90);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(16,37,28,.08);padding:8px 0}.tabs-inner{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.tab{min-height:58px;border-radius:18px;border:1px solid rgba(30,122,70,.11);background:rgba(255,255,255,.72);color:var(--green);font-weight:1000;display:grid;place-items:center;gap:2px;padding:6px;font-size:.78rem}.tab strong{font-size:1.18rem;line-height:1}.tab.active{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2d2308;border:0;box-shadow:0 12px 28px rgba(196,151,63,.24)}
+    .section{display:none;padding:18px 0}.section.active{display:block}.panel{background:rgba(255,255,255,.84);border:1px solid rgba(16,37,28,.09);border-radius:32px;box-shadow:0 12px 30px rgba(6,59,43,.10);padding:18px;margin-bottom:14px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px}.section-head h2{margin:6px 0 0;color:var(--green);font-size:clamp(1.65rem,4vw,2.7rem);line-height:1;letter-spacing:-.045em;font-weight:1000}.section-head p{margin:7px 0 0;color:var(--muted);line-height:1.55;font-weight:820;max-width:720px}.pill{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 12px;border-radius:999px;background:rgba(30,122,70,.08);border:1px solid rgba(30,122,70,.10);color:var(--green);font-size:.78rem;font-weight:1000;text-transform:uppercase;letter-spacing:.05em}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wide{grid-column:1/-1}.label{display:grid;gap:6px;color:var(--green);font-size:.84rem;font-weight:1000}.field,textarea.field,select.field{width:100%;border:1px solid rgba(16,37,28,.13);background:#fff;color:var(--ink);border-radius:22px;min-height:54px;padding:0 15px;outline:none;font-weight:900;box-shadow:0 8px 22px rgba(6,59,43,.08)}textarea.field{min-height:112px;padding:14px 15px;resize:vertical;line-height:1.45}.hint{margin-top:10px;color:var(--muted);font-size:.83rem;font-weight:850;line-height:1.45}.result{margin-top:12px;padding:12px 14px;border-radius:20px;background:rgba(30,122,70,.07);border:1px solid rgba(30,122,70,.10);font-size:.88rem;font-weight:900;color:#31483d;line-height:1.45;display:none}.result.show{display:block}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.quick{min-height:94px;border-radius:22px;border:1px solid rgba(16,37,28,.10);background:#fff;display:grid;align-content:center;gap:6px;padding:14px;box-shadow:0 10px 26px rgba(6,59,43,.09)}.quick.hot{background:linear-gradient(135deg,rgba(255,240,168,.84),rgba(30,122,70,.12));border-color:rgba(196,151,63,.30)}.quick b{color:var(--green);font-size:1.12rem;line-height:1.05;font-weight:1000}.quick span{color:var(--muted);font-size:.83rem;line-height:1.25;font-weight:880}.ico{font-size:28px;line-height:1}
+    .cards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.service-card,.note-card,.move{border-radius:24px;background:#fff;border:1px solid rgba(16,37,28,.09);box-shadow:0 12px 30px rgba(6,59,43,.08);padding:15px}.service-card h3,.note-card h3{margin:0;color:var(--green);font-size:1.22rem;line-height:1.05;font-weight:1000}.service-card p,.note-card p{margin:8px 0 0;color:#4f5f58;line-height:1.42;font-size:.9rem;font-weight:820}.meta-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.meta{display:inline-flex;align-items:center;min-height:30px;padding:0 9px;border-radius:999px;background:rgba(30,122,70,.06);border:1px solid rgba(30,122,70,.08);color:#31483d;font-size:.75rem;font-weight:950}.card-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.card-actions .btn{min-height:44px;padding:0 10px;box-shadow:none;font-size:.82rem}
+    .pay-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:14px}.movement-list{display:grid;gap:9px}.move{display:flex;justify-content:space-between;gap:10px}.move b{color:var(--green)}.move.in b{color:var(--ok)}.move.out b{color:var(--danger)}.move small{display:block;color:var(--muted);font-weight:850;margin-top:3px}.pay-temp{padding:16px;border-radius:24px;background:linear-gradient(135deg,rgba(30,122,70,.08),rgba(196,151,63,.13));border:1px solid rgba(30,122,70,.10);font-weight:900;line-height:1.5;color:#31483d}
+    .more-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.mini-card{padding:16px;border-radius:24px;background:#fff;border:1px solid rgba(16,37,28,.09);box-shadow:0 12px 30px rgba(6,59,43,.08)}.mini-card h3{margin:0 0 8px;color:var(--green);font-size:1.12rem;line-height:1.08}.mini-card p{margin:0;color:var(--muted);line-height:1.45;font-weight:820;font-size:.9rem}.mini-card .btn{margin-top:12px;box-shadow:none;width:100%}
+    .bottom-actions{position:fixed;left:0;right:0;bottom:0;z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(14,66,38,.96);border-top:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}.bottom-inner{width:min(100%,760px);margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.bottom-inner button{min-height:62px;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.08);color:#f0fff5;font-size:.74rem;font-weight:1000;display:grid;place-items:center;padding:6px 3px}.bottom-inner button strong{font-size:1.24rem;line-height:1}.bottom-inner button.active{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2d2308;border:0}
+    .toast{position:fixed;left:50%;bottom:calc(94px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);z-index:140;max-width:min(520px,calc(100% - 28px));border-radius:999px;padding:12px 16px;background:#10251c;color:#fff;font-size:.9rem;font-weight:1000;box-shadow:0 18px 44px rgba(0,0,0,.24);opacity:0;pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.form-grid,.pay-grid,.cards-grid,.more-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr 1fr}.quick-grid .wide-quick{grid-column:1/-1}.section-head{display:block}.tabs{display:none}.hero-card{padding:20px}}
+    @media(max-width:420px){body{font-size:17px}.top-inner{min-height:74px}.brand-title{font-size:1rem}.quick-grid{grid-template-columns:1fr}.bottom-inner{gap:5px}.bottom-inner button{font-size:.68rem;border-radius:15px}.bottom-inner button strong{font-size:1.12rem}}
   </style>
 </head>
-
 <body>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
   <script src="./guard.js?v=build-guard-simple-20260603"></script>
   <script src="./assets/js/digiy-module-bridge.js?v=bridge-20260520" defer></script>
 
-  <header class="topHeader">
-    <a class="hdrBack" href="https://digiy-hub.digiylyfe.com/">← HUB général</a>
-    <div class="hdrTitle">MES SERVICES</div>
-    <div class="hdrPill" id="sessionPill">session…</div>
-  </header>
+  <header class="topbar"><div class="wrap top-inner">
+    <a class="btn btn-soft" href="https://digiy-hub.digiylyfe.com/">← HUB</a>
+    <div class="brand"><div class="brand-title">DIGIY BUILD PRO</div><div class="brand-sub">Une page pour agir · le reste dans Plus</div></div>
+    <div class="session-pill" id="sessionPill">session…</div>
+  </div></header>
 
   <main class="wrap">
     <section class="hero">
-      <div class="eyebrow">DIGIY PRO · BUILD</div>
-      <h1>Que veux-tu faire ?</h1>
-      <p class="lead">Le pro parle, note ou pilote son service. Un lien par geste, moins de bruit.</p>
-    </section>
-
-    <section class="panel" aria-label="Départ rapide Mes services">
-      <div class="sectionTitle"><b>Départ rapide</b><span>3 gestes</span></div>
-      <div class="quickGrid">
-        <a class="quick hot" id="quickTalk" href="./oreille.html?mode=demande">
-          <span class="qico">🎙️</span>
-          <b>Parler</b>
-          <span>Demande, chantier, client.</span>
-        </a>
-        <a class="quick" id="quickNote" href="./oreille.html?mode=note">
-          <span class="qico">✍️</span>
-          <b>Note</b>
-          <span>Trace rapide service.</span>
-        </a>
-        <a class="quick" id="quickService" href="./cockpit.html">
-          <span class="qico">🧰</span>
-          <b>Service</b>
-          <span>Suivi et demandes.</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="Portes principales Mes services">
-      <div class="sectionTitle"><b>Portes utiles</b><span>liens uniques</span></div>
-      <div class="tileGrid">
-        <a class="tile blue" id="doorFiche" href="./fiche.html">
-          <div class="tileTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div>
-          <div><b>Fiche</b><span>Métier, zone, contact, présentation.</span></div>
-        </a>
-
-        <a class="tile gold" id="doorQr" href="./qr.html">
-          <div class="tileTop"><div class="ico">🔳</div><div class="tag">QR</div></div>
-          <div><b>QR</b><span>Partager la porte du pro.</span></div>
-        </a>
-
-        <a class="tile gold" id="doorMetiers" href="./metiers.html">
-          <div class="tileTop"><div class="ico">🧱</div><div class="tag">Métiers</div></div>
-          <div><b>Métiers</b><span>Artisans, services, exemples.</span></div>
-        </a>
-
-        <a class="tile pay" id="doorPay" href="https://pay.digiylyfe.com/">
-          <div class="tileTop"><div class="ico">💳</div><div class="tag">PAY</div></div>
-          <div><b>PAY</b><span>Module argent si abonnement actif.</span></div>
-        </a>
-
-        <a class="tile gold" id="doorWolof" href="https://build.digiylyfe.com/lexique-build.html?v=lexique-build-v2-mobile-20260607">
-          <div class="tileTop"><div class="ico">🇸🇳</div><div class="tag">Wolof</div></div>
-          <div><b>Wolof</b><span>Besoin, devis, acompte.</span></div>
-        </a>
+      <div class="hero-card">
+        <div class="kicker">🧰 MES SERVICES · V2</div>
+        <h1>L’artisan travaille. DIGIY prépare.</h1>
+        <p>Oreille intégrée, note terrain, service, PAY et fiche publique. Le pro garde son client, son prix et sa décision.</p>
+        <div class="stats" aria-label="Résumé BUILD PRO">
+          <div class="stat"><b id="statServices">0</b><span>services</span></div>
+          <div class="stat"><b id="statNotes">0</b><span>notes</span></div>
+          <div class="stat"><b id="statIn">0</b><span>entrées FCFA</span></div>
+          <div class="stat"><b id="statOut">0</b><span>sorties FCFA</span></div>
+        </div>
       </div>
     </section>
   </main>
 
-  <nav class="bottomBar" aria-label="Navigation Mes services">
-    <div class="bottomInner">
-      <a class="active" href="./index.html"><span>🏠</span><span>Menu</span></a>
-      <button type="button" id="openPlus"><span>☰</span><span>Plus</span></button>
-    </div>
-  </nav>
+  <nav class="tabs"><div class="wrap tabs-inner">
+    <button class="tab active" data-tab="talk"><strong>🎙️</strong>Parler</button>
+    <button class="tab" data-tab="note"><strong>✍️</strong>Note</button>
+    <button class="tab" data-tab="service"><strong>🧰</strong>Service</button>
+    <button class="tab" data-tab="pay"><strong>💳</strong>PAY</button>
+    <button class="tab" data-tab="more"><strong>⋯</strong>Plus</button>
+  </div></nav>
 
-  <section class="overlay" id="plusOverlay" aria-label="Plus Mes services">
-    <div class="plusBox">
-      <div class="plusHead">
-        <div>
-          <div class="eyebrow">PLUS · BUILD</div>
-          <h2>Accès utiles.</h2>
+  <main class="wrap">
+    <section class="section active" id="tab-talk">
+      <div class="panel">
+        <div class="section-head"><div><span class="pill">👂 Oreille BUILD V2</span><h2>Parler ou écrire</h2><p>Dis une demande terrain : fuite, devis, chantier, acompte, dépense, client. BUILD prépare l’action, le pro valide.</p></div></div>
+        <textarea class="field" id="voiceText" placeholder="Exemples : client Saly fuite lavabo devis demain · note chantier plomberie 7500 transport · acompte reçu 20000"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-main" id="btnPrepare" type="button">🧠 Préparer</button>
+          <button class="btn btn-gold" id="btnListen" type="button">🎙️ Parler</button>
+          <button class="btn btn-soft" id="btnExample" type="button">✨ Exemple</button>
         </div>
-        <button class="close" id="closePlus" type="button" aria-label="Fermer">×</button>
+        <div class="result" id="intentResult">—</div>
       </div>
+      <div class="quick-grid">
+        <button class="quick hot" data-fill="devis"><span class="ico">🧾</span><b>Préparer devis</b><span>Demande client claire.</span></button>
+        <button class="quick" data-fill="depense"><span class="ico">⛽</span><b>Noter dépense</b><span>Trace terrain rapide.</span></button>
+        <button class="quick wide-quick" data-fill="acompte"><span class="ico">💳</span><b>Acompte reçu</b><span>PAY préparé, validation pro.</span></button>
+      </div>
+    </section>
 
-      <div class="plusList">
-        <a class="plusLink" href="./session.html">
-          <span class="mini">🛡️</span>
-          <span><b>Ma session</b><span>Accès local, nettoyage, sécurité.</span></span>
-        </a>
-        <a class="plusLink" href="./pin.html">
-          <span class="mini">🔐</span>
-          <span><b>Mon accès</b><span>Ouvrir ou renouveler Mes services.</span></span>
-        </a>
-        <a class="plusLink" href="https://digiylyfe.com/">
-          <span class="mini">🦅</span>
-          <span><b>Métiers pro</b><span>Retour à la maison DIGIYLYFE.</span></span>
-        </a>
+    <section class="section" id="tab-note">
+      <div class="panel">
+        <div class="section-head"><div><span class="pill">✍️ Note terrain</span><h2>Tracer une demande</h2><p>Une note simple pour ne pas perdre le client, le chantier ou la dépense.</p></div></div>
+        <form id="noteForm" class="form-grid">
+          <label class="label">Client / chantier<input class="field" id="nClient" placeholder="Client Saly, chantier Mbour…"/></label>
+          <label class="label">Zone<input class="field" id="nZone" placeholder="Saly, Mbour, Dakar…"/></label>
+          <label class="label wide">Note<textarea class="field" id="nText" placeholder="Fuite salle de bain, devis demandé, intervention demain matin…"></textarea></label>
+          <button class="btn btn-main wide" type="submit">Enregistrer note</button>
+        </form>
       </div>
-    </div>
-  </section>
+      <div class="cards-grid" id="notesGrid"></div>
+    </section>
+
+    <section class="section" id="tab-service">
+      <div class="panel">
+        <div class="section-head"><div><span class="pill">🧰 Service</span><h2>Mon offre terrain</h2><p>Ajouter un service clair : plomberie, maçonnerie, électricité, peinture, dépannage.</p></div></div>
+        <form id="serviceForm" class="form-grid">
+          <label class="label">Service<input class="field" id="sName" placeholder="Plomberie petits travaux"/></label>
+          <label class="label">Prix indicatif<input class="field" id="sPrice" inputmode="numeric" placeholder="15000"/></label>
+          <label class="label">Zone<input class="field" id="sZone" placeholder="Saly / Mbour"/></label>
+          <label class="label">Délai<input class="field" id="sDelay" placeholder="Aujourd’hui / demain"/></label>
+          <label class="label wide">Description<textarea class="field" id="sDesc" placeholder="Fuite, robinetterie, évacuation, installation…"></textarea></label>
+          <button class="btn btn-main wide" type="submit">Ajouter service</button>
+        </form>
+      </div>
+      <div class="cards-grid" id="servicesGrid"></div>
+    </section>
+
+    <section class="section" id="tab-pay">
+      <div class="pay-grid">
+        <div class="panel">
+          <div class="section-head"><div><span class="pill">💳 PAY</span><h2>Préparer un mouvement</h2><p>Entrée ou sortie. BUILD prépare, PAY trace, le pro valide.</p></div></div>
+          <div class="form-grid">
+            <label class="label">Type<select class="field" id="mType"><option value="in">Entrée</option><option value="out">Sortie</option></select></label>
+            <label class="label">Montant FCFA<input class="field" id="mAmount" inputmode="numeric" placeholder="20000"/></label>
+            <label class="label wide">Note<input class="field" id="mNote" placeholder="Acompte client / achat matériel / transport…"/></label>
+            <button class="btn btn-gold" id="btnPreparePay" type="button">Préparer PAY</button>
+            <button class="btn btn-main" id="btnConfirmPay" type="button" disabled>Valider</button>
+          </div>
+          <div class="result show" id="payPreview">Aucun mouvement préparé.</div>
+        </div>
+        <div class="panel"><div class="pay-temp" id="payAdvice">Conseiller PAY : en attente de mouvements BUILD.</div><div class="movement-list" id="movementList" style="margin-top:12px"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="tab-more">
+      <div class="panel">
+        <div class="section-head"><div><span class="pill">⋯ Plus</span><h2>Tout le bruit rangé</h2><p>Les anciens fichiers restent utiles. Ils ne gênent plus le travail quotidien.</p></div></div>
+        <div class="more-grid">
+          <div class="mini-card"><h3>🪪 Fiche</h3><p>Métier, zone, contact, présentation publique.</p><a class="btn btn-main" href="./fiche.html">Ouvrir</a></div>
+          <div class="mini-card"><h3>🔳 QR</h3><p>Partager la porte du pro sur téléphone ou support terrain.</p><a class="btn btn-main" href="./qr.html">Ouvrir</a></div>
+          <div class="mini-card"><h3>🧱 Métiers</h3><p>Artisans, services, exemples et catégories.</p><a class="btn btn-main" href="./metiers.html">Ouvrir</a></div>
+          <div class="mini-card"><h3>🇸🇳 Wolof</h3><p>Lexique terrain : besoin, devis, acompte, chantier.</p><a class="btn btn-main" href="https://build.digiylyfe.com/lexique-build.html?v=lexique-build-v2-mobile-20260607">Ouvrir</a></div>
+          <div class="mini-card"><h3>🧭 Ancien cockpit</h3><p>Accès de secours si besoin de comparer.</p><a class="btn btn-soft" href="./cockpit.html">Ouvrir</a></div>
+          <div class="mini-card"><h3>🔐 Accès</h3><p>PIN, session et sécurité locale.</p><a class="btn btn-soft" href="./pin.html">Ouvrir</a></div>
+          <div class="mini-card"><h3>📤 Export</h3><p>Sauvegarde locale BUILD PRO en JSON.</p><button class="btn btn-soft" id="btnExport" type="button">Exporter</button></div>
+          <div class="mini-card"><h3>📥 Import</h3><p>Restaurer un export BUILD PRO.</p><input class="field" id="importFile" type="file" accept="application/json"/></div>
+          <div class="mini-card"><h3>🦅 DIGIYLYFE</h3><p>Retour à la maison du Club Entreprises.</p><a class="btn btn-gold" href="https://digiylyfe.com/">Maison</a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="bottom-actions" aria-label="Navigation basse BUILD PRO"><div class="bottom-inner">
+    <button class="active" data-tab="talk"><strong>🎙️</strong>Parler</button><button data-tab="note"><strong>✍️</strong>Note</button><button data-tab="service"><strong>🧰</strong>Service</button><button data-tab="pay"><strong>💳</strong>PAY</button><button data-tab="more"><strong>⋯</strong>Plus</button>
+  </div></div>
+  <div class="toast" id="toast">Action prête</div>
 
   <script>
-    (() => {
+    (function(){
       "use strict";
+      const STORE="digiy_build_pro_v2";
+      const $=id=>document.getElementById(id);
+      const money=n=>Number(n||0).toLocaleString("fr-FR");
+      const digits=v=>String(v||"").replace(/[^\d]/g,"");
+      const clean=v=>String(v||"").trim();
+      const uuid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+      let pendingPay=null;
+      let state=load();
 
-      try{
-        if(window.DIGIY_MODULE_BRIDGE && typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl === "function"){
-          window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl();
-        }
-      }catch(_){}
+      function load(){try{return JSON.parse(localStorage.getItem(STORE)||"{}")}catch(_){return {}}}
+      function ensure(){state.services=Array.isArray(state.services)?state.services:[];state.notes=Array.isArray(state.notes)?state.notes:[];state.moves=Array.isArray(state.moves)?state.moves:[]}
+      function save(){ensure();localStorage.setItem(STORE,JSON.stringify(state));renderAll()}
+      function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;")}
+      function toast(t){const el=$("toast");el.textContent=t||"Action prête";el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2200)}
 
-      const $ = (id) => document.getElementById(id);
-      const pill = $("sessionPill");
-      const overlay = $("plusOverlay");
+      function setTab(name){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));const sec=$("tab-"+name);if(sec)sec.classList.add("active");document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(sec) window.scrollTo({top:Math.max(0,sec.offsetTop-150),behavior:"smooth"})}
+      function fillNote(o={}){$("nClient").value=o.client||"";$("nZone").value=o.zone||"";$("nText").value=o.text||"";setTab("note")}
+      function fillService(o={}){$("sName").value=o.name||"";$("sPrice").value=o.price||"";$("sZone").value=o.zone||"";$("sDelay").value=o.delay||"";$("sDesc").value=o.desc||"";setTab("service")}
+      function fillPay(type,amount,note){$("mType").value=type||"in";$("mAmount").value=amount||"";$("mNote").value=note||"";setTab("pay");if(amount) preparePay()}
 
-      function setPlus(open){
-        if(!overlay) return;
-        overlay.classList.toggle("open", !!open);
-      }
+      function detectZone(txt){const s=(txt||"").toLowerCase();const zones=["saly","mbour","dakar","ngaparou","thiès","thies","touba","aibd","sarlat","arcachon"];return zones.find(z=>s.includes(z))||""}
+      function prepareIntent(){const raw=clean($("voiceText").value);if(!raw){toast("Écris ou parle une demande");return}const txt=raw.toLowerCase();const amount=Number((txt.match(/(\d[\d\s\.]*)/)||[])[1]?.replace(/[^\d]/g,"")||0);const zone=detectZone(raw);let msg="";
+        if(/dépense|depense|sortie|achat|matériel|materiel|transport|gasoil|carburant|payer/.test(txt)){fillPay("out",amount||"",raw);msg="Sortie PAY préparée. Le pro vérifie puis valide."}
+        else if(/acompte|reçu|recu|payé|paye|entrée|entree|wave|cash|client/.test(txt)){fillPay("in",amount||"",raw);msg="Entrée PAY préparée. Le pro valide au deuxième clic."}
+        else if(/note|chantier|client|rdv|rendez|demain|aujourd/.test(txt)){fillNote({client:raw.match(/client\s+([^,\.]+)/i)?.[1]||"Client à préciser",zone,text:raw});msg="Note terrain préparée. Vérifie puis enregistre."}
+        else if(/devis|service|plomb|fuite|maçon|macon|électric|electric|peinture|menuis|carrelage|clim|réparation|reparation|installation|chantier/.test(txt)){const name=raw.replace(/\b(devis|service|client|demande|besoin|à|a|pour|fcfa|francs?)\b/gi," ").replace(/\d[\d\s\.]*/g," ").trim()||"Service BUILD";fillService({name,price:amount||"",zone,delay:/demain/.test(txt)?"Demain":(/aujourd/.test(txt)?"Aujourd’hui":"À préciser"),desc:raw});msg="Service / devis préparé. Vérifie puis ajoute à ton offre."}
+        else{msg="Intention entendue. Dis par exemple : devis fuite Saly demain, note chantier, acompte reçu, ou dépense transport."}
+        $("intentResult").textContent=msg;$("intentResult").classList.add("show")}
+      function listen(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast("Reconnaissance vocale non disponible ici");return}const rec=new SR();rec.lang="fr-FR";rec.interimResults=false;rec.maxAlternatives=1;$("btnListen").disabled=true;$("btnListen").textContent="🎧 Écoute…";rec.onresult=e=>{$("voiceText").value=e.results[0][0].transcript;prepareIntent()};rec.onerror=()=>toast("Écoute interrompue");rec.onend=()=>{$("btnListen").disabled=false;$("btnListen").textContent="🎙️ Parler"};rec.start()}
 
-      $("openPlus")?.addEventListener("click", () => setPlus(true));
-      $("closePlus")?.addEventListener("click", () => setPlus(false));
-      overlay?.addEventListener("click", (e) => {
-        if(e.target === overlay) setPlus(false);
-      });
-      document.addEventListener("keydown", (e) => {
-        if(e.key === "Escape") setPlus(false);
-      });
+      function addNote(){const client=clean($("nClient").value)||"Client à préciser";const zone=clean($("nZone").value)||"Zone à préciser";const text=clean($("nText").value);if(!text){toast("Note nécessaire");return}state.notes.unshift({id:uuid(),client,zone,text,created_at:new Date().toISOString()});$("noteForm").reset();save();toast("Note enregistrée")}
+      function addService(){const name=clean($("sName").value);if(!name){toast("Nom du service nécessaire");return}state.services.unshift({id:uuid(),name,price:Number(digits($("sPrice").value)||0),zone:clean($("sZone").value)||"Zone à préciser",delay:clean($("sDelay").value)||"À préciser",desc:clean($("sDesc").value),created_at:new Date().toISOString()});$("serviceForm").reset();save();toast("Service ajouté")}
+      function deleteNote(id){state.notes=state.notes.filter(n=>n.id!==id);save();toast("Note retirée")}
+      function deleteService(id){state.services=state.services.filter(s=>s.id!==id);save();toast("Service retiré")}
+      function serviceToPay(id){const s=state.services.find(x=>x.id===id);if(!s)return;fillPay("in",s.price||"","Acompte / service · "+s.name)}
+      async function shareService(id){const s=state.services.find(x=>x.id===id);if(!s)return;const text=`${s.name} — ${s.zone}. ${s.price?money(s.price)+" FCFA indicatif. ":""}${s.desc||"Service disponible."}`;try{await navigator.clipboard.writeText(text);toast("Texte service copié")}catch(_){toast(text)}}
 
-      async function boot(){
-        let st = {};
-        try{
-          if(window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function"){
-            const out = window.DIGIY_GUARD.ready({
-              redirect:false,
-              preserve_validation:true,
-              allow_soft_session:true
-            });
-            if(out && typeof out.then === "function") await out;
-          }
-          st = (window.DIGIY_GUARD && (window.DIGIY_GUARD.getSession?.() || window.DIGIY_GUARD.state)) || {};
-        }catch(_){}
+      function preparePay(){const type=$("mType").value;const amount=Number(digits($("mAmount").value)||0);const note=clean($("mNote").value);if(!amount){toast("Montant nécessaire");return}pendingPay={id:uuid(),type,amount,note:note||"Mouvement BUILD",created_at:new Date().toISOString()};$("payPreview").textContent=(type==="in"?"Entrée":"Sortie")+" préparée : "+money(amount)+" FCFA · "+pendingPay.note;$("btnConfirmPay").disabled=false;toast("PAY préparé")}
+      function confirmPay(){if(!pendingPay){toast("Prépare d’abord PAY");return}state.moves.unshift(pendingPay);pendingPay=null;$("btnConfirmPay").disabled=true;$("payPreview").textContent="Mouvement validé et tracé localement.";$("mAmount").value="";$("mNote").value="";save();toast("PAY validé")}
 
-        if(pill){
-          const ok = !!(st && (st.access_ok || st.access || st.ok || st.has_access || st.pin_session_ok));
-          pill.textContent = ok ? "session ouverte" : "accès à vérifier";
-          pill.className = "hdrPill " + (ok ? "ok" : "");
-        }
-      }
+      function renderStats(){ensure();const moves=state.moves;$("statServices").textContent=String(state.services.length);$("statNotes").textContent=String(state.notes.length);$("statIn").textContent=money(moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0));$("statOut").textContent=money(moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0));const inSum=moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0);const outSum=moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0);const solde=inSum-outSum;$("payAdvice").textContent=solde>=0?`Conseiller PAY : réserve positive ${money(solde)} FCFA. Protège la réserve avant d’accélérer.`:`Conseiller PAY : tension de ${money(Math.abs(solde))} FCFA. Vérifie dépenses, acomptes et encaissements.`}
+      function renderNotes(){const grid=$("notesGrid");if(!state.notes.length){grid.innerHTML='<div class="note-card" style="grid-column:1/-1"><h3>Aucune note</h3><p>Utilise Oreille ou écris une note terrain.</p></div>';return}grid.innerHTML=state.notes.map(n=>`<article class="note-card"><h3>${escapeHtml(n.client)}</h3><p>${escapeHtml(n.text)}</p><div class="meta-row"><span class="meta">${escapeHtml(n.zone)}</span><span class="meta">${new Date(n.created_at).toLocaleDateString("fr-FR")}</span></div><div class="card-actions"><button class="btn btn-danger" data-note-del="${n.id}">Retirer</button><button class="btn btn-soft" data-note-pay="${n.id}">PAY</button></div></article>`).join("")}
+      function renderServices(){const grid=$("servicesGrid");if(!state.services.length){grid.innerHTML='<div class="service-card" style="grid-column:1/-1"><h3>Aucun service</h3><p>Ajoute un service ou dicte une demande à Oreille BUILD.</p></div>';return}grid.innerHTML=state.services.map(s=>`<article class="service-card"><h3>${escapeHtml(s.name)}</h3><p>${escapeHtml(s.desc||"Service BUILD prêt à présenter au client.")}</p><div class="meta-row"><span class="meta">${money(s.price)} FCFA</span><span class="meta">${escapeHtml(s.zone)}</span><span class="meta">${escapeHtml(s.delay)}</span></div><div class="card-actions"><button class="btn btn-main" data-service-pay="${s.id}">PAY</button><button class="btn btn-soft" data-service-share="${s.id}">Partager</button><button class="btn btn-danger" data-service-del="${s.id}">Retirer</button></div></article>`).join("")}
+      function renderMoves(){const list=$("movementList");const moves=state.moves;if(!moves.length){list.innerHTML='<div class="move"><div><b>Aucun mouvement PAY validé.</b><small>Prépare une entrée ou une sortie.</small></div></div>';return}list.innerHTML=moves.slice(0,10).map(m=>`<div class="move ${m.type==="in"?"in":"out"}"><div><b>${m.type==="in"?"Entrée":"Sortie"} · ${money(m.amount)} FCFA</b><small>${escapeHtml(m.note||"Mouvement BUILD")}</small></div><small>${new Date(m.created_at).toLocaleDateString("fr-FR")}</small></div>`).join("")}
+      function renderAll(){ensure();renderStats();renderNotes();renderServices();renderMoves()}
+      function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="digiy-build-pro-export.json";a.click();URL.revokeObjectURL(a.href);toast("Export préparé")}
+      function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();toast("Import restauré")}catch(_){toast("Fichier invalide")}};r.readAsText(file)}
 
-      boot();
+      document.addEventListener("click",e=>{const tab=e.target.closest("[data-tab]");if(tab){setTab(tab.dataset.tab);return}const fill=e.target.closest("[data-fill]");if(fill){const v=fill.dataset.fill;if(v==="devis"){$("voiceText").value="devis fuite lavabo client Saly demain 15000";prepareIntent()}if(v==="depense"){$("voiceText").value="dépense transport chantier 7500";prepareIntent()}if(v==="acompte"){$("voiceText").value="acompte reçu client 20000 wave";prepareIntent()}return}const sd=e.target.closest("[data-service-del]");if(sd){deleteService(sd.dataset.serviceDel);return}const sp=e.target.closest("[data-service-pay]");if(sp){serviceToPay(sp.dataset.servicePay);return}const ss=e.target.closest("[data-service-share]");if(ss){shareService(ss.dataset.serviceShare);return}const nd=e.target.closest("[data-note-del]");if(nd){deleteNote(nd.dataset.noteDel);return}const np=e.target.closest("[data-note-pay]");if(np){fillPay("in","","Suite note terrain");return}});
+      $("noteForm").addEventListener("submit",e=>{e.preventDefault();addNote()});$("serviceForm").addEventListener("submit",e=>{e.preventDefault();addService()});
+      $("btnPrepare").onclick=prepareIntent;$("btnListen").onclick=listen;$("btnExample").onclick=()=>{$("voiceText").value="client Saly demande devis plomberie fuite lavabo demain 15000";prepareIntent()};$("btnPreparePay").onclick=preparePay;$("btnConfirmPay").onclick=confirmPay;$("btnExport").onclick=exportData;$("importFile").onchange=e=>importData(e.target.files&&e.target.files[0]);
+      (async function boot(){try{window.DIGIY_MODULE_BRIDGE?.cleanVisibleUrl?.()}catch(_){}try{if(window.DIGIY_GUARD?.ready){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});if(out&&typeof out.then==="function")await out}const st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};const ok=!!(st&&(st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));$("sessionPill").textContent=ok?"session ouverte":"accès à vérifier"}catch(_){$("sessionPill").textContent="mode local"}renderAll()})();
     })();
   </script>
 </body>
 </html>
+
 
 
 
