@@ -6,8 +6,8 @@
   <title>DIGIY BUILD PRO — Cockpit services</title>
   <meta name="theme-color" content="#1e7a46"/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <meta name="description" content="DIGIY BUILD PRO V2 — cockpit mono-fichier : Oreille, note, service, PAY, fiche, QR et Plus."/>
-  <meta name="digiy-build" content="build-pro-verite-build-guard-storage-import-pay-20260710"/>
+  <meta name="description" content="DIGIY BUILD PRO V2 — cockpit mono-fichier : Oreille, note, service, traces locales, option PRO CARNET, fiche, QR et Plus."/>
+  <meta name="digiy-build" content="build-pro-option-pro-carnet-inscription-separee-20260712"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -17,10 +17,41 @@
     window.DIGIY_MODULE = "BUILD";
     window.DIGIY_ABOS_MODULE = "BUILD";
     window.DIGIY_LOGIN_URL = "./pin.html";
-    window.DIGIY_PAY_URL = "https://pay.digiylyfe.com/";
+    window.DIGIY_CARNET_INSCRIPTION_URL = "https://digiy-carnet-pro.digiylyfe.com/inscription-pay.html";
+    window.DIGIY_PAY_URL = window.DIGIY_CARNET_INSCRIPTION_URL; /* alias technique historique */
   </script>
 
-  <style id="digiy-guard-cloak">html{visibility:hidden!important}</style>
+  <style id="digiy-guard-cloak">html{visibility:hidden!important}
+.carnet-signup-box{
+  margin-top:4px;
+  padding:14px;
+  border-radius:20px;
+  border:1px solid rgba(196,151,63,.30);
+  background:linear-gradient(135deg,rgba(196,151,63,.14),rgba(30,122,70,.08));
+}
+.carnet-signup-box p{
+  margin:0 0 10px;
+  color:var(--muted);
+  line-height:1.5;
+  font-size:.88rem;
+  font-weight:850;
+}
+.carnet-signup-btn{
+  min-height:52px;
+  width:100%;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 14px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#2d2308;
+  font-weight:1000;
+  box-shadow:0 10px 24px rgba(196,151,63,.16);
+}
+
+</style>
   <style>
     :root{
       --bg:#f4efe2;--paper:#fffaf0;--ink:#10251c;--muted:#66746e;
@@ -66,7 +97,7 @@
       <div class="hero-card">
         <div class="kicker">🧰 MES SERVICES · V2</div>
         <h1>L’artisan travaille. DIGIY prépare.</h1>
-        <p>Oreille intégrée, note terrain, service, trace locale pour PAY et fiche publique. Le pro garde son client, son prix et sa décision.</p>
+        <p>Oreille intégrée, note terrain, service, trace locale BUILD, option PRO CARNET et fiche publique. Le pro garde son client, son prix et sa décision.</p>
         <div class="stats" aria-label="Résumé BUILD PRO">
           <div class="stat"><b id="statServices">0</b><span>services</span></div>
           <div class="stat"><b id="statNotes">0</b><span>notes</span></div>
@@ -81,7 +112,7 @@
     <button class="tab active" data-tab="talk"><strong>🎙️</strong>Parler</button>
     <button class="tab" data-tab="note"><strong>✍️</strong>Note</button>
     <button class="tab" data-tab="service"><strong>🧰</strong>Service</button>
-    <button class="tab" data-tab="pay"><strong>💳</strong>PAY</button>
+    <button class="tab" data-tab="pay"><strong>📒</strong>Carnet</button>
     <button class="tab" data-tab="more"><strong>⋯</strong>Plus</button>
   </div></nav>
 
@@ -100,7 +131,7 @@
       <div class="quick-grid">
         <button class="quick hot" data-fill="devis"><span class="ico">🧾</span><b>Préparer devis</b><span>Demande client claire.</span></button>
         <button class="quick" data-fill="depense"><span class="ico">⛽</span><b>Noter dépense</b><span>Trace terrain rapide.</span></button>
-        <button class="quick wide-quick" data-fill="acompte"><span class="ico">💳</span><b>Acompte reçu</b><span>Trace locale préparée pour PAY.</span></button>
+        <button class="quick wide-quick" data-fill="acompte"><span class="ico">💳</span><b>Acompte reçu</b><span>Trace locale BUILD · option PRO CARNET.</span></button>
       </div>
     </section>
 
@@ -135,14 +166,17 @@
     <section class="section" id="tab-pay">
       <div class="pay-grid">
         <div class="panel">
-          <div class="section-head"><div><span class="pill">💳 Trace pour PAY</span><h2>Préparer un mouvement</h2><p>Entrée ou sortie. BUILD garde une trace locale ; ouvre ensuite PAY pour valider réellement.</p></div></div>
+          <div class="section-head"><div><span class="pill">📒 Trace d’activité BUILD</span><h2>Préparer une trace</h2><p>Entrée ou sortie : BUILD garde une trace locale. PRO CARNET est un abonnement séparé pour organiser l’activité plus largement.</p></div></div>
           <div class="form-grid">
             <label class="label">Type<select class="field" id="mType"><option value="in">Entrée</option><option value="out">Sortie</option></select></label>
             <label class="label">Montant FCFA<input class="field" id="mAmount" inputmode="numeric" placeholder="20000"/></label>
             <label class="label wide">Note<input class="field" id="mNote" placeholder="Acompte client / achat matériel / transport…"/></label>
-            <button class="btn btn-gold" id="btnPreparePay" type="button">Préparer la trace</button>
+            <button class="btn btn-gold" id="btnPreparePay" type="button">Préparer la trace locale</button>
             <button class="btn btn-main" id="btnConfirmPay" type="button" disabled>Enregistrer localement</button>
-            <a class="btn btn-main wide" href="https://pay.digiylyfe.com/" target="_blank" rel="noopener noreferrer">💳 Ouvrir PAY pour valider</a>
+            <div class="carnet-signup-box wide">
+      <p>PRO CARNET est un abonnement séparé de BUILD. L’inscription ouvre la demande et les formules disponibles, sans donner d’accès automatique.</p>
+      <a class="carnet-signup-btn" href="https://digiy-carnet-pro.digiylyfe.com/inscription-pay.html" target="_blank" rel="noopener noreferrer">📒 S’inscrire à PRO CARNET</a>
+    </div>
           </div>
           <div class="result show" id="payPreview">Aucun mouvement préparé.</div>
         </div>
@@ -169,7 +203,7 @@
   </main>
 
   <div class="bottom-actions" aria-label="Navigation basse BUILD PRO"><div class="bottom-inner">
-    <button class="active" data-tab="talk"><strong>🎙️</strong>Parler</button><button data-tab="note"><strong>✍️</strong>Note</button><button data-tab="service"><strong>🧰</strong>Service</button><button data-tab="pay"><strong>💳</strong>PAY</button><button data-tab="more"><strong>⋯</strong>Plus</button>
+    <button class="active" data-tab="talk"><strong>🎙️</strong>Parler</button><button data-tab="note"><strong>✍️</strong>Note</button><button data-tab="service"><strong>🧰</strong>Service</button><button data-tab="pay"><strong>📒</strong>Carnet</button><button data-tab="more"><strong>⋯</strong>Plus</button>
   </div></div>
   <div class="toast" id="toast">Action prête</div>
 
@@ -235,9 +269,9 @@
         const raw=clean($("voiceText").value);if(!raw){toast("Écris ou parle une demande");return}
         const txt=raw.toLowerCase();const amount=Number((txt.match(/(\d[\d\s\.]*)/)||[])[1]?.replace(/[^\d]/g,"")||0);const zone=detectZone(raw);let msg="";
         if(/dépense|depense|sortie|achat|matériel|materiel|transport|gasoil|carburant|frais/.test(txt)){
-          fillPay("out",amount||"",raw);msg="Sortie préparée comme trace locale. Vérifie puis ouvre PAY pour la valider réellement.";
+          fillPay("out",amount||"",raw);msg="Sortie préparée comme trace locale BUILD. PRO CARNET reste une option séparée.";
         }else if(/acompte|reçu|recu|payé|paye|paiement|encaissé|encaisse|versé|verse|entrée|entree|wave|cash|espèces|especes|orange money|free money/.test(txt)){
-          fillPay("in",amount||"",raw);msg="Entrée préparée comme trace locale. Vérifie puis ouvre PAY pour la valider réellement.";
+          fillPay("in",amount||"",raw);msg="Entrée préparée comme trace locale BUILD. PRO CARNET reste une option séparée.";
         }else if(/devis|service|plomb|fuite|maçon|macon|électric|electric|peinture|menuis|carrelage|clim|réparation|reparation|installation/.test(txt)){
           const name=raw.replace(/\b(devis|service|client|demande|besoin|à|a|pour|fcfa|francs?)\b/gi," ").replace(/\d[\d\s\.]*/g," ").trim()||"Service BUILD";
           fillService({name,price:amount||"",zone,delay:/demain/.test(txt)?"Demain":(/aujourd/.test(txt)?"Aujourd’hui":"À préciser"),desc:raw});
@@ -257,12 +291,12 @@
       async function shareService(id){const s=state.services.find(x=>x.id===id);if(!s)return;const value=`${s.name} — ${s.zone}. ${s.price?money(s.price)+" FCFA indicatif. ":""}${s.desc||"Service disponible."}`;try{await navigator.clipboard.writeText(value);toast("Texte service copié")}catch(_){toast(value)}}
 
       function preparePay(){const type=$("mType").value;const amount=Number(digits($("mAmount").value)||0);const note=clean($("mNote").value);if(!amount){toast("Montant nécessaire");return}pendingPay=normalizeMove({id:uuid(),type,amount,note:note||"Mouvement BUILD",created_at:new Date().toISOString()});$("payPreview").textContent=(type==="in"?"Entrée":"Sortie")+" préparée localement : "+money(amount)+" FCFA · "+pendingPay.note;$("btnConfirmPay").disabled=false;toast("Trace locale préparée")}
-      function confirmPay(){if(!pendingPay){toast("Prépare d’abord la trace");return}state.moves.unshift(pendingPay);pendingPay=null;$("btnConfirmPay").disabled=true;$("payPreview").textContent="Trace enregistrée sur cet appareil. Ouvre PAY pour valider l’opération réelle.";$("mAmount").value="";$("mNote").value="";save();toast("Trace locale enregistrée")}
+      function confirmPay(){if(!pendingPay){toast("Prépare d’abord la trace");return}state.moves.unshift(pendingPay);pendingPay=null;$("btnConfirmPay").disabled=true;$("payPreview").textContent="Trace enregistrée sur cet appareil. L’inscription PRO CARNET reste séparée si tu veux organiser davantage ton activité.";$("mAmount").value="";$("mNote").value="";save();toast("Trace locale enregistrée")}
 
-      function renderStats(){ensure();const moves=state.moves;$("statServices").textContent=String(state.services.length);$("statNotes").textContent=String(state.notes.length);$("statIn").textContent=money(moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0));$("statOut").textContent=money(moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0));const inSum=moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0);const outSum=moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0);const solde=inSum-outSum;$("payAdvice").textContent=solde>=0?`Conseiller local BUILD : traces positives ${money(solde)} FCFA. Vérifie ensuite dans PAY.`:`Conseiller local BUILD : écart de ${money(Math.abs(solde))} FCFA. Vérifie ensuite dans PAY.`}
-      function renderNotes(){const grid=$("notesGrid");if(!state.notes.length){grid.innerHTML='<div class="note-card" style="grid-column:1/-1"><h3>Aucune note</h3><p>Utilise Oreille ou écris une note terrain.</p></div>';return}grid.innerHTML=state.notes.map(n=>`<article class="note-card"><h3>${escapeHtml(n.client)}</h3><p>${escapeHtml(n.text)}</p><div class="meta-row"><span class="meta">${escapeHtml(n.zone)}</span><span class="meta">${new Date(n.created_at).toLocaleDateString("fr-FR")}</span></div><div class="card-actions"><button class="btn btn-danger" data-note-del="${safeId(n.id)}">Retirer</button><button class="btn btn-soft" data-note-pay="${safeId(n.id)}">Préparer PAY</button></div></article>`).join("")}
-      function renderServices(){const grid=$("servicesGrid");if(!state.services.length){grid.innerHTML='<div class="service-card" style="grid-column:1/-1"><h3>Aucun service</h3><p>Ajoute un service ou dicte une demande à Oreille BUILD.</p></div>';return}grid.innerHTML=state.services.map(s=>`<article class="service-card"><h3>${escapeHtml(s.name)}</h3><p>${escapeHtml(s.desc||"Service BUILD prêt à présenter au client.")}</p><div class="meta-row"><span class="meta">${money(s.price)} FCFA</span><span class="meta">${escapeHtml(s.zone)}</span><span class="meta">${escapeHtml(s.delay)}</span></div><div class="card-actions"><button class="btn btn-main" data-service-pay="${safeId(s.id)}">Préparer PAY</button><button class="btn btn-soft" data-service-share="${safeId(s.id)}">Partager</button><button class="btn btn-danger" data-service-del="${safeId(s.id)}">Retirer</button></div></article>`).join("")}
-      function renderMoves(){const list=$("movementList");const moves=state.moves;if(!moves.length){list.innerHTML='<div class="move"><div><b>Aucune trace locale pour PAY.</b><small>Prépare une entrée ou une sortie, puis valide-la dans PAY.</small></div></div>';return}list.innerHTML=moves.slice(0,10).map(m=>`<div class="move ${m.type==="in"?"in":"out"}"><div><b>Trace ${m.type==="in"?"entrée":"sortie"} · ${money(m.amount)} FCFA</b><small>${escapeHtml(m.note||"Mouvement BUILD")}</small></div><small>${new Date(m.created_at).toLocaleDateString("fr-FR")}</small></div>`).join("")}
+      function renderStats(){ensure();const moves=state.moves;$("statServices").textContent=String(state.services.length);$("statNotes").textContent=String(state.notes.length);$("statIn").textContent=money(moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0));$("statOut").textContent=money(moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0));const inSum=moves.filter(m=>m.type==="in").reduce((a,m)=>a+Number(m.amount||0),0);const outSum=moves.filter(m=>m.type==="out").reduce((a,m)=>a+Number(m.amount||0),0);const solde=inSum-outSum;$("payAdvice").textContent=solde>=0?`Conseiller local BUILD : traces positives ${money(solde)} FCFA. PRO CARNET reste disponible sur abonnement séparé.`:`Conseiller local BUILD : écart de ${money(Math.abs(solde))} FCFA. PRO CARNET reste disponible sur abonnement séparé.`}
+      function renderNotes(){const grid=$("notesGrid");if(!state.notes.length){grid.innerHTML='<div class="note-card" style="grid-column:1/-1"><h3>Aucune note</h3><p>Utilise Oreille ou écris une note terrain.</p></div>';return}grid.innerHTML=state.notes.map(n=>`<article class="note-card"><h3>${escapeHtml(n.client)}</h3><p>${escapeHtml(n.text)}</p><div class="meta-row"><span class="meta">${escapeHtml(n.zone)}</span><span class="meta">${new Date(n.created_at).toLocaleDateString("fr-FR")}</span></div><div class="card-actions"><button class="btn btn-danger" data-note-del="${safeId(n.id)}">Retirer</button><button class="btn btn-soft" data-note-pay="${safeId(n.id)}">Préparer trace</button></div></article>`).join("")}
+      function renderServices(){const grid=$("servicesGrid");if(!state.services.length){grid.innerHTML='<div class="service-card" style="grid-column:1/-1"><h3>Aucun service</h3><p>Ajoute un service ou dicte une demande à Oreille BUILD.</p></div>';return}grid.innerHTML=state.services.map(s=>`<article class="service-card"><h3>${escapeHtml(s.name)}</h3><p>${escapeHtml(s.desc||"Service BUILD prêt à présenter au client.")}</p><div class="meta-row"><span class="meta">${money(s.price)} FCFA</span><span class="meta">${escapeHtml(s.zone)}</span><span class="meta">${escapeHtml(s.delay)}</span></div><div class="card-actions"><button class="btn btn-main" data-service-pay="${safeId(s.id)}">Préparer trace</button><button class="btn btn-soft" data-service-share="${safeId(s.id)}">Partager</button><button class="btn btn-danger" data-service-del="${safeId(s.id)}">Retirer</button></div></article>`).join("")}
+      function renderMoves(){const list=$("movementList");const moves=state.moves;if(!moves.length){list.innerHTML='<div class="move"><div><b>Aucune trace locale BUILD.</b><small>Prépare une entrée ou une sortie. Ces traces restent locales à BUILD.</small></div></div>';return}list.innerHTML=moves.slice(0,10).map(m=>`<div class="move ${m.type==="in"?"in":"out"}"><div><b>Trace ${m.type==="in"?"entrée":"sortie"} · ${money(m.amount)} FCFA</b><small>${escapeHtml(m.note||"Mouvement BUILD")}</small></div><small>${new Date(m.created_at).toLocaleDateString("fr-FR")}</small></div>`).join("")}
       function renderAll(){ensure();renderStats();renderNotes();renderServices();renderMoves()}
       function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="digiy-build-pro-export.json";a.click();URL.revokeObjectURL(a.href);toast("Export préparé")}
       function importData(file){
