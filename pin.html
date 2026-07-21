@@ -242,8 +242,7 @@ async function goStep2(){
   const raw=norm(phoneEl.value);
   if(raw.length<9){
     phoneEl.classList.add("err-field");
-    showSt("status1","❌ Numéro trop court.\
-Format attendu : 221 77 XXX XX XX","err");
+    showSt("status1","❌ Numéro trop court.\nFormat attendu : 221 77 XXX XX XX","err");
     shake(phoneEl);return;
   }
   btnContinue.disabled=true;
@@ -320,8 +319,7 @@ async function doLogin(){
       pin="";updateDots();updateEnterBtn();
       for(let i=0;i<4;i++)$("d"+i).classList.add("err");
       shake($("pinDots"));
-      showSt("status2","❌ Code non reconnu pour ce numéro.\
-Réessaie les 4 chiffres ou vérifie le numéro saisi.","err");
+      showSt("status2","❌ Code non reconnu pour ce numéro.\nRéessaie les 4 chiffres ou vérifie le numéro saisi.","err");
       return;
     }
     const row=verified.row||{};
