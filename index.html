@@ -69,6 +69,19 @@
       letter-spacing:-.045em;
     }
 
+    .businessCard{
+      display:block;
+      min-height:0;
+      margin:0 0 18px;
+      padding:0;
+      overflow:hidden;
+      border-color:rgba(196,151,63,.34);
+      background:#0e4226;
+      box-shadow:0 15px 36px rgba(14,66,38,.22);
+    }
+
+    .businessCard img{display:block;width:100%;height:auto}
+
     nav{display:grid;gap:12px}
 
     a,button{
@@ -91,13 +104,13 @@
       transition:transform .14s ease,background .14s ease,border-color .14s ease;
     }
 
-    a:first-child{
+    nav a:first-child{
       color:#052012;
       border-color:transparent;
       background:linear-gradient(135deg,var(--green),#bbf7d0);
     }
 
-    a:nth-child(3){
+    nav a:nth-child(3){
       color:#2d2308;
       border-color:rgba(196,151,63,.32);
       background:linear-gradient(135deg,var(--gold-soft),var(--gold));
@@ -141,11 +154,15 @@
   <main>
     <h1>Bonjour artisan.</h1>
 
+    <a class="businessCard" id="businessCardLink" href="./fiche-publique.html" aria-label="Ouvrir ma fiche artisan publique">
+      <img src="./carte-visite.svg" alt="Carte de visite DIGIY BUILD — ouvrir ma fiche artisan"/>
+    </a>
+
     <nav aria-label="Actions artisan BUILD">
       <a href="./atelier.html">Mon travail</a>
       <a href="./fiche.html">Ma fiche artisan</a>
       <a href="./qr.html">Mon QR artisan</a>
-      <button id="shareWhatsApp" type="button">Partager sur WhatsApp</button>
+      <button id="shareWhatsApp" type="button">Partager ma fiche</button>
     </nav>
 
     <p id="status" role="status" aria-live="polite" hidden></p>
@@ -156,6 +173,7 @@
       "use strict";
 
       const shareButton = document.getElementById("shareWhatsApp");
+      const businessCardLink = document.getElementById("businessCardLink");
       const statusBox = document.getElementById("status");
       const FALLBACK_PUBLIC_URL = "https://build.digiylyfe.com/";
 
@@ -207,7 +225,7 @@
           const url=new URL(raw,location.href);
           if(!/^https?:$/i.test(url.protocol))return "";
           const low=(url.pathname+" "+url.search+" "+url.hash).toLowerCase();
-          if(["pin.html","atelier.html","cockpit.html","hub.html","session.html","admin"].some(p=>low.includes(p)))return "";
+          if(["pin.html","fiche.html","atelier.html","cockpit.html","hub.html","session.html","admin"].some(p=>low.includes(p)))return "";
           return url.toString();
         }catch(_){return ""}
       }
@@ -221,7 +239,7 @@
             if(direct)return direct;
             const slug=cleanSlug(session.slug || session.pro_slug || session.build_slug || "");
             if(slug){
-              const url=new URL("./fiche.html",location.href);
+              const url=new URL("./fiche-publique.html",location.href);
               url.searchParams.set("slug",slug);
               return url.toString();
             }
@@ -232,7 +250,7 @@
           for(const key of SLUG_KEYS){
             const slug=cleanSlug(safeGet(storage,key));
             if(slug){
-              const url=new URL("./fiche.html",location.href);
+              const url=new URL("./fiche-publique.html",location.href);
               url.searchParams.set("slug",slug);
               return url.toString();
             }
@@ -242,9 +260,21 @@
         return FALLBACK_PUBLIC_URL;
       }
 
-      shareButton.addEventListener("click",()=>{
+      const publicUrl=resolvePublicUrl();
+      businessCardLink.href=publicUrl;
+
+      shareButton.addEventListener("click",async()=>{
         const publicUrl=resolvePublicUrl();
         const message="Bonjour, voici ma fiche artisan DIGIY BUILD : "+publicUrl;
+        if(navigator.share){
+          try{
+            await navigator.share({title:"Ma fiche artisan DIGIY BUILD",text:"Voici ma fiche artisan DIGIY BUILD.",url:publicUrl});
+            setStatus("Fiche partagée.");
+            return;
+          }catch(error){
+            if(error?.name === "AbortError")return;
+          }
+        }
         setStatus("Ouverture de WhatsApp…");
         location.href="https://wa.me/?text="+encodeURIComponent(message);
       });

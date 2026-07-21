@@ -16,6 +16,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="./guard.js?v=build-guard-v2-20260721" onerror="location.replace('./pin.html?reason=guard_missing')"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -329,7 +330,7 @@
       const MODULE = "BUILD";
       const TABLES = ["digiy_build_public_profiles", "digiy_build_pros"];
       const PRO_BLOCKED_PATHS = [
-        "pin.html","cockpit.html","dashboard","dashboard-pro","hub.html","session.html",
+        "pin.html","fiche.html","cockpit.html","dashboard","dashboard-pro","hub.html","session.html",
         "admin","abos","pay.html"
       ];
 
@@ -555,12 +556,15 @@
           comme solaire, hôtel, plomberie, etc.
           Il pointe toujours vers la fiche BUILD publique du pro courant.
           Si un pro a un site externe dédié, il peut le mettre dans sa fiche,
-          mais le QR du moule reste la porte neutre : ./fiche.html?slug=...
+          mais le QR du moule reste la porte neutre : ./fiche-publique.html?slug=...
         */
+        const direct = cleanPublicUrl(row.public_url || row.profile_url || row.fiche_url || "");
+        if(direct) return direct;
+
         const slug = normalizeSlug(row.slug_key || row.slug || "");
         if(!slug) return "";
 
-        const u = new URL("./fiche.html", location.href);
+        const u = new URL("./fiche-publique.html", location.href);
         u.searchParams.set("slug", slug);
         return cleanPublicUrl(u.toString());
       }
@@ -679,8 +683,8 @@
 
         document.getElementById("dbg").textContent =
           "source : " + identity.source + "\n" +
-          "slug : " + (identity.slug || "—") + "\n" +
-          "phone : " + (identity.phone ? "présent" : "—");
+          "identité : " + (identity.slug ? "trouvée" : "—") + "\n" +
+          "téléphone : " + (identity.phone ? "présent" : "—");
 
         if(identity.publicUrl){
           targetUrl = identity.publicUrl;
@@ -733,8 +737,11 @@
             await navigator.share({title, text:`${metier} · ${ville}`, url:targetUrl});
             return;
           }
-        }catch(_){}
-        btnCopy.click();
+        }catch(error){
+          if(error?.name === "AbortError") return;
+        }
+        const message = `Bonjour, voici ma fiche artisan DIGIY BUILD : ${targetUrl}`;
+        location.href = "https://wa.me/?text=" + encodeURIComponent(message);
       };
 
       btnOpen.onclick = () => {

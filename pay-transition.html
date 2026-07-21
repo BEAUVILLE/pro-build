@@ -3,9 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Mes services vers PAY</title>
+  <title>BUILD et PRO CARNET</title>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
   <meta name="theme-color" content="#061b14">
+  <script>window.DIGIY_MODULE="BUILD";window.DIGIY_LOGIN_URL="./pin.html";</script>
+  <script src="./guard.js?v=build-guard-v2-20260721" onerror="location.replace('./pin.html?reason=guard_missing')"></script>
   <style>
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,#0b5f34,#061b14 58%,#030b08);color:white;padding:18px;display:grid;place-items:center;font-weight:950}
@@ -24,16 +26,10 @@
   </style>
 </head>
 <body>
-<script>
-(function(){
-  var s = localStorage.getItem("digiy_guard_session:BUILD") || localStorage.getItem("DIGIY_BUILD_SESSION") || localStorage.getItem("DIGIY_SERVICES_SESSION");
-  if(!s){ /* porte douce : ne bloque pas les tests locaux, mais garde l'alerte visible */ }
-})();
-</script>
 <main class="card">
-  <div class="k">MES SERVICES / BUILD → PAY</div>
-  <h1>Argent réel.</h1>
-  <p>Mes services garde la demande, le devis, le chantier et la relation client. PAY garde seulement l’acompte, le solde, la dépense ou l’argent réellement reçu.</p>
+  <div class="k">BUILD + PRO CARNET</div>
+  <h1>Trace prête.</h1>
+  <p>BUILD garde la demande, le devis, le chantier et la relation client. PRO CARNET est un service séparé pour suivre l’acompte, le solde ou la dépense réellement saisis.</p>
 
   <label for="amount">Montant reçu ou dépensé</label>
   <input id="amount" inputmode="numeric" value="30000">
@@ -44,16 +40,16 @@
   <label for="objet">Objet</label>
   <input id="objet" value="Acompte chantier BUILD">
 
-  <label for="phrase">Phrase PAY</label>
+  <label for="phrase">Phrase à recopier dans PRO CARNET</label>
   <textarea id="phrase">recette BUILD 30000 Wave - Acompte chantier</textarea>
 
   <div class="grid">
-    <button class="btn gold" id="copy" type="button">📋 Copier phrase PAY</button>
-    <a class="btn go" href="https://pro-pay.digiylyfe.com/action.html?from=BUILD">💳 Ouvrir PAY</a>
+    <button class="btn gold" id="copy" type="button">📋 Copier la trace</button>
+    <a class="btn go" href="https://digiy-carnet-pro.digiylyfe.com/inscription-pay.html">📒 Découvrir PRO CARNET</a>
   </div>
   <a class="btn back" href="./action.html">← Retour DIGIY GO Services</a>
 
-  <div class="note">Validation humaine obligatoire dans PAY. Rien n’est confirmé automatiquement depuis Mes services.</div>
+  <div class="note">Aucun transfert automatique : le professionnel décide ce qu’il recopie et valide dans PRO CARNET.</div>
 </main>
 <script>
 (function(){

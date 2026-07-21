@@ -6,7 +6,7 @@
    Nom visible terrain : MES SERVICES
 
    Rôle :
-   - Préparer MES SERVICES au rail commun ABOS / PAY / ADMIN.
+   - Préparer MES SERVICES au rail commun ABOS / PRO CARNET / ADMIN.
    - Lire l’accès module via :
      public.digiy_has_module_access_from_abos(phone, module)
 
@@ -287,7 +287,7 @@
     } else {
       el.innerHTML = `
         <strong>🔒 MES SERVICES à cadrer</strong><br>
-        <small>Le pont ABOS est prêt. PAY garde la preuve, ADMIN validera quand le plan services sera actif.</small>
+        <small>Le pont ABOS est prêt. PRO CARNET reste séparé, ADMIN validera quand le plan services sera actif.</small>
       `;
     }
   }

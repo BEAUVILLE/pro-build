@@ -21,7 +21,6 @@
 
   <script src="./assets/js/digiy-module-bridge.js?v=services-build-rail-doctrine-20260521"></script>
   <script src="./assets/js/digiy-services-memory.js?v=services-build-rail-doctrine-20260521"></script>
-  <script src="./oreille-metier-services.js?v=services-build-rail-doctrine-20260521"></script>
 
   <link rel="preload" as="image" href="https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -127,7 +126,7 @@ label{display:block;margin:10px 0 7px;color:#fff;font-size:13px;font-weight:1000
       <textarea class="textarea" id="noteText" placeholder="Ex : client demande réparation plomberie demain, budget à confirmer, WhatsApp reçu."></textarea>
       <div class="grid2" style="margin-top:12px">
         <button class="btn primary" id="saveNote" type="button">💾 Garder la note</button>
-        <button class="btn gold" id="preparePay" type="button">💰 Préparer PAY</button>
+        <button class="btn gold" id="preparePay" type="button">📒 Préparer PRO CARNET</button>
       </div>
       <div class="status" id="statusBox"></div>
       <p class="help">Tu peux écrire une phrase simple. L’oreille peut aussi aider à transformer la phrase en note claire.</p>
@@ -139,7 +138,7 @@ label{display:block;margin:10px 0 7px;color:#fff;font-size:13px;font-weight:1000
         <button class="btn" data-template="Demande client reçue. Besoin à préciser, prix à confirmer, rappel WhatsApp à faire.">📩 Demande reçue</button>
         <button class="btn" data-template="Devis à préparer. Vérifier matière, durée, déplacement et acompte éventuel.">🧾 Devis à faire</button>
         <button class="btn" data-template="Chantier à suivre. Prochaine étape, paiement restant et message client à envoyer.">🧰 Suivi chantier</button>
-        <button class="btn" data-template="Dépense métier à noter dans PAY : matériel, transport ou main d’œuvre.">💰 Dépense PAY</button>
+        <button class="btn" data-template="Dépense métier à noter : matériel, transport ou main d’œuvre.">📒 Dépense PRO CARNET</button>
       </div>
       <div class="rule" style="margin-top:12px"><b>Moins écrire :</b> le pro choisit une phrase, ajuste deux mots, valide.</div>
     </article>
@@ -183,8 +182,8 @@ render();})();
     <div class="bottomInner">
       <a class="" href="./hub.html"><span>🧭</span><span>HUB</span></a>
       <a class="active" href="./cockpit.html"><span>🧰</span><span>Service</span></a>
-      <a class="" href="./profile.html"><span>🪪</span><span>Fiche</span></a>
-      <a href="https://pro-pay.digiylyfe.com/admin.html?from=BUILD"><span>💰</span><span>PAY</span></a>
+      <a class="" href="./fiche.html"><span>🪪</span><span>Fiche</span></a>
+      <a href="https://digiy-carnet-pro.digiylyfe.com/inscription-pay.html"><span>📒</span><span>CARNET</span></a>
       <a class="" href="./session.html"><span>🛡️</span><span>Session</span></a>
     </div>
   </nav>
@@ -308,7 +307,6 @@ render();})();
 
 </body>
 </html>
-
 
 
 

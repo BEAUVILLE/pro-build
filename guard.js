@@ -1,7 +1,7 @@
 /*
   DIGIY BUILD — guard.js simple
   Rôle : protéger les pages PRO BUILD avec une session locale 8h.
-  Ne gère pas QR, fiche publique, abonnement, triggers ou profil public.
+  Ne gère pas la fiche publique, l’abonnement, les triggers ou le profil public.
 */
 (function(){
   "use strict";
@@ -11,6 +11,9 @@
   const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 
   const SESSION_KEYS = [
+    "digiy_build_session",
+    "digiy_build_guard_session",
+    "digiy_guard_build_session",
     "DIGIY_BUILD_ACCESS",
     "DIGIY_PRO_BUILD_ACCESS",
     "DIGIY_ACCESS",
@@ -25,6 +28,14 @@
     "digiy_build_slug",
     "digiy_slug",
     "slug"
+  ];
+
+  const PHONE_KEYS = [
+    "DIGIY_BUILD_PHONE",
+    "DIGIY_PHONE",
+    "digiy_build_phone",
+    "digiy_build_last_phone",
+    "digiy_phone"
   ];
 
   const SENSITIVE_KEYS = [
@@ -43,7 +54,19 @@
 
   function moduleLooksBuild(value){
     const m = String(value || "").trim().toUpperCase().replace(/[-\s]/g, "_");
-    return m === "BUILD" || m === "PRO_BUILD" || m === "BATISSEUR" || m === "BÂTISSEUR" || m === "PRO_BATISSEUR";
+    return m === "BUILD" || m === "BUILD_PRO" || m === "PRO_BUILD" || m === "MES_SERVICES" || m === "SERVICES" || m === "BATISSEUR" || m === "BÂTISSEUR" || m === "PRO_BATISSEUR";
+  }
+
+  function timeMs(value){
+    const numeric = Number(value || 0);
+    if(Number.isFinite(numeric) && numeric > 0) return numeric;
+    const parsed = Date.parse(String(value || ""));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function normalizePhone(value){
+    const digits = String(value || "").replace(/\D/g, "");
+    return digits.length >= 9 ? digits : "";
   }
 
   function readRaw(storage, key){
@@ -115,22 +138,32 @@
 
         const slug = normalizeSlug(session.slug || session.pro_slug || session.build_slug || "");
         const module = session.module || session.pin_module || "";
-        const ts = Number(session.ts || session.verified_at || 0);
-        const expiresAt = Number(session.expires_at || 0);
-        const freshByTs = ts && (Date.now() - ts) < SESSION_TTL_MS;
-        const freshByExp = expiresAt && Date.now() < expiresAt;
+        const phone = normalizePhone(session.phone || session.owner_phone || session.tel || "");
+        const verifiedAt = timeMs(session.verified_at || session.validated_at || session.ts || 0);
+        const expiresAt = timeMs(session.expires_at || 0);
+        const explicitAccess =
+          session.access === true ||
+          session.access_ok === true ||
+          session.pin_session_ok === true ||
+          session.verified === true;
+        const now = Date.now();
+        const verifiedRecently = verifiedAt > 0 && verifiedAt <= now + 60_000 && (now - verifiedAt) < SESSION_TTL_MS;
+        const expiryCoherent = expiresAt > now && expiresAt <= verifiedAt + SESSION_TTL_MS + 60_000;
 
-        if(slug && moduleLooksBuild(module) && (freshByTs || freshByExp)){
+        if(slug && phone && moduleLooksBuild(module) && explicitAccess && verifiedRecently && expiryCoherent){
           return {
             ok:true,
             access:true,
             access_ok:true,
+            pin_session_ok:true,
             module:MODULE,
             slug,
-            phone: session.phone || null,
+            phone,
             owner_id: session.owner_id || null,
-            ts: ts || Date.now(),
-            expires_at: expiresAt || ((ts || Date.now()) + SESSION_TTL_MS),
+            session_token:String(session.session_token || session.token || "").trim(),
+            verified_at:verifiedAt,
+            validated_at:verifiedAt,
+            expires_at:expiresAt,
             source:key
           };
         }
@@ -147,11 +180,9 @@
   }
 
   function login(){
-    const slug = getStoredSlug();
     const target = new URL(LOGIN_URL, location.href);
     target.search = "";
     target.hash = "";
-    if(slug) target.searchParams.set("slug", slug);
     location.replace(target.toString());
   }
 
@@ -169,7 +200,7 @@
       return s;
     },
     logout: () => {
-      [...SESSION_KEYS, ...SLUG_KEYS].forEach(key => {
+      [...SESSION_KEYS, ...SLUG_KEYS, ...PHONE_KEYS].forEach(key => {
         try{ localStorage.removeItem(key); }catch(_){}
         try{ sessionStorage.removeItem(key); }catch(_){}
       });
@@ -185,5 +216,3 @@
     login();
   }
 })();
-
-

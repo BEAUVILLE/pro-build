@@ -152,7 +152,21 @@ const MODULE_ICON=window.DIGIY_MODULE_ICON||"∞";
 const INDEX_URL=window.DIGIY_INDEX_URL||"./index.html";
 const SLUG_PREFIX=(window.DIGIY_SLUG_PREFIX||MODULE.toLowerCase()).replace(/_/g,"-");
 const MAX_AGE=8*60*60*1000;
-const MODULE_ALIASES=Array.from(new Set([MODULE,"BUILD","BUILD_PRO","PRO_BUILD","MES_SERVICES","SERVICES","BATISSEUR","BÂTISSEUR","PRO_BATISSEUR"].filter(Boolean)));
+const MODULE_ALIASES=Array.from(new Set([
+  MODULE,
+  "BUILD",
+  "BUILD_PRO",
+  "PRO_BUILD",
+  "PRO-BUILD",
+  "MES_SERVICES",
+  "MES SERVICES",
+  "SERVICES",
+  "BATISSEUR",
+  "BÂTISSEUR",
+  "PRO_BATISSEUR",
+  "PRO-BATISSEUR",
+  "PRO BATISSEUR"
+].filter(Boolean)));
 const mod=MODULE.toLowerCase();
 const SKEYS=[`digiy_${mod}_session`,`digiy_${mod}_guard_session`,`digiy_guard_${mod}_session`];
 const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"DIGIY_LOC_HUB_PHONE","digiy_phone"];
@@ -163,7 +177,7 @@ $("moduleLabel").textContent=MODULE_LABEL;
 $("moduleIcon").textContent=MODULE_ICON;
 document.title=`Accès ${MODULE_LABEL} • DIGIY`;
 
-let pin="",confirmedPhone="";
+let pin="",confirmedPhone="",isLogging=false;
 
 function norm(p){return String(p||"").replace(/\D/g,"")}
 function fmt(d){if(d.length===12&&d.startsWith("221"))return`${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`;return d}
@@ -200,7 +214,19 @@ function getSb(){
 
 function writeSession(phone,sl,token){
   const now=Date.now();
-  const sess=JSON.stringify({slug:sl,phone,module:MODULE,validated_at:now,expires_at:now+MAX_AGE,session_token:token||"",access:true,access_ok:true});
+  const sess=JSON.stringify({
+    slug:sl,
+    phone,
+    module:MODULE,
+    validated_at:now,
+    verified_at:now,
+    expires_at:now+MAX_AGE,
+    session_token:String(token||"").trim(),
+    access:true,
+    access_ok:true,
+    pin_session_ok:true,
+    session_version:"build-pin-v2"
+  });
   SKEYS.forEach(k=>{ls(k,sess);ss(k,sess)});
 
   // Compatibilité rail commun DIGIY : utile pour guard.js, QR, fiche, HUB.
@@ -266,14 +292,14 @@ function goStep1(){
   $("dot1").className="step-dot active";$("dot1").textContent="1";$("lbl1").className="step-lbl active";
   $("dot2").className="step-dot";$("lbl2").className="step-lbl";
   $("conn").classList.remove("done");
-  pin="";clearSt("status2");btnContinue.disabled=false;updateDots();updateEnterBtn();
+  pin="";isLogging=false;clearSt("status2");btnContinue.disabled=false;updateDots();updateEnterBtn();
 }
 $("btnBack").addEventListener("click",goStep1);
 
 function updateDots(){
   for(let i=0;i<4;i++){const d=$("d"+i);d.classList.toggle("filled",i<pin.length);d.classList.remove("err")}
 }
-function updateEnterBtn(){$("btnEnter").disabled=pin.length!==4}
+function updateEnterBtn(){$("btnEnter").disabled=isLogging||pin.length!==4}
 
 $("keypad").addEventListener("click",e=>{
   const key=e.target.closest("[data-v]");if(!key)return;
@@ -292,31 +318,83 @@ document.addEventListener("keydown",e=>{
 
 $("btnEnter").addEventListener("click",doLogin);
 
+function parseVerifyPayload(data,fallbackPhone){
+  let row=Array.isArray(data)?data[0]:data;
+
+  const positive=value=>{
+    if(value===true||value===1)return true;
+    return ["true","t","1","ok","active","allowed","valid","verified","granted"].includes(String(value||"").trim().toLowerCase());
+  };
+
+  if(positive(row)){
+    return {ok:true,phone:norm(fallbackPhone),slug:"",session_token:""};
+  }
+
+  if(typeof row==="string"){
+    const txt=row.trim();
+    const low=txt.toLowerCase();
+    if(["true","t","1","ok","active"].includes(low)){
+      return {ok:true,phone:norm(fallbackPhone),slug:"",session_token:""};
+    }
+    if(txt.startsWith("(")&&txt.endsWith(")")){
+      const parts=txt.slice(1,-1).split(",");
+      if(["t","true","1","ok"].includes(String(parts[0]||"").trim().toLowerCase())){
+        return {
+          ok:true,
+          phone:norm(parts[2]||fallbackPhone),
+          slug:String(parts[1]||"").trim(),
+          session_token:String(parts[3]||"").trim()
+        };
+      }
+    }
+    try{row=JSON.parse(txt)}catch(_){return null}
+  }
+
+  if(!row||typeof row!=="object")return null;
+  if(row.data&&typeof row.data==="object")row=row.data;
+  if(row.result&&typeof row.result==="object")row=row.result;
+  const status=String(row.status||"").trim().toLowerCase();
+  const decisionKeys=["ok","success","valid","is_valid","verified","authenticated","allowed","access","access_ok","has_access","can_access","digiy_verify_pin"];
+  const hasDecision=decisionKeys.some(key=>Object.prototype.hasOwnProperty.call(row,key));
+  const ok=hasDecision
+    ? decisionKeys.some(key=>positive(row[key]))
+    : positive(row.data)||positive(row.result)||positive(row.active)||positive(row.is_active)||["ok","active","allowed","valid"].includes(status);
+
+  if(!ok)return null;
+  return {
+    ok:true,
+    phone:norm(row.phone||row.p_phone||row.owner_phone||fallbackPhone),
+    slug:String(row.slug||row.identifiant||row.build_slug||row.owner_slug||"").trim(),
+    session_token:String(row.session_token||row.token||"").trim()
+  };
+}
+
 async function verifyPinFlexible(sb, phone, code){
-  let lastError=null;
+  let lastError=null,hadResponse=false;
   const phones=phoneVariants(phone);
   for(const p of phones){
     for(const m of MODULE_ALIASES){
       const {data,error}=await sb.rpc("digiy_verify_pin",{p_phone:p,p_module:m,p_pin:code});
       if(error){lastError=error;continue;}
-      const row=Array.isArray(data)?data[0]:data;
-      const ok=row===true||row?.ok===true||row?.access===true||row?.status==="ok";
-      if(ok)return {ok:true,row:row||{},phone:p,module:m};
+      hadResponse=true;
+      const parsed=parseVerifyPayload(data,p);
+      if(parsed?.ok)return {ok:true,row:parsed,phone:parsed.phone||p,module:m};
     }
   }
-  if(lastError)throw new Error(lastError.message||"Erreur serveur");
+  if(!hadResponse&&lastError)throw new Error(lastError.message||"Erreur serveur");
   return {ok:false,row:null,phone:phones[0]||phone,module:MODULE};
 }
 
 async function doLogin(){
-  if(pin.length!==4)return;
-  $("btnEnter").disabled=true;
+  if(isLogging||pin.length!==4)return;
+  isLogging=true;
+  updateEnterBtn();
   showSt("status2","⏳ Vérification du code…","spin");
   try{
     const sb=getSb();
     const verified=await verifyPinFlexible(sb,confirmedPhone,pin);
     if(!verified.ok){
-      pin="";updateDots();updateEnterBtn();
+      pin="";isLogging=false;updateDots();updateEnterBtn();
       for(let i=0;i<4;i++)$("d"+i).classList.add("err");
       shake($("pinDots"));
       showSt("status2","❌ Code non reconnu pour ce numéro.\nRéessaie les 4 chiffres ou vérifie le numéro saisi.","err");
@@ -326,12 +404,11 @@ async function doLogin(){
     const rpcSlug=row?.slug||row?.identifiant||"";
     const finalPhone=verified.phone||confirmedPhone;
     const finalSlug=rpcSlug||slug(finalPhone);
-    writeSession(finalPhone,finalSlug,row?.session_token||"");
+    writeSession(finalPhone,finalSlug,row?.session_token||row?.token||"");
     showSt("status2","✅ Accès ouvert. Redirection…","ok");
     setTimeout(()=>redirect(finalSlug),700);
   }catch(err){
-    pin="";updateDots();updateEnterBtn();
-    $("btnEnter").disabled=false;
+    pin="";isLogging=false;updateDots();updateEnterBtn();
     showSt("status2","❌ Erreur : "+(err?.message||"inattendue."),"err");
   }
 }
