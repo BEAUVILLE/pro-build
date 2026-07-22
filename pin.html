@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Accès BUILD • DIGIY</title>
   <meta name="theme-color" content="#020617">
-  <meta name="digiy-build-pin" content="build-pin-v6-20260722">
+  <meta name="digiy-build-pin" content="build-pin-v7-20260722">
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
@@ -280,99 +280,23 @@
     return {ok:false,hadResponse,lastError};
   }
 
-  function storedSlugs(){
-    const out = [];
-    const add = value => {
-      const slug = cleanSlug(value);
-      if(slug && !out.includes(slug)) out.push(slug);
-    };
-    for(const storage of [sessionStorage,localStorage]){
-      for(const key of SLUG_KEYS){
-        try{
-          const raw = storage.getItem(key) || "";
-          add(raw);
-          try{
-            const parsed = JSON.parse(raw);
-            add(parsed?.slug || parsed?.build_slug || parsed?.pro_slug);
-          }catch(_){}
-        }catch(_){}
-      }
-    }
-    return out;
-  }
-
-  async function databaseSlugs(sb,phone){
-    const out = [];
-    const add = value => {
-      const slug = cleanSlug(value);
-      if(slug && !out.includes(slug)) out.push(slug);
-    };
-    const phones = phoneVariants(phone);
-
-    for(const table of ["digiy_build_public_profiles","digiy_build_pros"]){
-      for(const column of ["phone","whatsapp"]){
-        try{
-          const {data,error} = await sb.from(table).select("slug,slug_key").in(column,phones).limit(10);
-          if(!error && Array.isArray(data)) data.forEach(row=>{ add(row?.slug); add(row?.slug_key); });
-        }catch(_){}
-      }
-    }
-    return out;
-  }
-
-  async function verifyByHistoricSlug(sb,phone,code){
-    let hadResponse = false;
-    let lastError = null;
-    const full = canonicalPhone(phone);
-    const local = full.startsWith("221") ? full.slice(3) : full;
-    const candidates = [...new Set([
-      ...(await databaseSlugs(sb,phone)),
-      ...storedSlugs(),
-      `build-${full}`,`build-${local}`,
-      `pro-build-${full}`,`pro-build-${local}`,
-      `pro_build-${full}`,`pro_build-${local}`,
-      full,local
-    ].map(cleanSlug).filter(Boolean))];
-
-    for(const slug of candidates){
-      try{
-        const {data,error} = await sb.rpc("digiy_verify_access",{p_slug:slug,p_pin:code});
-        if(error){ lastError = error; continue; }
-        hadResponse = true;
-        const parsed = parseVerify(data,phone);
-        if(parsed?.ok){
-          return {
-            ok:true,
-            phone:parsed.phone || full,
-            slug:parsed.slug || slug,
-            token:parsed.token || "",
-            acceptedModule:MODULE,
-            rail:"digiy_verify_access"
-          };
-        }
-      }catch(error){
-        lastError = error;
-      }
-    }
-
-    return {ok:false,hadResponse,lastError};
-  }
-
   async function hasBuildAccess(sb,phone){
     let checked = false;
+    const rails = ["digiy_has_access","digiy_has_module_access_from_abos"];
+
     for(const candidatePhone of phoneVariants(phone)){
-      const attempts = await Promise.all(MODULE_VARIANTS.map(async module=>{
-        try{
-          const {data,error} = await sb.rpc("digiy_has_access",{p_phone:candidatePhone,p_module:module});
-          return {data,error};
-        }catch(error){
-          return {data:null,error};
+      for(const module of MODULE_VARIANTS){
+        for(const rpc of rails){
+          try{
+            const {data,error} = await sb.rpc(rpc,{
+              p_phone:candidatePhone,
+              p_module:module
+            });
+            if(error) continue;
+            checked = true;
+            if(parseAccess(data)) return {found:true,checked:true,rail:rpc,module};
+          }catch(_){}
         }
-      }));
-      for(const attempt of attempts){
-        if(attempt.error) continue;
-        checked = true;
-        if(parseAccess(attempt.data)) return {found:true,checked:true};
       }
     }
     return {found:false,checked};
@@ -382,12 +306,8 @@
     const direct = await verifyByPhone(sb,phone,code);
     if(direct.ok) return direct;
 
-    const historic = await verifyByHistoricSlug(sb,phone,code);
-    if(historic.ok) return historic;
-
-    if(!direct.hadResponse && !historic.hadResponse){
-      const error = historic.lastError || direct.lastError;
-      if(error) throw new Error(error.message || "Erreur serveur");
+    if(!direct.hadResponse && direct.lastError){
+      throw new Error(direct.lastError.message || "Erreur serveur");
     }
 
     const access = await hasBuildAccess(sb,phone);
@@ -420,7 +340,7 @@
       access_ok:true,
       pin_session_ok:true,
       verification_rail:result.rail || "digiy_verify_pin",
-      session_version:"build-pin-v6"
+      session_version:"build-pin-v7"
     });
 
     SESSION_KEYS.forEach(key=>writeBoth(key,session));
