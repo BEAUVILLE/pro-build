@@ -1,95 +1,491 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Accès BUILD • DIGIY</title>
-  <meta name="theme-color" content="#020617"/>
-  <meta name="digiy-build-pin" content="build-pin-v5-20260721"/>
-
+  <meta name="theme-color" content="#020617">
+  <meta name="digiy-build-pin" content="build-pin-v6-20260722">
   <script>
-    window.DIGIY_SUPABASE_URL      = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
-    window.DIGIY_SUPABASE_ANON     = window.DIGIY_SUPABASE_ANON_KEY;
-    window.DIGIY_MODULE            = "BUILD";
-    window.DIGIY_MODULE_LABEL      = "Je bâtis";
-    window.DIGIY_MODULE_ICON       = "🧰";
-    window.DIGIY_INDEX_URL         = "./index.html";
-    window.DIGIY_SLUG_PREFIX       = "build";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_MODULE_LABEL = "Je bâtis";
+    window.DIGIY_MODULE_ICON = "🧰";
+    window.DIGIY_SLUG_PREFIX = "build";
   </script>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    :root{--bg:#1e293b;--bg2:#334155;--line:rgba(148,163,184,.20);--ink:#f9fafb;--muted:#94a3b8;--gold:#facc15;--green:#22c55e;--red:#ef4444}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100dvh;display:grid;place-items:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:radial-gradient(ellipse 800px 500px at 15% -5%,rgba(250,204,21,.13),transparent 55%),radial-gradient(ellipse 700px 400px at 88% 5%,rgba(34,197,94,.10),transparent 55%),linear-gradient(180deg,var(--bg2),var(--bg))}
-    .card{width:min(420px,100%);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:28px;padding:28px 24px 24px;box-shadow:0 28px 70px rgba(0,0,0,.55)}
-    .header{text-align:center;margin-bottom:22px}.ico{font-size:36px;line-height:1;display:block;margin-bottom:10px}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid rgba(250,204,21,.30);background:rgba(250,204,21,.08);color:#fde68a;font-size:11px;font-weight:950;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}.title{font-size:1.25rem;font-weight:1100;line-height:1.2}
-    .steps{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 22px}.step{display:flex;flex-direction:column;align-items:center;gap:4px}.step-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:transparent;display:grid;place-items:center;font-size:13px;font-weight:1000;color:var(--muted);transition:all .25s}.step-dot.active{border-color:var(--gold);background:rgba(250,204,21,.12);color:var(--gold)}.step-dot.done{border-color:var(--green);background:rgba(34,197,94,.15);color:var(--green)}.step-lbl{font-size:10px;font-weight:900;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}.step-lbl.active{color:var(--gold)}.step-connector{width:32px;height:2px;background:var(--line);border-radius:2px;margin-bottom:14px;transition:background .3s}.step-connector.done{background:var(--green)}
-    .panel{display:none}.panel.active{display:block}.label{display:block;font-size:.78rem;font-weight:950;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}.phone-wrap{position:relative}.phone-flag{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none}.input{width:100%;padding:14px 15px 14px 42px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--ink);font-size:1.05rem;font-weight:900;font-family:inherit;outline:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s}.input::placeholder{color:rgba(148,163,184,.45)}.input:focus{border-color:rgba(250,204,21,.50);box-shadow:0 0 0 3px rgba(250,204,21,.09)}.input.err-field{border-color:rgba(239,68,68,.50)!important}
-    .phone-recap{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-radius:12px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.06);margin-bottom:18px}.phone-recap-num{font-size:.9rem;font-weight:950;color:#86efac}.phone-recap-btn{font-size:.75rem;font-weight:950;color:var(--muted);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}.phone-recap-btn:hover{color:var(--ink)}
-    .pin-dots{display:flex;justify-content:center;gap:16px;margin:8px 0 20px}.dot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(148,163,184,.30);background:transparent;transition:background .12s,border-color .12s,transform .10s}.dot.filled{background:var(--gold);border-color:var(--gold);transform:scale(1.12)}.dot.err{border-color:var(--red)!important;background:rgba(239,68,68,.2)!important}.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.key{appearance:none;border:1px solid rgba(148,163,184,.18);border-radius:14px;background:rgba(255,255,255,.04);color:var(--ink);font-size:1.3rem;font-weight:1000;font-family:inherit;min-height:58px;cursor:pointer;transition:background .12s,transform .08s,border-color .12s;touch-action:manipulation;user-select:none}.key:hover{background:rgba(255,255,255,.08);border-color:rgba(250,204,21,.25)}.key:active{transform:scale(.94);background:rgba(250,204,21,.12)}.key.zero{grid-column:2}.key.del{font-size:1rem;color:var(--muted)}.key.del:hover{color:var(--red);border-color:rgba(239,68,68,.30)}
-    .btn{width:100%;min-height:52px;border-radius:16px;border:1px solid rgba(250,204,21,.35);background:linear-gradient(135deg,rgba(250,204,21,.22),rgba(34,197,94,.18));color:#fff;font-size:1rem;font-weight:1100;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s,transform .10s,background .15s;touch-action:manipulation}.btn:hover:not(:disabled){background:linear-gradient(135deg,rgba(250,204,21,.32),rgba(34,197,94,.26))}.btn:active:not(:disabled){transform:scale(.98)}.btn:disabled{opacity:.40;cursor:not-allowed}.status{margin-top:12px;min-height:0;padding:0;border-radius:12px;font-size:.84rem;font-weight:900;line-height:1.5;display:none;white-space:pre-wrap}.status.show{display:block;padding:10px 13px;margin-top:12px}.status.err{background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.30);color:#fca5a5}.status.ok{background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.30);color:#86efac}.status.spin{background:rgba(148,163,184,.07);border:1px solid var(--line);color:var(--muted)}.note{margin-top:18px;text-align:center;color:rgba(148,163,184,.55);font-size:.74rem;font-weight:800;line-height:1.55}
-    @keyframes spin{to{transform:rotate(360deg)}}@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}.shake{animation:shake .35s ease}
+    :root{--bg:#1e293b;--bg2:#334155;--line:rgba(148,163,184,.22);--ink:#f9fafb;--muted:#94a3b8;--gold:#facc15;--green:#22c55e;--red:#ef4444}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%}
+    body{min-height:100dvh;display:grid;place-items:center;padding:16px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:radial-gradient(800px 500px at 15% -5%,rgba(250,204,21,.13),transparent 55%),radial-gradient(700px 400px at 88% 5%,rgba(34,197,94,.10),transparent 55%),linear-gradient(180deg,var(--bg2),var(--bg))}
+    .card{width:min(420px,100%);padding:26px 22px;border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.035);box-shadow:0 28px 70px rgba(0,0,0,.45)}
+    .head{text-align:center;margin-bottom:20px}.icon{font-size:38px}.badge{display:inline-flex;margin:9px 0 7px;padding:5px 12px;border:1px solid rgba(250,204,21,.30);border-radius:999px;color:#fde68a;background:rgba(250,204,21,.08);font-size:11px;font-weight:950;letter-spacing:.06em;text-transform:uppercase}.title{font-size:1.35rem;font-weight:1000}
+    .panel{display:none}.panel.active{display:block}
+    label{display:block;margin-bottom:7px;color:var(--muted);font-size:.78rem;font-weight:950;letter-spacing:.04em;text-transform:uppercase}
+    input{width:100%;min-height:54px;padding:13px 14px;border:1px solid var(--line);border-radius:15px;background:rgba(0,0,0,.22);color:var(--ink);font:inherit;font-size:1.05rem;font-weight:900;outline:none}
+    input:focus{border-color:rgba(250,204,21,.55);box-shadow:0 0 0 3px rgba(250,204,21,.09)}
+    .recap{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;padding:11px 13px;border:1px solid rgba(34,197,94,.25);border-radius:13px;background:rgba(34,197,94,.06);color:#86efac;font-weight:950}
+    .linkbtn{border:0;background:none;color:var(--muted);font:inherit;font-size:.78rem;font-weight:900;text-decoration:underline;cursor:pointer}
+    .dots{display:flex;justify-content:center;gap:16px;margin:12px 0 22px}.dot{width:20px;height:20px;border:2px solid rgba(148,163,184,.32);border-radius:50%}.dot.on{border-color:var(--gold);background:var(--gold);transform:scale(1.1)}.dot.bad{border-color:var(--red);background:rgba(239,68,68,.22)}
+    .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.key{min-height:58px;border:1px solid rgba(148,163,184,.20);border-radius:14px;background:rgba(255,255,255,.05);color:var(--ink);font:inherit;font-size:1.3rem;font-weight:1000;cursor:pointer}.key:active{transform:scale(.95)}.key.zero{grid-column:2}.key.del{font-size:1rem;color:var(--muted)}
+    .btn{width:100%;min-height:53px;margin-top:15px;border:1px solid rgba(250,204,21,.35);border-radius:16px;background:linear-gradient(135deg,rgba(250,204,21,.24),rgba(34,197,94,.20));color:#fff;font:inherit;font-weight:1000;cursor:pointer}.btn:disabled{opacity:.42;cursor:not-allowed}
+    .status{display:none;margin-top:12px;padding:11px 13px;border-radius:13px;font-size:.85rem;font-weight:900;line-height:1.48;white-space:pre-wrap}.status.show{display:block}.status.spin{color:var(--muted);border:1px solid var(--line);background:rgba(148,163,184,.07)}.status.ok{color:#bbf7d0;border:1px solid rgba(34,197,94,.3);background:rgba(34,197,94,.09)}.status.err{color:#fecaca;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.09)}
+    .note{margin-top:18px;text-align:center;color:rgba(148,163,184,.62);font-size:.74rem;font-weight:800;line-height:1.5}
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="header"><span class="ico" id="moduleIcon">🧰</span><div class="badge">🔑 Accès DIGIY</div><div class="title" id="moduleLabel">Je bâtis</div></div>
-  <div class="steps"><div class="step"><div class="step-dot active" id="dot1">1</div><div class="step-lbl active" id="lbl1">Numéro</div></div><div class="step-connector" id="conn"></div><div class="step"><div class="step-dot" id="dot2">2</div><div class="step-lbl" id="lbl2">Code</div></div></div>
-  <div class="panel active" id="step1"><label class="label" for="phoneInput">📱 Ton numéro de téléphone</label><div class="phone-wrap"><span class="phone-flag">🇸🇳</span><input id="phoneInput" class="input" type="tel" inputmode="numeric" placeholder="221 77 XXX XX XX" autocomplete="tel" maxlength="15"/></div><div class="status" id="status1"></div><button class="btn" id="btnContinue" type="button" style="margin-top:16px" disabled>Continuer →</button></div>
-  <div class="panel" id="step2"><div class="phone-recap"><span class="phone-recap-num" id="phoneDisplay"></span><button class="phone-recap-btn" id="btnBack" type="button">Modifier</button></div><label class="label">🔢 Ton code secret (4 chiffres)</label><div class="pin-dots" id="pinDots"><div class="dot" id="d0"></div><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div></div><div class="keypad" id="keypad"><button class="key" data-v="1" type="button">1</button><button class="key" data-v="2" type="button">2</button><button class="key" data-v="3" type="button">3</button><button class="key" data-v="4" type="button">4</button><button class="key" data-v="5" type="button">5</button><button class="key" data-v="6" type="button">6</button><button class="key" data-v="7" type="button">7</button><button class="key" data-v="8" type="button">8</button><button class="key" data-v="9" type="button">9</button><button class="key zero" data-v="0" type="button">0</button><button class="key del" data-v="DEL" type="button">⌫</button></div><button class="btn" id="btnEnter" type="button" disabled>Entrer →</button><div class="status" id="status2"></div></div>
-  <div class="note">Ton numéro et ton code ne sont jamais partagés.<br>DIGIY BUILD · artisans tout corps de métiers · 100% indépendance ∞</div>
-</div>
+  <main class="card">
+    <header class="head">
+      <div class="icon">🧰</div>
+      <div class="badge">🔑 Accès DIGIY</div>
+      <div class="title">Je bâtis</div>
+    </header>
+
+    <section class="panel active" id="phonePanel">
+      <label for="phone">Ton numéro de téléphone</label>
+      <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="221 77 XXX XX XX" maxlength="16">
+      <button class="btn" id="continue" type="button" disabled>Continuer →</button>
+      <div class="status" id="phoneStatus" role="status"></div>
+    </section>
+
+    <section class="panel" id="pinPanel">
+      <div class="recap"><span id="phoneDisplay"></span><button class="linkbtn" id="back" type="button">Modifier</button></div>
+      <label>Ton code secret (4 chiffres)</label>
+      <div class="dots" id="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="keypad" id="keypad">
+        <button class="key" data-key="1" type="button">1</button><button class="key" data-key="2" type="button">2</button><button class="key" data-key="3" type="button">3</button>
+        <button class="key" data-key="4" type="button">4</button><button class="key" data-key="5" type="button">5</button><button class="key" data-key="6" type="button">6</button>
+        <button class="key" data-key="7" type="button">7</button><button class="key" data-key="8" type="button">8</button><button class="key" data-key="9" type="button">9</button>
+        <button class="key zero" data-key="0" type="button">0</button><button class="key del" data-key="DEL" type="button">⌫</button>
+      </div>
+      <button class="btn" id="enter" type="button" disabled>Entrer →</button>
+      <div class="status" id="pinStatus" role="status"></div>
+    </section>
+
+    <div class="note">Ton numéro et ton code ne sont jamais partagés.<br>DIGIY BUILD · 0% commission · relation directe</div>
+  </main>
+
 <script>
-(function(){
-"use strict";
-const MODULE=((window.DIGIY_MODULE)||"BUILD").toUpperCase();
-const MODULE_LABEL=window.DIGIY_MODULE_LABEL||MODULE;
-const MODULE_ICON=window.DIGIY_MODULE_ICON||"∞";
-const SLUG_PREFIX=(window.DIGIY_SLUG_PREFIX||"build").replace(/_/g,"-");
-const MAX_AGE=8*60*60*1000;
-const MODULE_ALIASES=Array.from(new Set(["pro_build","PRO_BUILD","BUILD","build","pro-build","PRO-BUILD","BUILD_PRO","build_pro","BATISSEUR","batisseur","BÂTISSEUR","bâtisseur","pro_batisseur","PRO_BATISSEUR","pro-batisseur","PRO-BATISSEUR","MES_SERVICES","mes_services","SERVICES","services",MODULE].filter(Boolean)));
-const PIN_MODULES=Array.from(new Set(MODULE_ALIASES.map(value=>String(value).toUpperCase())));
-const mod=MODULE.toLowerCase();
-const SKEYS=[`digiy_${mod}_session`,`digiy_${mod}_guard_session`,`digiy_guard_${mod}_session`];
-const PKEYS=[`digiy_${mod}_phone`,`digiy_${mod}_last_phone`,"DIGIY_LOC_HUB_PHONE","digiy_phone"];
-const SLKEYS=[`digiy_${mod}_last_slug`,`digiy_${mod}_slug`,"digiy_last_slug"];
-const HISTORIC_SLUG_KEYS=["DIGIY_BUILD_SLUG","DIGIY_CURRENT_SLUG","DIGIY_PRO_SLUG","DIGIY_SLUG","digiy_build_slug","digiy_slug","slug"];
-const $=id=>document.getElementById(id);
-$("moduleLabel").textContent=MODULE_LABEL;$("moduleIcon").textContent=MODULE_ICON;document.title=`Accès ${MODULE_LABEL} • DIGIY`;
-let pin="",confirmedPhone="",isLogging=false;
-function norm(p){return String(p||"").replace(/\D/g,"")}
-function fmt(d){if(d.length===12&&d.startsWith("221"))return`${d.slice(0,3)} ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8,10)} ${d.slice(10)}`;return d}
-function slug(p){return SLUG_PREFIX&&p?`${SLUG_PREFIX}-${p}`:""}
-function cleanSlug(v){return String(v||"").trim().replace(/^['"]+|['"]+$/g,"").replace(/\s+/g,"-").replace(/[^a-zA-Z0-9._-]/g,"")}
-function phoneVariants(p){const d=norm(p),out=[];const add=v=>{v=norm(v);if(v&&!out.includes(v))out.push(v)};add(d);if(d.length===9)add("221"+d);if(d.length===12&&d.startsWith("221"))add(d.slice(3));if(d.length===10&&d.startsWith("0")){add(d.slice(1));add("221"+d.slice(1))}return out}
-function moduleLooksBuild(value){const code=String(value||"").trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_-]+/g," ").replace(/\s+/g," ");return ["BUILD","PRO BUILD","BUILD PRO","MES SERVICES","SERVICES","BATISSEUR","PRO BATISSEUR"].includes(code)}
-function qp(n){try{return new URL(location.href).searchParams.get(n)||""}catch(_){return""}}
-function ls(k,v){try{if(v===undefined)return localStorage.getItem(k)||"";localStorage.setItem(k,v)}catch(_){}}
-function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k)||"";sessionStorage.setItem(k,v)}catch(_){}}
-function readStoredSlug(key){for(const storage of [localStorage,sessionStorage]){try{const raw=storage.getItem(key)||"",direct=cleanSlug(raw);if(direct&&direct!=="null"&&direct!=="undefined"&&!direct.startsWith("{"))return direct;const parsed=JSON.parse(raw||"null"),nested=cleanSlug(parsed?.slug||parsed?.build_slug||parsed?.pro_slug||"");if(nested)return nested}catch(_){}}return""}
-function slugCandidates(phone){const out=[],add=v=>{v=cleanSlug(v);if(v&&!out.includes(v))out.push(v)};["slug","s","pro","id","fiche","build","batisseur"].forEach(name=>add(qp(name)));HISTORIC_SLUG_KEYS.forEach(key=>add(readStoredSlug(key)));for(const p of phoneVariants(phone)){add(`${SLUG_PREFIX}-${p}`);add(`pro-build-${p}`);add(`pro_build-${p}`);add(p)}return out}
-function showSt(id,msg,cls){const e=$(id);e.className="status show "+cls;e.textContent=msg}
-function clearSt(id){const e=$(id);e.className="status";e.textContent=""}
-function shake(el){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");setTimeout(()=>el.classList.remove("shake"),400)}
-function getSb(){if(window._dsb)return window._dsb;const url=window.DIGIY_SUPABASE_URL||"",key=window.DIGIY_SUPABASE_ANON_KEY||window.DIGIY_SUPABASE_ANON||"";if(!url||!key)throw new Error("Supabase non configuré");if(!window.supabase?.createClient)throw new Error("Librairie Supabase absente");window._dsb=window.supabase.createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});return window._dsb}
-function writeSession(phone,sl,token,acceptedModule,rail){const now=Date.now(),sess=JSON.stringify({slug:sl,phone,module:MODULE,pin_module:acceptedModule||MODULE,ts:now,validated_at:now,verified_at:now,expires_at:now+MAX_AGE,session_token:String(token||"").trim(),access:true,access_ok:true,pin_session_ok:true,verification_rail:rail||"phone",session_version:"build-pin-v5"});SKEYS.forEach(k=>{ls(k,sess);ss(k,sess)});["DIGIY_BUILD_ACCESS","DIGIY_PRO_BUILD_ACCESS","DIGIY_ACCESS","DIGIY_MODULE_ACCESS"].forEach(k=>{ls(k,sess);ss(k,sess)});PKEYS.forEach(k=>{ls(k,phone);ss(k,phone)});["DIGIY_BUILD_PHONE","digiy_build_phone","DIGIY_PHONE"].forEach(k=>{ls(k,phone);ss(k,phone)});if(sl){SLKEYS.forEach(k=>{ls(k,sl);ss(k,sl)});["DIGIY_BUILD_SLUG","DIGIY_CURRENT_SLUG","DIGIY_SLUG","digiy_build_slug","digiy_slug"].forEach(k=>{ls(k,sl);ss(k,sl)});try{const m=JSON.parse(ls("digiy_module_slugs")||"{}")||{};m[MODULE]=sl;ls("digiy_module_slugs",JSON.stringify(m))}catch(_){}}}
-function redirect(){try{location.replace("./hub.html")}catch(_){location.replace("./hub.html")}}
-const phoneEl=$("phoneInput"),btnContinue=$("btnContinue");function updateContinueBtn(){btnContinue.disabled=norm(phoneEl.value).length<9}phoneEl.addEventListener("input",()=>{clearSt("status1");phoneEl.classList.remove("err-field");updateContinueBtn()});phoneEl.addEventListener("keydown",e=>{if(e.key==="Enter"&&!btnContinue.disabled)goStep2()});updateContinueBtn();
-function goStep2(){const raw=norm(phoneEl.value);if(raw.length<9){phoneEl.classList.add("err-field");showSt("status1","❌ Numéro trop court.\nFormat attendu : 221 77 XXX XX XX","err");shake(phoneEl);return}btnContinue.disabled=true;clearSt("status1");confirmedPhone=raw;$("step1").classList.remove("active");$("step2").classList.add("active");$("dot1").className="step-dot done";$("dot1").textContent="✓";$("lbl1").className="step-lbl";$("dot2").className="step-dot active";$("lbl2").className="step-lbl active";$("conn").classList.add("done");$("phoneDisplay").textContent=fmt(confirmedPhone);pin="";updateDots();updateEnterBtn()}btnContinue.addEventListener("click",goStep2);
-function goStep1(){$("step2").classList.remove("active");$("step1").classList.add("active");$("dot1").className="step-dot active";$("dot1").textContent="1";$("lbl1").className="step-lbl active";$("dot2").className="step-dot";$("lbl2").className="step-lbl";$("conn").classList.remove("done");pin="";isLogging=false;clearSt("status2");btnContinue.disabled=false;updateDots();updateEnterBtn()}$("btnBack").addEventListener("click",goStep1);
-function updateDots(){for(let i=0;i<4;i++){const d=$("d"+i);d.classList.toggle("filled",i<pin.length);d.classList.remove("err")}}function updateEnterBtn(){$("btnEnter").disabled=isLogging||pin.length!==4}
-$("keypad").addEventListener("click",e=>{const key=e.target.closest("[data-v]");if(!key||isLogging)return;const v=key.dataset.v;if(v==="DEL")pin=pin.slice(0,-1);else if(pin.length<4){pin+=v;if(pin.length===4)setTimeout(doLogin,120)}updateDots();updateEnterBtn();clearSt("status2")});document.addEventListener("keydown",e=>{if(document.activeElement===phoneEl||isLogging)return;if(!$("step2").classList.contains("active"))return;if(/^[0-9]$/.test(e.key)&&pin.length<4){pin+=e.key;updateDots();updateEnterBtn();if(pin.length===4)setTimeout(doLogin,120)}else if(e.key==="Backspace"){pin=pin.slice(0,-1);updateDots();updateEnterBtn()}});$("btnEnter").addEventListener("click",doLogin);
-function parseVerifyPayload(data,fallbackPhone){let row=Array.isArray(data)?data[0]:data;const positive=value=>{if(value===true||value===1)return true;return["true","t","1","ok","active","allowed","valid","verified","granted"].includes(String(value||"").trim().toLowerCase())};if(positive(row))return{ok:true,phone:norm(fallbackPhone),slug:"",session_token:""};if(typeof row==="string"){const txt=row.trim(),low=txt.toLowerCase();if(["true","t","1","ok","active"].includes(low))return{ok:true,phone:norm(fallbackPhone),slug:"",session_token:""};if(txt.startsWith("(")&&txt.endsWith(")")){const parts=txt.slice(1,-1).split(",");if(["t","true","1","ok"].includes(String(parts[0]||"").trim().toLowerCase())){const second=String(parts[1]||"").trim();return{ok:true,phone:norm(parts[2]||fallbackPhone),slug:moduleLooksBuild(second)?"":second,session_token:String(parts[3]||"").trim()}}}try{row=JSON.parse(txt)}catch(_){return null}}if(!row||typeof row!=="object")return null;if(row.data&&typeof row.data==="object")row=row.data;if(row.result&&typeof row.result==="object")row=row.result;const status=String(row.status||"").trim().toLowerCase(),decisionKeys=["ok","success","valid","is_valid","verified","authenticated","allowed","access","access_ok","has_access","can_access","digiy_verify_pin"],hasDecision=decisionKeys.some(key=>Object.prototype.hasOwnProperty.call(row,key)),values=Object.values(row),ok=hasDecision?decisionKeys.some(key=>positive(row[key])):positive(values[0])||positive(row.data)||positive(row.result)||positive(row.active)||positive(row.is_active)||["ok","active","allowed","valid"].includes(status);if(!ok)return null;return{ok:true,phone:norm(row.phone||row.p_phone||row.owner_phone||fallbackPhone),slug:String(row.slug||row.identifiant||row.build_slug||row.owner_slug||"").trim(),session_token:String(row.session_token||row.token||"").trim()}}
-function parseAccessPayload(data){let row=Array.isArray(data)?data[0]:data;const positive=value=>{if(value===true||value===1)return true;return["true","t","1","ok","active","allowed","valid","granted"].includes(String(value||"").trim().toLowerCase())};if(positive(row))return true;if(!row||typeof row!=="object")return false;if(Object.prototype.hasOwnProperty.call(row,"data"))return parseAccessPayload(row.data);if(Object.prototype.hasOwnProperty.call(row,"result"))return parseAccessPayload(row.result);return["ok","success","active","is_active","allowed","access","access_ok","has_access","can_access"].some(key=>positive(row[key]))}
-async function findBuildAccess(sb,phones){let checked=false;for(const p of phones){const attempts=await Promise.all(PIN_MODULES.map(async module=>{try{const{data,error}=await sb.rpc("digiy_has_access",{p_phone:p,p_module:module});return{module,data,error}}catch(error){return{module,data:null,error}}}));for(const attempt of attempts){if(attempt.error)continue;checked=true;if(parseAccessPayload(attempt.data))return{found:true,checked:true,module:attempt.module}}}return{found:false,checked,module:""}}
-async function verifyByPhone(sb,phone,code){let lastError=null,hadResponse=false,matchedAccess=false;const phones=phoneVariants(phone);for(const p of phones){const attempts=await Promise.all(PIN_MODULES.map(async module=>{try{const{data,error}=await sb.rpc("digiy_verify_pin",{p_phone:p,p_module:module,p_pin:code});return{module,data,error}}catch(error){return{module,data:null,error}}}));for(const attempt of attempts){const{module,data,error}=attempt;if(error){lastError=error;continue}hadResponse=true;const raw=Array.isArray(data)?data[0]:data;if(raw&&typeof raw==="object"&&(raw.label||raw.session_token))matchedAccess=true;const parsed=parseVerifyPayload(data,p);if(parsed?.ok)return{ok:true,row:parsed,phone:parsed.phone||p,module,slug:parsed.slug||"",rail:"phone"}}}return{ok:false,lastError,hadResponse,matchedAccess,phones}}
-async function resolveHistoricSlugs(sb,phone){const phones=phoneVariants(phone),out=[],add=value=>{value=cleanSlug(value);if(value&&!out.includes(value))out.push(value)};try{const filters=phones.flatMap(value=>[`phone.eq.${value}`,`whatsapp.eq.${value}`]).join(","),{data,error}=await sb.from("digiy_build_public_profiles").select("slug,slug_key,phone,whatsapp").or(filters).limit(10);if(!error&&Array.isArray(data))data.forEach(row=>{add(row?.slug);add(row?.slug_key)})}catch(_){}try{const{data,error}=await sb.from("digiy_build_pros").select("slug,phone").in("phone",phones).limit(10);if(!error&&Array.isArray(data))data.forEach(row=>add(row?.slug))}catch(_){}return out}
-async function verifyByHistoricSlug(sb,phone,code){let lastError=null,hadResponse=false;const resolved=await resolveHistoricSlugs(sb,phone),candidates=Array.from(new Set([...resolved,...slugCandidates(phone)]));for(const candidate of candidates){try{const{data,error}=await sb.rpc("digiy_verify_access",{p_slug:candidate,p_pin:code});if(error){lastError=error;continue}hadResponse=true;const parsed=parseVerifyPayload(data,phone);if(parsed?.ok)return{ok:true,row:parsed,phone:parsed.phone||norm(phone),module:MODULE,slug:parsed.slug||candidate,rail:resolved.includes(candidate)?"resolved_slug":"historic_slug"}}catch(error){lastError=error}}return{ok:false,lastError,hadResponse}}
-async function verifyPinCompatible(sb,phone,code){const byPhone=await verifyByPhone(sb,phone,code);if(byPhone.ok)return byPhone;const bySlug=await verifyByHistoricSlug(sb,phone,code);if(bySlug.ok)return bySlug;if(!byPhone.hadResponse&&!bySlug.hadResponse){const err=bySlug.lastError||byPhone.lastError;if(err)throw new Error(err.message||"Erreur serveur")}const access=byPhone.matchedAccess?{found:true,checked:true}:await findBuildAccess(sb,byPhone.phones||phoneVariants(phone));return{ok:false,reason:access.found?"access_found":access.checked?"access_not_found":"access_unknown"}}
-async function doLogin(){if(isLogging||pin.length!==4)return;isLogging=true;updateEnterBtn();showSt("status2","⏳ Vérification sécurisée BUILD…","spin");try{const sb=getSb(),verified=await verifyPinCompatible(sb,confirmedPhone,pin);if(!verified.ok){pin="";isLogging=false;updateDots();updateEnterBtn();for(let i=0;i<4;i++)$("d"+i).classList.add("err");shake($("pinDots"));const message=verified.reason==="access_found"?"❌ Ton accès PRO BUILD existe, mais ce code ne correspond pas.\nVérifie les 4 chiffres et réessaie.":verified.reason==="access_not_found"?"❌ Aucun accès PRO BUILD actif n’est relié à ce numéro.\nEssaie le numéro exact utilisé lors de l’inscription (77… ou 221 77…).":"❌ Le service n’a pas pu confirmer ton accès PRO BUILD.\nVérifie ta connexion puis réessaie dans un instant.";showSt("status2",message,"err");return}const row=verified.row||{},finalPhone=norm(verified.phone||confirmedPhone)||norm(confirmedPhone),finalSlug=cleanSlug(verified.slug||row.slug||row.identifiant)||slug(finalPhone);writeSession(finalPhone,finalSlug,row.session_token||row.token||"",verified.module,verified.rail);showSt("status2","✅ Accès BUILD ouvert. Redirection…","ok");setTimeout(redirect,700)}catch(err){pin="";isLogging=false;updateDots();updateEnterBtn();showSt("status2","❌ Erreur : "+(err?.message||"inattendue."),"err")}}
+(()=>{
+  "use strict";
+
+  const MODULE = "BUILD";
+  const MAX_AGE = 8 * 60 * 60 * 1000;
+  const MODULE_VARIANTS = [...new Set([
+    "BUILD","build",
+    "PRO_BUILD","pro_build",
+    "BUILD_PRO","build_pro",
+    "PRO-BUILD","pro-build",
+    "MES_SERVICES","mes_services",
+    "SERVICES","services",
+    "BATISSEUR","batisseur",
+    "BÂTISSEUR","bâtisseur",
+    "PRO_BATISSEUR","pro_batisseur",
+    "PRO-BATISSEUR","pro-batisseur"
+  ])];
+
+  const SESSION_KEYS = [
+    "digiy_build_session",
+    "digiy_build_guard_session",
+    "digiy_guard_build_session",
+    "DIGIY_BUILD_ACCESS",
+    "DIGIY_PRO_BUILD_ACCESS",
+    "DIGIY_ACCESS",
+    "DIGIY_MODULE_ACCESS"
+  ];
+  const PHONE_KEYS = [
+    "digiy_build_phone","digiy_build_last_phone",
+    "DIGIY_BUILD_PHONE","DIGIY_PHONE","digiy_phone"
+  ];
+  const SLUG_KEYS = [
+    "digiy_build_slug","digiy_build_last_slug","digiy_last_slug",
+    "DIGIY_BUILD_SLUG","DIGIY_CURRENT_SLUG","DIGIY_PRO_SLUG","DIGIY_SLUG","digiy_slug"
+  ];
+
+  const $ = id => document.getElementById(id);
+  const dots = [...document.querySelectorAll(".dot")];
+  let pin = "";
+  let confirmedPhone = "";
+  let busy = false;
+  let client = null;
+
+  const digits = value => String(value || "").replace(/\D/g,"");
+  const cleanSlug = value => String(value || "").trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g,"-").replace(/[^a-z0-9._-]/g,"")
+    .replace(/-+/g,"-").replace(/^-|-$/g,"");
+
+  function canonicalPhone(value){
+    const d = digits(value);
+    if(d.length === 9) return "221" + d;
+    if(d.length === 10 && d.startsWith("0")) return "221" + d.slice(1);
+    return d;
+  }
+
+  function phoneVariants(value){
+    const d = digits(value);
+    const values = [];
+    const add = v => { v = digits(v); if(v && !values.includes(v)) values.push(v); };
+    add(d);
+    if(d.length === 9) add("221" + d);
+    if(d.length === 12 && d.startsWith("221")) add(d.slice(3));
+    if(d.length === 10 && d.startsWith("0")){ add(d.slice(1)); add("221" + d.slice(1)); }
+    return values;
+  }
+
+  function setStatus(id,message,type){
+    const el = $(id);
+    el.textContent = message || "";
+    el.className = "status" + (message ? " show " + (type || "") : "");
+  }
+
+  function updateDots(error=false){
+    dots.forEach((dot,index)=>{
+      dot.classList.toggle("on", index < pin.length);
+      dot.classList.toggle("bad", error);
+    });
+    $("enter").disabled = busy || pin.length !== 4;
+  }
+
+  function showPin(){
+    $("phonePanel").classList.remove("active");
+    $("pinPanel").classList.add("active");
+    $("phoneDisplay").textContent = confirmedPhone;
+    pin = "";
+    updateDots();
+  }
+
+  function showPhone(){
+    $("pinPanel").classList.remove("active");
+    $("phonePanel").classList.add("active");
+    pin = "";
+    busy = false;
+    updateDots();
+    setStatus("pinStatus","","");
+  }
+
+  function getClient(){
+    if(client) return client;
+    if(!window.supabase?.createClient) throw new Error("Librairie Supabase absente");
+    client = window.supabase.createClient(
+      window.DIGIY_SUPABASE_URL,
+      window.DIGIY_SUPABASE_ANON_KEY,
+      {auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}
+    );
+    return client;
+  }
+
+  function positive(value){
+    if(value === true || value === 1) return true;
+    return ["true","t","1","ok","active","allowed","valid","verified","granted"]
+      .includes(String(value || "").trim().toLowerCase());
+  }
+
+  function moduleLooksBuild(value){
+    const code = String(value || "").trim().toUpperCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[_-]+/g," ").replace(/\s+/g," ");
+    return ["BUILD","PRO BUILD","BUILD PRO","MES SERVICES","SERVICES","BATISSEUR","PRO BATISSEUR"].includes(code);
+  }
+
+  function parseVerify(data,fallbackPhone){
+    let row = Array.isArray(data) ? data[0] : data;
+    if(positive(row)) return {ok:true,phone:canonicalPhone(fallbackPhone),slug:"",token:""};
+
+    if(typeof row === "string"){
+      const text = row.trim();
+      if(positive(text)) return {ok:true,phone:canonicalPhone(fallbackPhone),slug:"",token:""};
+      if(text.startsWith("(") && text.endsWith(")")){
+        const parts = text.slice(1,-1).split(",");
+        if(positive(parts[0])){
+          const second = String(parts[1] || "").trim();
+          return {
+            ok:true,
+            phone:canonicalPhone(parts[2] || fallbackPhone),
+            slug:moduleLooksBuild(second) ? "" : cleanSlug(second),
+            token:String(parts[3] || "").trim()
+          };
+        }
+      }
+      try{ row = JSON.parse(text); }catch(_){ return null; }
+    }
+
+    if(!row || typeof row !== "object") return null;
+    if(row.data && typeof row.data === "object") row = row.data;
+    if(row.result && typeof row.result === "object") row = row.result;
+
+    const keys = ["ok","success","valid","is_valid","verified","authenticated","allowed","access","access_ok","has_access","can_access","digiy_verify_pin"];
+    const hasDecision = keys.some(key => Object.prototype.hasOwnProperty.call(row,key));
+    const ok = hasDecision
+      ? keys.some(key => positive(row[key]))
+      : positive(Object.values(row)[0]) || positive(row.active) || positive(row.is_active) || ["ok","active","allowed","valid"].includes(String(row.status || "").toLowerCase());
+
+    if(!ok) return null;
+    return {
+      ok:true,
+      phone:canonicalPhone(row.phone || row.p_phone || row.owner_phone || fallbackPhone),
+      slug:cleanSlug(row.slug || row.identifiant || row.build_slug || row.owner_slug || ""),
+      token:String(row.session_token || row.token || "").trim()
+    };
+  }
+
+  function parseAccess(data){
+    let row = Array.isArray(data) ? data[0] : data;
+    if(positive(row)) return true;
+    if(!row || typeof row !== "object") return false;
+    if(Object.prototype.hasOwnProperty.call(row,"data")) return parseAccess(row.data);
+    if(Object.prototype.hasOwnProperty.call(row,"result")) return parseAccess(row.result);
+    return ["ok","success","active","is_active","allowed","access","access_ok","has_access","can_access"]
+      .some(key => positive(row[key]));
+  }
+
+  async function verifyByPhone(sb,phone,code){
+    let hadResponse = false;
+    let lastError = null;
+
+    for(const candidatePhone of phoneVariants(phone)){
+      const attempts = await Promise.all(MODULE_VARIANTS.map(async module=>{
+        try{
+          const {data,error} = await sb.rpc("digiy_verify_pin",{
+            p_phone:candidatePhone,
+            p_module:module,
+            p_pin:code
+          });
+          return {module,data,error};
+        }catch(error){
+          return {module,data:null,error};
+        }
+      }));
+
+      for(const attempt of attempts){
+        if(attempt.error){ lastError = attempt.error; continue; }
+        hadResponse = true;
+        const parsed = parseVerify(attempt.data,candidatePhone);
+        if(parsed?.ok){
+          return {
+            ok:true,
+            phone:parsed.phone || canonicalPhone(candidatePhone),
+            slug:parsed.slug || "",
+            token:parsed.token || "",
+            acceptedModule:attempt.module,
+            rail:"digiy_verify_pin"
+          };
+        }
+      }
+    }
+
+    return {ok:false,hadResponse,lastError};
+  }
+
+  function storedSlugs(){
+    const out = [];
+    const add = value => {
+      const slug = cleanSlug(value);
+      if(slug && !out.includes(slug)) out.push(slug);
+    };
+    for(const storage of [sessionStorage,localStorage]){
+      for(const key of SLUG_KEYS){
+        try{
+          const raw = storage.getItem(key) || "";
+          add(raw);
+          try{
+            const parsed = JSON.parse(raw);
+            add(parsed?.slug || parsed?.build_slug || parsed?.pro_slug);
+          }catch(_){}
+        }catch(_){}
+      }
+    }
+    return out;
+  }
+
+  async function databaseSlugs(sb,phone){
+    const out = [];
+    const add = value => {
+      const slug = cleanSlug(value);
+      if(slug && !out.includes(slug)) out.push(slug);
+    };
+    const phones = phoneVariants(phone);
+
+    for(const table of ["digiy_build_public_profiles","digiy_build_pros"]){
+      for(const column of ["phone","whatsapp"]){
+        try{
+          const {data,error} = await sb.from(table).select("slug,slug_key").in(column,phones).limit(10);
+          if(!error && Array.isArray(data)) data.forEach(row=>{ add(row?.slug); add(row?.slug_key); });
+        }catch(_){}
+      }
+    }
+    return out;
+  }
+
+  async function verifyByHistoricSlug(sb,phone,code){
+    let hadResponse = false;
+    let lastError = null;
+    const full = canonicalPhone(phone);
+    const local = full.startsWith("221") ? full.slice(3) : full;
+    const candidates = [...new Set([
+      ...(await databaseSlugs(sb,phone)),
+      ...storedSlugs(),
+      `build-${full}`,`build-${local}`,
+      `pro-build-${full}`,`pro-build-${local}`,
+      `pro_build-${full}`,`pro_build-${local}`,
+      full,local
+    ].map(cleanSlug).filter(Boolean))];
+
+    for(const slug of candidates){
+      try{
+        const {data,error} = await sb.rpc("digiy_verify_access",{p_slug:slug,p_pin:code});
+        if(error){ lastError = error; continue; }
+        hadResponse = true;
+        const parsed = parseVerify(data,phone);
+        if(parsed?.ok){
+          return {
+            ok:true,
+            phone:parsed.phone || full,
+            slug:parsed.slug || slug,
+            token:parsed.token || "",
+            acceptedModule:MODULE,
+            rail:"digiy_verify_access"
+          };
+        }
+      }catch(error){
+        lastError = error;
+      }
+    }
+
+    return {ok:false,hadResponse,lastError};
+  }
+
+  async function hasBuildAccess(sb,phone){
+    let checked = false;
+    for(const candidatePhone of phoneVariants(phone)){
+      const attempts = await Promise.all(MODULE_VARIANTS.map(async module=>{
+        try{
+          const {data,error} = await sb.rpc("digiy_has_access",{p_phone:candidatePhone,p_module:module});
+          return {data,error};
+        }catch(error){
+          return {data:null,error};
+        }
+      }));
+      for(const attempt of attempts){
+        if(attempt.error) continue;
+        checked = true;
+        if(parseAccess(attempt.data)) return {found:true,checked:true};
+      }
+    }
+    return {found:false,checked};
+  }
+
+  async function verifyCompatible(sb,phone,code){
+    const direct = await verifyByPhone(sb,phone,code);
+    if(direct.ok) return direct;
+
+    const historic = await verifyByHistoricSlug(sb,phone,code);
+    if(historic.ok) return historic;
+
+    if(!direct.hadResponse && !historic.hadResponse){
+      const error = historic.lastError || direct.lastError;
+      if(error) throw new Error(error.message || "Erreur serveur");
+    }
+
+    const access = await hasBuildAccess(sb,phone);
+    return {
+      ok:false,
+      reason:access.found ? "pin_mismatch" : access.checked ? "no_access" : "unknown"
+    };
+  }
+
+  function writeBoth(key,value){
+    try{localStorage.setItem(key,value)}catch(_){}
+    try{sessionStorage.setItem(key,value)}catch(_){}
+  }
+
+  function writeSession(result){
+    const phone = canonicalPhone(result.phone || confirmedPhone);
+    const slug = cleanSlug(result.slug) || `build-${phone}`;
+    const now = Date.now();
+    const session = JSON.stringify({
+      slug,
+      phone,
+      module:MODULE,
+      pin_module:result.acceptedModule || MODULE,
+      ts:now,
+      validated_at:now,
+      verified_at:now,
+      expires_at:now + MAX_AGE,
+      session_token:String(result.token || ""),
+      access:true,
+      access_ok:true,
+      pin_session_ok:true,
+      verification_rail:result.rail || "digiy_verify_pin",
+      session_version:"build-pin-v6"
+    });
+
+    SESSION_KEYS.forEach(key=>writeBoth(key,session));
+    PHONE_KEYS.forEach(key=>writeBoth(key,phone));
+    SLUG_KEYS.forEach(key=>writeBoth(key,slug));
+  }
+
+  async function login(){
+    if(busy || pin.length !== 4) return;
+    busy = true;
+    updateDots();
+    setStatus("pinStatus","⏳ Vérification sécurisée BUILD…","spin");
+
+    try{
+      const result = await verifyCompatible(getClient(),confirmedPhone,pin);
+      if(!result.ok){
+        pin = "";
+        busy = false;
+        updateDots(true);
+        const message =
+          result.reason === "pin_mismatch"
+            ? "❌ Ton accès PRO BUILD existe, mais ce code ne correspond pas.\nVérifie les 4 chiffres et réessaie."
+            : result.reason === "no_access"
+            ? "❌ Aucun accès PRO BUILD actif n’est relié à ce numéro.\nUtilise le numéro exact de ton inscription."
+            : "❌ Le service n’a pas pu confirmer ton accès PRO BUILD.\nVérifie ta connexion puis réessaie.";
+        setStatus("pinStatus",message,"err");
+        return;
+      }
+
+      writeSession(result);
+      setStatus("pinStatus","✅ Accès BUILD ouvert. Redirection…","ok");
+      setTimeout(()=>location.replace("./hub.html"),650);
+    }catch(error){
+      pin = "";
+      busy = false;
+      updateDots(true);
+      setStatus("pinStatus","❌ Erreur : " + (error?.message || "inattendue"),"err");
+    }
+  }
+
+  $("phone").addEventListener("input",()=>{
+    $("continue").disabled = digits($("phone").value).length < 9;
+    setStatus("phoneStatus","","");
+  });
+  $("continue").addEventListener("click",()=>{
+    const phone = canonicalPhone($("phone").value);
+    if(phone.length < 9){
+      setStatus("phoneStatus","❌ Numéro trop court.","err");
+      return;
+    }
+    confirmedPhone = phone;
+    showPin();
+  });
+  $("back").addEventListener("click",showPhone);
+  $("keypad").addEventListener("click",event=>{
+    const key = event.target.closest("[data-key]");
+    if(!key || busy) return;
+    const value = key.dataset.key;
+    if(value === "DEL") pin = pin.slice(0,-1);
+    else if(pin.length < 4) pin += value;
+    updateDots();
+    setStatus("pinStatus","","");
+    if(pin.length === 4) setTimeout(login,100);
+  });
+  $("enter").addEventListener("click",login);
 })();
 </script>
 </body>
