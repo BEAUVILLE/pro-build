@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#1e7a46"/>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
+  <title>Ma fiche artisan — DIGIY BUILD PRO</title>
+  <meta name="description" content="DIGIY BUILD PRO — Le professionnel remplit sa fiche métier : nom, métier, zone, contact, services, photo et lien public."/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = window.DIGIY_SUPABASE_ANON_KEY || "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js?v=build-simple-20260603"></script>
+
+  <style>
+    :root{
+      --bg:#1e7a46;--bg2:#155a34;--bg3:#0e4226;--bar:rgba(8,50,24,.96);
+      --gold:#c4973f;--gold2:#fff0a8;--green:#22c55e;--blue:#38bdf8;
+      --red:#fb7185;--line:rgba(255,255,255,.18);--text:#f0fff5;
+      --muted:rgba(240,255,245,.76);--shadow:0 16px 40px rgba(0,0,0,.22);
+      --r:18px;--max:980px;--hdrH:52px;--barH:78px;
+    }
+
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;min-height:100dvh;color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-size:18px;font-weight:850;
+      background:
+        radial-gradient(620px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
+        radial-gradient(430px 280px at 92% 8%,rgba(196,151,63,.16),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
+      padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+    .topHeader{
+      position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(196,151,63,.26);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    }
+    .hdrBack{color:rgba(240,255,245,.72);font-size:14px;font-weight:1000;white-space:nowrap}
+    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);white-space:nowrap}
+    .hdrPill{padding:6px 10px;border-radius:999px;border:1px solid rgba(245,158,11,.38);background:rgba(245,158,11,.12);color:#fde68a;font-size:12px;font-weight:1000}
+    .hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
+
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}
+    .hero,.card{
+      border:1px solid var(--line);border-radius:var(--r);
+      background:rgba(255,255,255,.08);box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+    h1{margin:0 0 8px;font-size:clamp(34px,8vw,54px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
+    .lead{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.42;max-width:780px}
+    .rule{margin-top:12px;padding:14px 15px;border:1px dashed var(--line);border-radius:var(--r);background:rgba(5,31,17,.34);color:rgba(240,255,245,.92);font-size:15px;font-weight:1000;line-height:1.42}
+    .rule b{color:var(--gold2)}
+
+    .sectionTitle{font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,255,245,.62);margin:0 0 10px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .field{display:grid;gap:7px}
+    .field.full{grid-column:1 / -1}
+    label{font-size:13px;font-weight:1000;text-transform:uppercase;letter-spacing:.07em;color:#dcfce7}
+    input,textarea,select{
+      width:100%;border:1px solid rgba(255,255,255,.18);border-radius:17px;
+      background:rgba(0,0,0,.18);color:var(--text);padding:13px 14px;
+      min-height:56px;outline:none;font-weight:900;
+    }
+    textarea{min-height:126px;resize:vertical;line-height:1.45}
+    input:focus,textarea:focus,select:focus{border-color:rgba(255,240,168,.55);box-shadow:0 0 0 4px rgba(255,240,168,.10)}
+    select option{background:#0e4226;color:#f0fff5}
+    .hint{font-size:13px;color:rgba(240,255,245,.62);font-weight:800;line-height:1.35}
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+    .btn{
+      min-height:58px;border-radius:18px;border:1px solid rgba(255,255,255,.17);
+      background:rgba(255,255,255,.08);color:var(--text);font-weight:1000;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;
+      cursor:pointer;padding:13px 14px;
+    }
+    .btn.green{background:linear-gradient(135deg,var(--green),var(--gold));color:#102014;border:none}
+    .btn.gold{background:rgba(196,151,63,.16);border-color:rgba(196,151,63,.42);color:#fff0a8}
+    .btn.blue{background:rgba(56,189,248,.13);border-color:rgba(56,189,248,.32);color:#bae6fd}
+    .btn.red{background:rgba(251,113,133,.10);border-color:rgba(251,113,133,.30);color:#fecaca}
+    .msg{
+      display:none;margin-top:12px;padding:13px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.14);font-size:15px;font-weight:900;line-height:1.45;white-space:pre-wrap;
+    }
+    .msg.show{display:block}.msg.ok{color:#bbf7d0;border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.09)}
+    .msg.bad{color:#fecaca;border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.09)}
+    .preview{
+      border:1px solid rgba(255,240,168,.26);background:rgba(5,31,17,.34);
+      border-radius:22px;padding:16px;display:grid;gap:10px;
+    }
+    .preview h2{margin:0;font-size:28px;line-height:1.05;color:#fff0a8}
+    .preview p{margin:0;color:var(--muted);line-height:1.45;font-weight:850}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);font-size:13px;font-weight:1000;color:#d1fae5}
+    .photoPreview{width:100%;max-height:360px;object-fit:cover;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:#0e4226;display:none}
+    .bottomBar{
+      position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(8,50,24,.97);border-top:1px solid rgba(196,151,63,.20);backdrop-filter:blur(18px)
+    }
+    .bottomInner{width:min(760px,100%);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(240,255,245,.68);font-size:11px;font-weight:1000;text-align:center;background:rgba(255,255,255,.05);border:1px solid transparent}
+    .bottomInner a.active{color:#102014;background:linear-gradient(135deg,var(--green),var(--gold));border-color:rgba(34,197,94,.24)}
+    @media(max-width:720px){.grid,.actions{grid-template-columns:1fr}h1{font-size:39px}.hero,.card{padding:14px}.hdrTitle{display:none}}
+  </style>
+</head>
+
+<body>
+<header class="topHeader">
+  <a class="hdrBack" href="./hub.html">← HUB</a>
+  <div class="hdrTitle">MA FICHE ARTISAN</div>
+  <div class="hdrPill" id="sessionPill">session…</div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">DIGIY PRO · MES SERVICES</div>
+    <h1>Je remplis ma fiche.</h1>
+    <div class="lead">Cette page est côté professionnel. Tu poses ton nom, ton métier, ta zone, ton contact, tes services et ta présentation.</div>
+    <div class="rule"><b>Doctrine :</b> le pro prépare sa fiche. Le client la lit ensuite via le QR ou le lien public. Pas de métier imposé dans le moule.</div>
+  </section>
+
+  <section class="card">
+    <div class="sectionTitle">Identité du professionnel</div>
+    <div class="grid">
+      <div class="field">
+        <label for="displayName">Nom affiché</label>
+        <input id="displayName" placeholder="Ex : ENTREPRENEUR MULTI SERVICES">
+      </div>
+      <div class="field">
+        <label for="metier">Métier principal</label>
+        <input id="metier" placeholder="Ex : Plomberie, solaire, électricité, peinture...">
+      </div>
+      <div class="field">
+        <label for="phone">Téléphone</label>
+        <input id="phone" inputmode="tel" placeholder="Numéro du professionnel">
+      </div>
+      <div class="field">
+        <label for="whatsapp">WhatsApp</label>
+        <input id="whatsapp" inputmode="tel" placeholder="WhatsApp du professionnel">
+      </div>
+      <div class="field">
+        <label for="city">Ville</label>
+        <input id="city" placeholder="Ville du professionnel">
+      </div>
+      <div class="field">
+        <label for="zone">Zone d’intervention</label>
+        <input id="zone" placeholder="Zone d’intervention du professionnel">
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sectionTitle">Présentation & services</div>
+    <div class="grid">
+      <div class="field full">
+        <label for="presetFiche">Exemples rapides</label>
+        <select id="presetFiche">
+          <option value="">Choisir un exemple métier déjà cadré</option>
+          <option value="batisseur">Entrepreneur bâtisseur · coordination chantier</option>
+          <option value="macon">Maçon</option>
+          <option value="plombier">Plombier</option>
+          <option value="electricien">Électricien</option>
+          <option value="nettoyage">Service de nettoyage · Hôtel · Résidence · Particulier</option>
+        </select>
+        <div class="hint">Ces exemples remplissent le métier, la présentation et les services. Le pro garde la main et peut tout modifier avant sauvegarde.</div>
+      </div>
+      <div class="field full">
+        <label for="description">Présentation</label>
+        <textarea id="description" placeholder="Explique ton activité simplement : ce que tu fais, pour qui, comment tu travailles, ce que le client doit savoir."></textarea>
+      </div>
+      <div class="field full">
+        <label for="servicesText">Services proposés</label>
+        <textarea id="servicesText" placeholder="Ex : installation · dépannage · entretien · devis · urgence · conseil"></textarea>
+        <div class="hint">Sépare les services par virgule, point médian, tiret ou retour à la ligne.</div>
+      </div>
+      <div class="field">
+        <label for="photoUrl">Photo principale</label>
+        <input id="photoUrl" placeholder="URL photo principale">
+      </div>
+      <div class="field">
+        <label for="logoUrl">Logo / image</label>
+        <input id="logoUrl" placeholder="URL logo ou image métier">
+      </div>
+      <div class="field full">
+        <label for="publicUrl">Lien public spécifique, si tu as une fiche dédiée</label>
+        <input id="publicUrl" placeholder="Lien public de la fiche, si besoin">
+        <div class="hint">Optionnel. À utiliser seulement si ce pro a une fiche externe dédiée. Sinon laisse vide.</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn blue" id="btnPreview" type="button">👁️ Prévisualiser</button>
+      <a class="btn gold" href="./metiers.html">🧱 Métiers BUILD</a>
+      <button class="btn green" id="btnSave" type="button">✅ Sauvegarder ma fiche</button>
+      <button class="btn gold" id="btnOpenPublic" type="button">↗️ Ouvrir ma fiche publique</button>
+      <a class="btn red" href="./hub.html">← Retour HUB</a>
+    </div>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <section class="card">
+    <div class="sectionTitle">Aperçu</div>
+    <div class="preview">
+      <img id="photoPreview" class="photoPreview" alt="Aperçu photo">
+      <h2 id="prevName">Nom du professionnel</h2>
+      <p id="prevMeta">Métier · Zone</p>
+      <p id="prevDesc">La présentation apparaîtra ici.</p>
+      <div class="chips" id="prevChips"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottomBar" aria-label="Navigation Mes services">
+  <div class="bottomInner">
+    <a href="./hub.html"><span>🧭</span><span>HUB</span></a>
+    <a href="./action.html"><span>🎙️</span><span>GO</span></a>
+    <a href="./cockpit.html"><span>🧰</span><span>Service</span></a>
+    <a class="active" href="./fiche.html"><span>🪪</span><span>Fiche</span></a>
+    <a href="./qr.html"><span>🔳</span><span>QR</span></a>
+  </div>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  const TABLE = "digiy_build_public_profiles";
+  const DEFAULT_LOGO = "https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png";
+  const $ = (id)=>document.getElementById(id);
+
+  const PRESETS = {
+    batisseur: {
+      metier: "Entrepreneur bâtisseur",
+      city: "",
+      zone: "",
+      description: `Entrepreneur bâtisseur pour construction, rénovation, extension et aménagement.
+
+Parlez-moi de votre besoin, je vous aide à organiser le chantier simplement.
+
+Contactez-moi directement pour en discuter.`,
+      servicesText: "construction · rénovation · extension · aménagement · organisation de chantier"
+    },
+    macon: {
+      metier: "Maçon",
+      city: "",
+      zone: "",
+      description: `Maçon pour petits travaux : réparation, construction et aménagement.
+
+Expliquez votre besoin, je vous aide à organiser le chantier simplement.
+
+Contactez-moi directement pour en discuter.`,
+      servicesText: "réparation · construction · aménagement · petits travaux"
+    },
+    plombier: {
+      metier: "Plombier",
+      city: "",
+      zone: "",
+      description: `Plombier pour petits travaux : fuite, robinetterie, évacuation et installation.
+
+Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.
+
+Contactez-moi directement pour en discuter.`,
+      servicesText: "fuite · robinetterie · évacuation · installation"
+    },
+    electricien: {
+      metier: "Électricien",
+      city: "",
+      zone: "",
+      description: `Électricien pour petits travaux : panne, prise, éclairage et installation.
+
+Parlez-moi de votre besoin, je vous aide à organiser l’intervention simplement.
+
+Contactez-moi directement pour en discuter.`,
+      servicesText: "panne · prise · éclairage · installation"
+    },
+    nettoyage: {
+      metier: "Service de nettoyage",
+      city: "",
+      zone: "",
+      description: `Service de nettoyage pour hôtel, résidence, maison de particulier, boutique, bureau et local professionnel.
+
+Parlez-moi de votre besoin, je vous aide à organiser la prestation simplement.
+
+Contactez-moi directement pour en discuter.`,
+      servicesText: "nettoyage hôtel · résidence · particulier · maison · boutique · bureau · local professionnel"
+    }
+  };
+
+  let session = null;
+  let slug = "";
+  let phoneFromSession = "";
+
+  function clean(v){ return String(v || "").trim(); }
+  function digits(v){ return String(v || "").replace(/\D/g,""); }
+  function normSlug(v){
+    return clean(v)
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-z0-9._-]+/g,"-")
+      .replace(/-+/g,"-")
+      .replace(/^-|-$/g,"");
+  }
+
+  function setMsg(text,type){
+    const el = $("msg");
+    el.className = "msg " + (text ? "show " + (type || "") : "");
+    el.textContent = text || "";
+  }
+
+  function readJson(storage,key){
+    try{return JSON.parse(storage.getItem(key)||"null")}catch(_){return null}
+  }
+
+  function readSession(){
+    const keys = [
+      "digiy_build_session",
+      "digiy_build_guard_session",
+      "digiy_guard_build_session",
+      "DIGIY_BUILD_ACCESS",
+      "DIGIY_PRO_BUILD_ACCESS",
+      "DIGIY_ACCESS",
+      "DIGIY_MODULE_ACCESS"
+    ];
+    for(const storage of [sessionStorage,localStorage]){
+      for(const key of keys){
+        const s = readJson(storage,key);
+        if(!s) continue;
+        const sl = clean(s.slug || s.pro_slug || s.build_slug);
+        const ph = digits(s.phone || s.owner_phone || s.tel || s.whatsapp);
+        const mod = String(s.module || s.pin_module || "").toUpperCase();
+        if((sl || ph) && (!mod || mod.includes("BUILD") || mod.includes("BATISSEUR"))){
+          return {...s, slug:sl, phone:ph};
+        }
+      }
+    }
+    return null;
+  }
+
+  function getStoredSlug(){
+    const keys = [
+      "DIGIY_BUILD_SLUG","DIGIY_CURRENT_SLUG","DIGIY_SLUG",
+      "digiy_build_slug","digiy_build_last_slug","digiy_slug","digiy_last_slug"
+    ];
+    for(const storage of [sessionStorage,localStorage]){
+      for(const key of keys){
+        const v = clean(storage.getItem(key));
+        if(v) return v;
+      }
+    }
+    return "";
+  }
+
+  function getClient(){
+    if(!window.supabase?.createClient) return null;
+    const url = window.DIGIY_SUPABASE_URL;
+    const key = window.DIGIY_SUPABASE_ANON_KEY || window.DIGIY_SUPABASE_ANON;
+    if(!url || !key) return null;
+    return window.supabase.createClient(url,key,{
+      auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
+    });
+  }
+
+  function applyPreset(key){
+    const preset = PRESETS[key];
+    if(!preset) return;
+
+    $("metier").value = preset.metier || "";
+    if(preset.city && !$("city").value) $("city").value = preset.city;
+    if(preset.zone && !$("zone").value) $("zone").value = preset.zone;
+    $("description").value = preset.description || "";
+    $("servicesText").value = preset.servicesText || "";
+
+    preview();
+    setMsg("✅ Exemple métier posé. Le pro peut corriger chaque mot avant sauvegarde.", "ok");
+  }
+
+  function servicesArray(){
+    const raw = clean($("servicesText").value);
+    if(!raw) return [];
+    return raw
+      .split(/\n|,|·|•|;|\|/g)
+      .map(clean)
+      .filter(Boolean)
+      .slice(0,12);
+  }
+
+  function formData(){
+    const ph = digits($("phone").value || phoneFromSession);
+    const wa = digits($("whatsapp").value || ph);
+    const services = servicesArray();
+
+    return {
+      slug: normSlug(slug || getStoredSlug() || ("build-" + ph)),
+      slug_key: normSlug(slug || getStoredSlug() || ("build-" + ph)),
+      phone: ph,
+      whatsapp: wa,
+      display_name: clean($("displayName").value),
+      metier: clean($("metier").value),
+      profession: clean($("metier").value),
+      city: clean($("city").value),
+      zone: clean($("zone").value),
+      description: clean($("description").value),
+      services_text: clean($("servicesText").value),
+      specialties: services,
+      logo_url: clean($("logoUrl").value) || DEFAULT_LOGO,
+      cover_url: clean($("photoUrl").value),
+      profile_url: clean($("publicUrl").value) || null,
+      public_url: clean($("publicUrl").value) || null,
+      fiche_url: clean($("publicUrl").value) || null,
+      is_active: true,
+      is_published: true,
+      updated_at: new Date().toISOString()
+    };
+  }
+
+  function fillForm(row){
+    if(!row) return;
+    $("displayName").value = row.display_name || row.name || row.title || "";
+    $("metier").value = row.metier || row.profession || row.trade || "";
+    $("phone").value = row.phone || phoneFromSession || "";
+    $("whatsapp").value = row.whatsapp || row.phone || phoneFromSession || "";
+    $("city").value = row.city || "";
+    $("zone").value = row.zone || "";
+    $("description").value = row.description || row.bio || "";
+    $("servicesText").value = row.services_text || "";
+    $("photoUrl").value = row.cover_url || row.photo_url || "";
+    $("logoUrl").value = row.logo_url || "";
+    $("publicUrl").value = row.public_url || row.profile_url || row.fiche_url || "";
+    preview();
+  }
+
+  function preview(){
+    const d = formData();
+    $("prevName").textContent = d.display_name || "Nom du professionnel";
+    $("prevMeta").textContent = [d.metier || "Métier", d.zone || d.city || "Zone"].filter(Boolean).join(" · ");
+    $("prevDesc").textContent = d.description || "La présentation apparaîtra ici.";
+
+    const img = clean(d.cover_url || d.logo_url);
+    if(img){
+      $("photoPreview").src = img;
+      $("photoPreview").style.display = "block";
+    }else{
+      $("photoPreview").style.display = "none";
+    }
+
+    $("prevChips").innerHTML = (d.specialties || []).slice(0,8).map(s => `<span class="chip">${escapeHtml(s)}</span>`).join("");
+  }
+
+  function escapeHtml(v){
+    return String(v||"").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  async function loadExisting(){
+    const sb = getClient();
+    if(!sb || (!slug && !phoneFromSession)) return;
+
+    try{
+      let query = sb.from(TABLE).select("*").order("updated_at",{ascending:false}).limit(1);
+      if(slug && phoneFromSession){
+        query = query.or("slug.eq." + slug + ",slug_key.eq." + slug + ",phone.eq." + phoneFromSession + ",whatsapp.eq." + phoneFromSession);
+      }else if(slug){
+        query = query.or("slug.eq." + slug + ",slug_key.eq." + slug);
+      }else{
+        query = query.or("phone.eq." + phoneFromSession + ",whatsapp.eq." + phoneFromSession);
+      }
+
+      const {data,error} = await query;
+      if(error) throw error;
+      if(Array.isArray(data) && data[0]){
+        fillForm(data[0]);
+        setMsg("✅ Fiche existante chargée. Tu peux corriger puis sauvegarder.", "ok");
+      }else{
+        if(phoneFromSession) $("phone").value = phoneFromSession;
+        if(phoneFromSession) $("whatsapp").value = phoneFromSession;
+        preview();
+      }
+    }catch(e){
+      console.warn(e);
+      setMsg("⚠️ Chargement Supabase impossible. Tu peux remplir et garder localement.", "bad");
+    }
+  }
+
+  async function save(){
+    const d = formData();
+
+    if(!d.display_name || !d.metier){
+      setMsg("Ajoute au moins le nom affiché et le métier principal.", "bad");
+      return;
+    }
+
+    if(!d.phone && !d.whatsapp){
+      setMsg("Ajoute au moins un téléphone ou WhatsApp.", "bad");
+      return;
+    }
+
+    try{
+      localStorage.setItem("digiy_build_profile_draft", JSON.stringify(d));
+    }catch(_){}
+
+    const sb = getClient();
+    if(!sb){
+      setMsg("✅ Fiche gardée localement. Supabase n’est pas disponible sur cette page.", "ok");
+      return;
+    }
+
+    try{
+      // UPDATE d'abord pour éviter les conflits slug unique.
+      let updateQuery = sb.from(TABLE).update(d).select("*").limit(1);
+      if(d.slug && d.phone){
+        updateQuery = updateQuery.or("slug.eq." + d.slug + ",slug_key.eq." + d.slug + ",phone.eq." + d.phone + ",whatsapp.eq." + d.phone);
+      }else if(d.slug){
+        updateQuery = updateQuery.or("slug.eq." + d.slug + ",slug_key.eq." + d.slug);
+      }else{
+        updateQuery = updateQuery.or("phone.eq." + d.phone + ",whatsapp.eq." + d.phone);
+      }
+
+      let {data,error} = await updateQuery;
+      if(error) throw error;
+
+      if(!data || !data.length){
+        const insertData = {...d};
+        const {data:ins,error:insErr} = await sb.from(TABLE).insert(insertData).select("*").limit(1);
+        if(insErr) throw insErr;
+        data = ins;
+      }
+
+      if(data && data[0]) fillForm(data[0]);
+
+      setMsg("✅ Fiche professionnelle sauvegardée. Le QR pourra utiliser cette fiche.", "ok");
+    }catch(e){
+      console.error(e);
+      setMsg("❌ Sauvegarde Supabase impossible : " + (e.message || "erreur inconnue") + "\nLa fiche reste gardée localement.", "bad");
+    }
+  }
+
+  function openPublic(){
+    const d = formData();
+    const u = new URL("./fiche-publique.html", location.href);
+    u.searchParams.set("slug", d.slug);
+    window.open(u.toString(), "_blank", "noopener");
+  }
+
+  function boot(){
+    session = readSession();
+    slug = normSlug(session?.slug || getStoredSlug());
+    phoneFromSession = digits(session?.phone || "");
+
+    const ok = !!(session && (session.access || session.access_ok || session.ok));
+    $("sessionPill").textContent = ok ? "session ouverte" : "session à vérifier";
+    $("sessionPill").className = "hdrPill " + (ok ? "ok" : "");
+
+    try{
+      const draft = JSON.parse(localStorage.getItem("digiy_build_profile_draft") || "null");
+      if(draft) fillForm(draft);
+    }catch(_){}
+
+    if(phoneFromSession && !$("phone").value) $("phone").value = phoneFromSession;
+    if(phoneFromSession && !$("whatsapp").value) $("whatsapp").value = phoneFromSession;
+
+    loadExisting();
+    preview();
+  }
+
+  ["displayName","metier","phone","whatsapp","city","zone","description","servicesText","photoUrl","logoUrl","publicUrl"].forEach(id=>{
+    $(id).addEventListener("input", preview);
+  });
+
+  $("presetFiche").addEventListener("change", function(){
+    applyPreset(this.value);
+  });
+
+  $("btnPreview").addEventListener("click", preview);
+  $("btnSave").addEventListener("click", save);
+  $("btnOpenPublic").addEventListener("click", openPublic);
+
+  boot();
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

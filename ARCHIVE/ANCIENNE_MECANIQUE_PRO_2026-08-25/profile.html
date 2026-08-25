@@ -1,0 +1,188 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Mes services — Ma fiche</title>
+  <meta name="theme-color" content="#1e7a46"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="digiy-build" content="services-build-rail-doctrine-20260521"/>
+  <meta name="description" content="DIGIY Mes services PRO — rail propre, langage terrain, moins d’écrits, plus de clics."/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js?v=build-guard-hub-20260531"></script>
+
+  <script src="./assets/js/digiy-module-bridge.js?v=services-build-rail-doctrine-20260521"></script>
+  <script src="./assets/js/digiy-services-memory.js?v=services-build-rail-doctrine-20260521"></script>
+
+  <link rel="preload" as="image" href="https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+:root{
+  --bg:#1e7a46;--bg2:#155a34;--bg3:#0e4226;--bar:rgba(8,50,24,.96);
+  --gold:#c4973f;--gold2:#fff0a8;--green:#22c55e;--blue:#8b8cff;--red:#fb7185;
+  --line:rgba(255,255,255,.18);--text:#f0fff5;--muted:rgba(240,255,245,.76);
+  --shadow:0 16px 40px rgba(0,0,0,.22);--r:18px;--max:980px;--hdrH:52px;--barH:78px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  margin:0;min-height:100dvh;color:var(--text);
+  font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;
+  background:
+    radial-gradient(620px 390px at 16% 0%,rgba(74,222,128,.18),transparent 58%),
+    radial-gradient(430px 280px at 92% 8%,rgba(196,151,63,.16),transparent 52%),
+    linear-gradient(180deg,var(--bg) 0%,var(--bg2) 60%,var(--bg3) 100%);
+  padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px);
+}
+a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}button{cursor:pointer;color:inherit}
+.topHeader{
+  position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;
+  background:var(--bar);border-bottom:1px solid rgba(196,151,63,.26);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.hdrBack{min-height:36px;display:inline-flex;align-items:center;justify-content:center;color:rgba(240,255,245,.72);font-size:14px;font-weight:1000;white-space:nowrap}
+.hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);white-space:nowrap}
+.hdrPill{min-height:32px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
+.hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
+.hdrPill.warn{color:#fde68a;border-color:rgba(245,158,11,.38);background:rgba(245,158,11,.12)}
+.wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}
+.eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+h1{margin:0 0 8px;font-size:clamp(36px,8.5vw,58px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
+.lead,.sub{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.42;max-width:780px}
+.card,.rule,.tile,.panel{
+  border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.08);box-shadow:var(--shadow);
+}
+.card,.panel{padding:16px}
+.rule{
+  padding:14px 15px;border-style:dashed;color:rgba(240,255,245,.92);font-size:15px;font-weight:1000;line-height:1.42;background:rgba(5,31,17,.34)
+}
+.rule b,.goldText{color:var(--gold2)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{
+  min-height:148px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:15px;
+  transition:transform .12s ease,background .12s ease,border-color .12s ease;-webkit-tap-highlight-color:transparent;
+}
+.tile:hover{transform:translateY(-1px);background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.28)}
+.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ico{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);font-size:26px;flex:0 0 auto}
+.tag{min-height:28px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.tile b{display:block;font-size:21px;font-weight:1000;line-height:1.05;letter-spacing:-.025em;color:#fff}
+.tile span{display:block;margin-top:6px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.30}
+.tile.primary{border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.14)}
+.tile.gold{border-color:rgba(196,151,63,.42);background:rgba(196,151,63,.13)}
+.tile.blue{border-color:rgba(139,140,255,.34);background:rgba(139,140,255,.13)}
+.tile.pay{border-color:rgba(250,204,21,.45);background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(196,151,63,.25))}
+.sectionTitle{font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,255,245,.58);margin:0 0 9px}
+.btn{
+  min-height:58px;border-radius:18px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.16);
+  color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:9px;text-align:center;padding:12px 15px;font-weight:1000;
+}
+.btn.primary{background:linear-gradient(135deg,var(--green),var(--gold));color:#102014;border:0}
+.btn.gold{background:rgba(196,151,63,.14);border-color:rgba(196,151,63,.34);color:var(--gold2)}
+.btn.red{background:rgba(251,113,133,.13);border-color:rgba(251,113,133,.34);color:#fecaca}
+.input,.textarea,.select{
+  width:100%;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(0,0,0,.18);color:var(--text);
+  min-height:54px;padding:12px 13px;outline:none;font-weight:900;
+}
+.textarea{min-height:120px;resize:vertical;line-height:1.45}
+label{display:block;margin:10px 0 7px;color:#fff;font-size:13px;font-weight:1000;letter-spacing:.02em}
+.help{color:var(--muted);font-size:13px;font-weight:900;line-height:1.45}
+.status{display:none;margin-top:12px;padding:12px 13px;border-radius:16px;border:1px solid rgba(34,197,94,.34);background:rgba(34,197,94,.11);color:#bbf7d0;font-size:14px;font-weight:1000;line-height:1.45}
+.status.show{display:block}
+.bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(8,50,24,.97);border-top:1px solid rgba(196,151,63,.20);backdrop-filter:blur(18px)}
+.bottomInner{width:min(760px,100%);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(240,255,245,.68);font-size:11px;font-weight:1000;text-align:center;background:rgba(255,255,255,.05);border:1px solid transparent}
+.bottomInner a.active{color:#102014;background:linear-gradient(135deg,var(--green),var(--gold));border-color:rgba(34,197,94,.24)}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.grid,.grid2{grid-template-columns:1fr}.tile{min-height:136px}h1{font-size:39px}}
+</style>
+</head>
+<body>
+  
+<header class="topHeader"><a class="hdrBack" href="./hub.html">← HUB</a><div class="hdrTitle">MA FICHE</div><div class="hdrPill warn" id="sessionPill">session…</div></header>
+<main class="wrap">
+  <section>
+    <div class="eyebrow">MES SERVICES · FICHE</div>
+    <h1>Dire ton métier simplement.</h1>
+    <div class="lead">Le client doit comprendre vite : métier, zone, contact, confiance. Pas de jargon technique.</div>
+    <div class="rule"><b>Doctrine d’écriture :</b> DIGIY prépare les mots du service. Le pro clique, corrige, valide.</div>
+  </section>
+  <section class="grid2">
+    <article class="card">
+      <div class="sectionTitle">Ma fiche service</div>
+      <label for="proName">Nom professionnel</label><input class="input" id="proName" placeholder="Ex : Mamadou Plomberie"/>
+      <label for="job">Métier</label><input class="input" id="job" placeholder="Plomberie, électricité, peinture, ménage..."/>
+      <label for="zone">Zone</label><input class="input" id="zone" placeholder="Saly, Mbour, Dakar..."/>
+      <label for="phone">WhatsApp</label><input class="input" id="phone" placeholder="+221..."/>
+      <label for="pitch">Phrase courte</label><textarea class="textarea" id="pitch" placeholder="Ex : Service rapide, contact direct, devis clair."></textarea>
+      <div class="grid2" style="margin-top:12px"><button class="btn primary" id="saveProfile" type="button">💾 Enregistrer</button><button class="btn gold" id="composePitch" type="button">✨ Préparer phrase</button></div>
+      <div class="status" id="profileStatus"></div>
+    </article>
+    <aside class="card">
+      <div class="sectionTitle">Aperçu</div>
+      <h2 id="pvName" style="margin:0;font-size:30px">Nom professionnel</h2>
+      <p class="help" id="pvJob">Métier · Zone</p>
+      <div class="rule" id="pvPitch">La phrase courte apparaîtra ici.</div>
+      <a class="btn primary" id="waBtn" href="#" style="margin-top:12px">📲 WhatsApp direct</a>
+    </aside>
+  </section>
+</main>
+<script>
+(()=>{const $=id=>document.getElementById(id);const status=$("profileStatus");const fields=["proName","job","zone","phone","pitch"];
+function data(){return Object.fromEntries(fields.map(id=>[id,$(id).value.trim()]));}
+function fill(d){fields.forEach(id=>{$(id).value=d?.[id]||""});render();}
+function render(){const d=data();$("pvName").textContent=d.proName||"Nom professionnel";$("pvJob").textContent=(d.job||"Métier")+" · "+(d.zone||"Zone");$("pvPitch").textContent=d.pitch||"La phrase courte apparaîtra ici.";const digits=(d.phone||"").replace(/[^\d]/g,"");$("waBtn").href=digits?"https://wa.me/"+digits:"#";}
+function show(t){status.textContent=t;status.className="status show";setTimeout(()=>status.className="status",2600)}
+$("composePitch").onclick=()=>{const d=data();$("pitch").value=`${d.job||"Service"} disponible sur ${d.zone||"ma zone"}, contact direct par WhatsApp, demande claire et réponse simple.`;render();};
+$("saveProfile").onclick=()=>{const d=data();window.DIGIY_SERVICES_MEMORY?.saveProfile?.(d);render();show("✅ Fiche gardée localement.");};
+fields.forEach(id=>$(id).addEventListener("input",render));fill(window.DIGIY_SERVICES_MEMORY?.loadProfile?.()||{});})();
+</script>
+
+  <nav class="bottomBar" aria-label="Navigation Mes services">
+    <div class="bottomInner">
+      <a class="" href="./hub.html"><span>🧭</span><span>HUB</span></a>
+      <a class="" href="./cockpit.html"><span>🧰</span><span>Service</span></a>
+      <a class="active" href="./fiche.html"><span>🪪</span><span>Fiche</span></a>
+      <a href="https://digiy-carnet-pro.digiylyfe.com/inscription-pay.html"><span>📒</span><span>CARNET</span></a>
+      <a class="" href="./session.html"><span>🛡️</span><span>Session</span></a>
+    </div>
+  </nav>
+  <script>
+    (()=>{
+      try{ if(window.DIGIY_MODULE_BRIDGE && typeof window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl === "function") window.DIGIY_MODULE_BRIDGE.cleanVisibleUrl(); }catch(_ ){}
+      const p=document.getElementById("sessionPill");
+      async function boot(){
+        let st={};
+        try{
+          if(window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready==="function"){
+            const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true,allow_soft_session:true});
+            if(out && typeof out.then==="function") await out;
+          }
+          st = (window.DIGIY_GUARD && (window.DIGIY_GUARD.getSession?.() || window.DIGIY_GUARD.state)) || {};
+        }catch(_ ){}
+        if(window.DIGIY_SERVICES_MEMORY && typeof window.DIGIY_SERVICES_MEMORY.rememberSession==="function") {
+          window.DIGIY_SERVICES_MEMORY.rememberSession(st || {});
+        }
+        if(p){
+          const ok=!!(st && (st.access_ok||st.access||st.ok||st.has_access||st.pin_session_ok));
+          p.textContent=ok?"session ouverte":"accès à vérifier";
+          p.className="hdrPill "+(ok?"ok":"warn");
+        }
+      }
+      boot();
+    })();
+  </script>
+</body>
+</html>
